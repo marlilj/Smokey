@@ -1,0 +1,1 @@
+https://newbedev.com/how-to-set-up-googletest-as-a-shared-library-on-linux
