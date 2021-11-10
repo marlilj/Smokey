@@ -17,9 +17,6 @@ public:
   }
 };
 
-int argument_01{};
-bool argument_02{};
-
 using namespace ::testing;
 
 TEST_F(SmokeyTest, InitSuccess) {
