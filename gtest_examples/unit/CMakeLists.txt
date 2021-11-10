@@ -1,5 +1,5 @@
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
-find_package(Threads REQUIRED)
+# find_package(Threads REQUIRED)
 
 cmake_minimum_required (VERSION 3.5.1)
 
