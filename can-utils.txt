@@ -1,0 +1,24 @@
+Start CAN receiver:
+candump vcan0
+
+Send a CAN message:
+cansend vcan0 01a#11223344AABBCCDD
+
+Generate and send random CAN messages continuously:
+cangen vcan0 -v
+
+Creates a log file and writes continuously to that:
+candump -l vcan0
+
+??? - Print logfile in a user friendly format:
+log2asc -I candump-2015-03-20_123001.log vcan0
+
+Replay the log file:
+canplayer -I candump-2015-03-20_123001.log
+
+If you need to use another can interface than defined in the logfile, use the expression "CANinterfaceToUse=CANinterfaceInFile".
+This example also prints the frames:
+canplayer vcan0=can1 -v -I candump-2015-03-20_123001.log
+
+Show the latest CAN message:
+cansniffer vcan0
