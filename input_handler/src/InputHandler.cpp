@@ -17,17 +17,18 @@
 // Dependencies
 #include <string>
 
-#include "../include/InterfaceFromInputHandler.hpp"
+#include "../include/InterfaceToCANEncoder.hpp"
+// #include "../../can_encoder/include/InterfaceFromInputHandler.hpp"
 
-std::string value_to_can_encoder_ = "String_to_CAN_encoder";
+std::string values_to_can_encoder_ = "String_to_CAN_encoder from InputHandler";
 
-GetNewValues get_new_values_;
+SendNewValues send_new_values_;
 
 int main() {
   int returnValue = false;
 
-  get_new_values_.getNewValues(value_to_can_encoder_);
-  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl;
+  send_new_values_.sendNewValues(values_to_can_encoder_);
+  std::cout << "3. " << values_to_can_encoder_ << "\n" << std::endl;
   returnValue = true;
 
   return returnValue;

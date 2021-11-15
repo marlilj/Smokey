@@ -15,20 +15,21 @@
 
 //////////////////////////////////////////////////
 // Dependencies
+
+#ifndef INTERFACEFROMINPUTHANDLER_HPP  // NOLINT
+#define INTERFACEFROMINPUTHANDLER_HPP
+
+
 #include <string>
+#include <iostream>
 
-#include "../include/InterfaceFromInputHandler.hpp"
 
-std::string value_to_can_encoder_ = "String_to_CAN_encoder";
+class GetNewValues {
+  private:
+  public:
+  bool getNewValues(std::string value_from_input_handler);
+};
 
-GetNewValues get_new_values_;
 
-int main() {
-  int returnValue = false;
 
-  get_new_values_.getNewValues(value_to_can_encoder_);
-  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl;
-  returnValue = true;
-
-  return returnValue;
-}
+#endif  // INTERFACEFROMINPUTHANDLER_HPP // NOLINT

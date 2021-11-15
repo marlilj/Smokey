@@ -1,4 +1,6 @@
 # Folders
+TEST/
+OLD/
 build/
 temp/
 .vscode/

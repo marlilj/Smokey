@@ -15,20 +15,18 @@
 
 //////////////////////////////////////////////////
 // Dependencies
+
+#ifndef INTERFACETOCANENCODER_HPP  // NOLINT
+#define INTERFACETOCANENCODER_HPP
+
+#include <ncurses.h>
 #include <string>
+#include <iostream>
 
-#include "../include/InterfaceFromInputHandler.hpp"
+class SendNewValues {
+ private:
+ public:
+    bool sendNewValues(std::string value_to_can_encoder);
+};
 
-std::string value_to_can_encoder_ = "String_to_CAN_encoder";
-
-GetNewValues get_new_values_;
-
-int main() {
-  int returnValue = false;
-
-  get_new_values_.getNewValues(value_to_can_encoder_);
-  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl;
-  returnValue = true;
-
-  return returnValue;
-}
+#endif  // INTERFACETOCANENCODER_HPP // NOLINT
