@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0)
+project(read_example)
+add_executable(${PROJECT_NAME} read_example.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC ../../libcanio/include include)
+target_link_libraries(${PROJECT_NAME} canio)
+target_link_directories(${PROJECT_NAME} PUBLIC ../../libcanio/build/)
