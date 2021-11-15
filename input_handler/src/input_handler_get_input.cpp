@@ -1,6 +1,3 @@
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -13,20 +10,40 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
+#include "input_handler.hpp"
 
-#include <ncurses.h>
-#include <unistd.h>
-#include <iostream>
-#include "../../can_encoder/include/InterfaceFromInputHandler.hpp"
+GetNewValues encoder;
 
+bool InitInputHandler() {
+  initscr();
+  noecho();
+  cbreak();
+  nodelay(stdscr, TRUE);
+  curs_set(0);
 
-typedef struct SmokeyPayload {
-  int set_point;
-  int gear;
-}Payload_t;
+  return true;
+}
 
-bool InitInputHandler();
-bool ReadUserInput();
-bool ExitInputHandler();
+bool ReadUserInput() {
+  int ch;
+  printw("Set the throttle! \n");
+  printw("Current throttle setting: ");
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+  for (;;) {
+    if ((ch = getch()) == ERR) {
+      // No user input
+    } else {
+      mvaddch(1, 26, ch);
+        encoder.getNewValues(&ch);
+    }
+    usleep(5);
+  }
+
+  return true;
+}
+
+bool ExitInputHandler() {
+  endwin();
+  return true;
+}
+
