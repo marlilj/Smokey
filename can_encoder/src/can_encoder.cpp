@@ -15,21 +15,20 @@
 
 //////////////////////////////////////////////////
 // Dependencies
-
-#include "../include/InterfaceToCANEncoder.hpp"
-
-#include <iostream>
 #include <string>
 
-#include "../../can_encoder/include/InterfaceFromInputHandler.hpp"
+#include "../include/interface_from_input_handler.hpp"
 
-GetNewValues get_new_values;
+std::string value_to_can_encoder_ = "String_to_CAN_encoder";
 
-bool SendNewValues::sendNewValues(std::string value_to_can_encoder) {
-  bool signal_received = false;
-  // signal_received = true;
-  signal_received = get_new_values.getNewValues(value_to_can_encoder);
-  // Do stuff with the bool value "signal received".
-  std::cout << "1. Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
-  return signal_received;
+GetNewValues get_new_values_;
+
+int main() {
+  int returnValue = false;
+
+  get_new_values_.getNewValues(value_to_can_encoder_);
+  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl;
+  returnValue = true;
+
+  return returnValue;
 }

@@ -16,21 +16,20 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-// #include "../include/InterfaceToCANEncoder.hpp"
-
-#include "../include/InterfaceFromInputHandler.hpp"
+#include "../include/InterfaceToCANEncoder.hpp"
 
 #include <iostream>
 #include <string>
-const bool kSuccess = true;
-const bool kFailure = false;
 
-bool GetNewValues::getNewValues(std::string value_from_input_handler) {
-  bool error_code = kFailure;
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
 
-  std::cout << "2. in GetNewValue function: " << value_from_input_handler << "\n" << std::endl;
-  // Do stuff in the CAN Encoder.
+GetNewValues get_new_values;
 
-  error_code = kSuccess;
-  return error_code;
+bool SendNewValues::sendNewValues(std::string value_to_can_encoder) {
+  bool signal_received = false;
+  // signal_received = true;
+  signal_received = get_new_values.getNewValues(value_to_can_encoder);
+  // Do stuff with the bool value "signal received".
+  std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
+  return signal_received;
 }

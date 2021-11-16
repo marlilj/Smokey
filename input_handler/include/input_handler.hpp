@@ -15,21 +15,3 @@
 
 //////////////////////////////////////////////////
 // Dependencies
-#include <string>
-
-#include "../include/InterfaceToCANEncoder.hpp"
-// #include "../../can_encoder/include/InterfaceFromInputHandler.hpp"
-
-std::string values_to_can_encoder_ = "String_to_CAN_encoder from InputHandler";
-
-SendNewValues send_new_values_;
-
-int main() {
-  int returnValue = false;
-
-  send_new_values_.sendNewValues(values_to_can_encoder_);
-  std::cout << "3. " << values_to_can_encoder_ << "\n" << std::endl;
-  returnValue = true;
-
-  return returnValue;
-}
