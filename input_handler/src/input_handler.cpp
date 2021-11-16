@@ -37,11 +37,9 @@ int main() {
 
   send_new_values_.sendNewValues(payload_.throttle);
   std::cout << "3. " << values_to_can_encoder_ << "\n" << std::endl;
-  for (size_t i = 0; i < 5; i++) {
     returnValue = MockKeyInput::mock_key_input();
     if (returnValue) {
       returnValue = kSuccess;
-    }
   }
 
   std::cout << "returnValue is " << returnValue << std::endl;

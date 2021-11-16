@@ -38,7 +38,7 @@ bool MockKeyInput::mock_key_input() {
       std::cout << "Throttle  " << payload.throttle << " & gear " << payload.gear << " to InputHandler.key_press.\n" << std::endl;  // NOLINT
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
-  } else if (mock_keypress > 90) {
+  } if (mock_keypress > 90) {
       payload.gear = 10;
     for (mock_keypress; mock_keypress > 0; mock_keypress = mock_keypress - 10) { // NOLINT
       payload.throttle = mock_keypress;
