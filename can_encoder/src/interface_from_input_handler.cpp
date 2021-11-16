@@ -25,7 +25,7 @@
 const bool kSuccess = true;
 const bool kFailure = false;
 
-bool GetNewValues::getNewValues(std::string value_from_input_handler) {
+bool GetNewValues::getNewValues(int16_t value_from_input_handler) {
   bool error_code = kFailure;
 
   std::cout << "2. in GetNewValue function: " << value_from_input_handler << "\n" << std::endl;

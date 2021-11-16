@@ -27,7 +27,7 @@
 class GetNewValues {
   private:
   public:
-  bool getNewValues(std::string value_from_input_handler);
+  bool getNewValues(int16_t value_from_input_handler);
 };
 
 

@@ -16,44 +16,36 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-#include <iostream>
+#include "../include/mock_key_input.hpp"
+
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 #include "../include/input_handler.hpp"
+#include "../include/smokey_data.hpp"
 
-    class MockKeyInput {
-     private:
-  bool key_input = false;
-  bool mock_key_input();
+int16_t mock_keypress = 0;
 
-     public:
-    };
-
+Payload_t payload;
 
 bool MockKeyInput::mock_key_input() {
-  int8_t keypress = 0;
-  while (MockKeyInput::key_input == true) {
-    if (keypress < 100) {
-      keypress + 10;
-      // InputHandler.key_press(MockKeyInput::keypress);
-      std::cout << "Sent " << keypress << " to InputHandler.key_press.\n" << std::endl;
+      payload.gear = 0;
+  if (mock_keypress <= 90) {
+    for (mock_keypress; mock_keypress < 100; mock_keypress = mock_keypress + 10) { // NOLINT
+      payload.throttle = mock_keypress;
+      payload.gear ++; // NOLINT
+      std::cout << "Throttle  " << payload.throttle << " & gear " << payload.gear << " to InputHandler.key_press.\n" << std::endl;  // NOLINT
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    } else if (keypress >= 100 && keypress >= 0) {
-      keypress - 10;
-      // InputHandler.key_press(MockKeyInput::keypress);
-      std::cout << "Sent " << keypress << " to InputHandler.key_press.\n" << std::endl;
+    }
+  } else if (mock_keypress > 90) {
+      payload.gear = 10;
+    for (mock_keypress; mock_keypress > 0; mock_keypress = mock_keypress - 10) { // NOLINT
+      payload.throttle = mock_keypress;
+      payload.gear --; // NOLINT
+      std::cout << "Throttle  " << payload.throttle << " & gear " << payload.gear << " to InputHandler.key_press.\n" << std::endl;  // NOLINT
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
   }
   return true;
 }
-
-
-// Move to input_handler main function:
-
-// MockKeyInput mockKeyInput;
-
-// std::thread mock_thread_object(MockKeyInput(), void);
-
-// mock_thread_object.join();

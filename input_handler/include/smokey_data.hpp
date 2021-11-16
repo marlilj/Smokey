@@ -16,20 +16,7 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-#include "../include/interface_to_can_encoder.hpp"
-
-#include <iostream>
-#include <string>
-
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
-
-GetNewValues get_new_values;
-
-bool SendNewValues::sendNewValues(int16_t value_to_can_encoder) {
-  bool signal_received = false;
-  // signal_received = true;
-  signal_received = get_new_values.getNewValues(value_to_can_encoder);
-  // Do stuff with the bool value "signal received".
-  std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
-  return signal_received;
-}
+typedef struct SmokeyPayload {
+  int throttle;
+  int gear;
+}Payload_t;

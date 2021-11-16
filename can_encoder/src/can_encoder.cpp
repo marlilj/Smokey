@@ -19,7 +19,7 @@
 
 #include "../include/interface_from_input_handler.hpp"
 
-std::string value_to_can_encoder_ = "String_to_CAN_encoder";
+int16_t value_to_can_encoder_ = 12345;
 
 GetNewValues get_new_values_;
 

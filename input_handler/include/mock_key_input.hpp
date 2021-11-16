@@ -16,20 +16,19 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-#include "../include/interface_to_can_encoder.hpp"
-
+#include <chrono>
 #include <iostream>
-#include <string>
+#include <thread>
 
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
+// #include "../include/input_handler.hpp"
+// #include "../include/smokey_data.hpp"
 
-GetNewValues get_new_values;
+class MockKeyInput {
+ private:
+  // bool key_input = false;
+ public:
+  static bool mock_key_input();
+};
 
-bool SendNewValues::sendNewValues(int16_t value_to_can_encoder) {
-  bool signal_received = false;
-  // signal_received = true;
-  signal_received = get_new_values.getNewValues(value_to_can_encoder);
-  // Do stuff with the bool value "signal received".
-  std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
-  return signal_received;
-}
+const bool kSuccess = true;
+const bool kFailure = false;
