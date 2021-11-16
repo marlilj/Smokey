@@ -18,32 +18,36 @@
 
 #include <string>
 
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
 #include "../include/interface_to_can_encoder.hpp"
 #include "../include/mock_key_input.hpp"
 #include "../include/smokey_data.hpp"
 
 MockKeyInput mockKeyInput;
 
-std::string values_to_can_encoder_ = "String_to_CAN_encoder from InputHandler";  // NOLINT
-
 SendNewValues send_new_values_;
 
-Payload_t payload_;
+Payload_t payload;
+
+GetNewValues _get_new_values_;
 
 int main() {
-  int returnValue = kFailure;
+  int16_t returnValue = kFailure;
+  int16_t returnValue2 = kFailure;
 
   // std::thread mock_thread_object(MockKeyInput());
 
-  send_new_values_.sendNewValues(payload_.throttle);
-  std::cout << "3. " << values_to_can_encoder_ << "\n" << std::endl;
-    returnValue = MockKeyInput::mock_key_input();
-    if (returnValue) {
-      returnValue = kSuccess;
-  }
+  std::cout << "payload.throttle is set to: " << payload.throttle << " by default.\n" << std::endl;  // NOLINT
+  returnValue = MockKeyInput::mock_key_input(payload);
 
-  std::cout << "returnValue is " << returnValue << std::endl;
+  returnValue2 = _get_new_values_.getNewValues(payload);
+
+  std::cout << "Return value from MockKeyInput is " << returnValue << "\n" << std::endl;  // NOLINT
+
+  std::cout << "Return value from GetNewValues is " << returnValue2 << "\n" << std::endl;  // NOLINT
   // mock_thread_object.join();
+
+  std::cout << "payload_.throttle is set to " << payload.throttle << "\n" << std::endl;  // NOLINT
 
   return returnValue;
 }

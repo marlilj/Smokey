@@ -26,7 +26,7 @@
 class SendNewValues {
  private:
  public:
-    bool sendNewValues(int16_t value_to_can_encoder);
+    int16_t sendNewValues(int16_t value_to_can_encoder);
 };
 
 #endif  // INTERFACETOCANENCODER_HPP // NOLINT

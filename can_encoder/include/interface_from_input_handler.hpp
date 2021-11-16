@@ -23,11 +23,13 @@
 #include <string>
 #include <iostream>
 
+#include "../../input_handler/include/smokey_data.hpp"
+
 
 class GetNewValues {
   private:
   public:
-  bool getNewValues(int16_t value_from_input_handler);
+  int16_t getNewValues(Payload_t &payload);
 };
 
 

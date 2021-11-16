@@ -19,18 +19,21 @@
 // #include "../include/InterfaceToCANEncoder.hpp"
 
 #include "../include/interface_from_input_handler.hpp"
+#include "../../input_handler/include/smokey_data.hpp"
 
-#include <iostream>
-#include <string>
+#include <iostream> // NOLINT
+#include <string> // NOLINT
 const bool kSuccess = true;
 const bool kFailure = false;
 
-bool GetNewValues::getNewValues(int16_t value_from_input_handler) {
-  bool error_code = kFailure;
 
-  std::cout << "2. in GetNewValue function: " << value_from_input_handler << "\n" << std::endl;
+int16_t GetNewValues::getNewValues(Payload_t &payload) {
+  bool error_code = kFailure;
+  int16_t value_from_input_handler = payload.throttle;
+
+  std::cout << "GetNewValue function stores throttle value " << value_from_input_handler << "\n" << std::endl; // NOLINT
   // Do stuff in the CAN Encoder.
 
-  error_code = kSuccess;
-  return error_code;
+  // error_code = kSuccess; // NOLINT
+  return value_from_input_handler;
 }

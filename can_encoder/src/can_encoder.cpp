@@ -19,15 +19,15 @@
 
 #include "../include/interface_from_input_handler.hpp"
 
-int16_t value_to_can_encoder_ = 12345;
+int16_t value_to_can_encoder_;
 
 GetNewValues get_new_values_;
 
 int main() {
   int returnValue = false;
 
-  get_new_values_.getNewValues(value_to_can_encoder_);
-  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl;
+  value_to_can_encoder_ = get_new_values_.getNewValues();
+  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl; // NOLINT
   returnValue = true;
 
   return returnValue;

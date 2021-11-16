@@ -20,14 +20,15 @@
 #include <iostream>
 #include <thread>
 
+#include "smokey_data.hpp"
 // #include "../include/input_handler.hpp"
 // #include "../include/smokey_data.hpp"
 
 class MockKeyInput {
- private:
+private:
   // bool key_input = false;
- public:
-  static bool mock_key_input();
+public:
+  static int16_t mock_key_input(Payload_t& payload);
 };
 
 const bool kSuccess = true;

@@ -17,19 +17,25 @@
 // Dependencies
 
 #include "../include/interface_to_can_encoder.hpp"
+#include "../include/smokey_data.hpp"
 
-#include <iostream>
-#include <string>
+#include <iostream> // NOLINT
+#include <string> // NOLINT
 
 #include "../../can_encoder/include/interface_from_input_handler.hpp"
 
 GetNewValues get_new_values;
 
-bool SendNewValues::sendNewValues(int16_t value_to_can_encoder) {
-  bool signal_received = false;
-  // signal_received = true;
-  signal_received = get_new_values.getNewValues(value_to_can_encoder);
-  // Do stuff with the bool value "signal received".
-  std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
-  return signal_received;
-}
+// Payload_t payload_;
+
+
+// int16_t SendNewValues::sendNewValues() {
+//   bool signal_received = false;
+//   // signal_received = true;
+//   // signal_received = get_new_values.getNewValues(value_to_can_encoder);
+//   signal_received = get_new_values.getNewValues(payload);
+//   // Do stuff with the bool value "signal received".
+//   std::cout << "1.Signal sent through SendNewValues function: " << value_to_can_encoder << "\n" << std::endl;
+//   std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
+//   return value_to_can_encoder;
+// }
