@@ -1,6 +1,6 @@
 
-#ifndef CANIO
-#define CANIO
+#ifndef CANIO_HPP
+#define CANIO_HPP
 #include <linux/can.h>
 // #include <socketcan_cpp/socketcan_cpp_export.h>
 
@@ -55,4 +55,4 @@ class SocketCan {
   SocketCanStatus close();
 };
 
-#endif
+#endif // CANIO_HPP

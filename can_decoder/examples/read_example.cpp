@@ -1,4 +1,4 @@
-#include "canio.hpp"
+#include "../../libcanio/include/canio.hpp"
 
 int main() {
   SocketCan socket_can("vcan0");
