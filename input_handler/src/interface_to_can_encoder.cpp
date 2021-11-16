@@ -35,7 +35,7 @@ GetNewValues get_new_values;
 //   // signal_received = get_new_values.getNewValues(value_to_can_encoder);
 //   signal_received = get_new_values.getNewValues(payload);
 //   // Do stuff with the bool value "signal received".
-//   std::cout << "1.Signal sent through SendNewValues function: " << value_to_can_encoder << "\n" << std::endl;
-//   std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl;
+//   std::cout << "1.Signal sent through SendNewValues function: " << value_to_can_encoder << "\n" << std::endl; // NOLINT
+//   std::cout << "1.Signal received returned from GetNewValue function: " << signal_received << "\n" << std::endl; // NOLINT
 //   return value_to_can_encoder;
 // }

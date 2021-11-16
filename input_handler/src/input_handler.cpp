@@ -32,22 +32,29 @@ Payload_t payload;
 GetNewValues _get_new_values_;
 
 int main() {
-  int16_t returnValue = kFailure;
+  bool returnValue = kFailure;
   int16_t returnValue2 = kFailure;
+  int16_t returnValue3 = kFailure;
 
   // std::thread mock_thread_object(MockKeyInput());
 
-  std::cout << "payload.throttle is set to: " << payload.throttle << " by default.\n" << std::endl;  // NOLINT
-  returnValue = MockKeyInput::mock_key_input(payload);
+  std::cout << "\npayload.throttle is set to: " << payload.throttle << " by default." << std::endl;  // NOLINT
+  std::cout << "payload.gear is set to: " << payload.gear << " by default.\n" << std::endl;  // NOLINT
+  returnValue2 = MockKeyInput::mock_key_input(payload);
 
-  returnValue2 = _get_new_values_.getNewValues(payload);
+  returnValue3 = _get_new_values_.getNewValues(payload);
 
-  std::cout << "Return value from MockKeyInput is " << returnValue << "\n" << std::endl;  // NOLINT
+  std::cout << "Return value from MockKeyInput is " << returnValue2 << "\n" << std::endl;  // NOLINT
 
-  std::cout << "Return value from GetNewValues is " << returnValue2 << "\n" << std::endl;  // NOLINT
+  std::cout << "Return value from GetNewValues is " << returnValue3 << "\n" << std::endl;  // NOLINT
   // mock_thread_object.join();
 
   std::cout << "payload_.throttle is set to " << payload.throttle << "\n" << std::endl;  // NOLINT
 
+if (returnValue2 != 0 && returnValue3 != 0) {
+  returnValue = kSuccess;
+}
+
+std::cout << "ErrorCode is: " << returnValue << std::endl;
   return returnValue;
 }
