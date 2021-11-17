@@ -10,9 +10,14 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include"../include/throttle.hpp"
 
-std::vector<int> calculateThrottleCurve(int input_value, int previous_value) {
-    std::vector<int> return_val{};
-    return return_val;
-}
+#ifndef INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
+#define INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
+
+
+typedef struct SmokeyPayload {
+  int throttle;
+  int gear;
+}Payload_t;
+
+#endif  // INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_

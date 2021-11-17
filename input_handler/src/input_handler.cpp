@@ -10,9 +10,17 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include"../include/throttle.hpp"
+#include "../include/input_handler.hpp"
 
-std::vector<int> calculateThrottleCurve(int input_value, int previous_value) {
-    std::vector<int> return_val{};
-    return return_val;
+
+
+int main(void) {
+  InputHandler SmokeyInput;
+  GetNewValues get_new_values;
+
+  SmokeyInput.InitInputHandler();
+  SmokeyInput.ReadUserInput(get_new_values);
+  SmokeyInput.ExitInputHandler();
+
+  return 0;
 }

@@ -10,9 +10,19 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include"../include/throttle.hpp"
+#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
 
-std::vector<int> calculateThrottleCurve(int input_value, int previous_value) {
-    std::vector<int> return_val{};
-    return return_val;
-}
+#include "smokey_data.hpp"
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
+
+class InputHandler {
+ private:
+ public:
+    Payload_t SmokeyInputData;
+    bool InitInputHandler();
+    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT 
+    bool ExitInputHandler();
+};
+
+#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
