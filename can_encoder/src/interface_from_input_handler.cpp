@@ -16,8 +16,6 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-// #include "../include/InterfaceToCANEncoder.hpp"
-
 #include "../include/interface_from_input_handler.hpp"
 #include "../../input_handler/include/smokey_data.hpp"
 
@@ -29,11 +27,12 @@ const bool kFailure = false;
 
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;
-  int16_t value_from_input_handler = payload.throttle;
 
-  std::cout << "GetNewValue function stores throttle value " << value_from_input_handler << "\n" << std::endl; // NOLINT
+  std::cout << "GetNewValue function stores throttle value "
+                << payload.throttle << " and gear "
+                << payload.gear << "\n" << std::endl;
   // Do stuff in the CAN Encoder.
 
-  // error_code = kSuccess; // NOLINT
-  return value_from_input_handler;
+  error_code = kSuccess; // NOLINT
+  return error_code;
 }

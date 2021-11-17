@@ -15,6 +15,7 @@
 
 //////////////////////////////////////////////////
 // Dependencies
+
 #ifndef SMOKEYDATA_HPP  // NOLINT
 #define SMOKEYDATA_HPP
 
@@ -23,4 +24,4 @@ typedef struct SmokeyPayload {
   int gear;
 }Payload_t;
 
-#endif // SMOKEYDATA_HPP
+#endif // SMOKEYDATA_HPP // NOLINT

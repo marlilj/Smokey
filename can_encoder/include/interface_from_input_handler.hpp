@@ -27,9 +27,9 @@
 
 
 class GetNewValues {
-  private:
-  public:
-  int16_t getNewValues(Payload_t &payload);
+ private:
+ public:
+  int16_t getNewValues(Payload_t &payload); // NOLINT
 };
 
 

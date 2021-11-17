@@ -16,19 +16,14 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-#include <chrono>
 #include <iostream>
-#include <thread>
 
 #include "smokey_data.hpp"
-// #include "../include/input_handler.hpp"
-// #include "../include/smokey_data.hpp"
 
 class MockKeyInput {
-private:
-  // bool key_input = false;
-public:
-  static int16_t mock_key_input(Payload_t& payload);
+ private:
+ public:
+  static int16_t mock_key_input(Payload_t& payload); // NOLINT
 };
 
 const bool kSuccess = true;

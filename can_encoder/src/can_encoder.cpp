@@ -18,15 +18,18 @@
 #include <string>
 
 #include "../include/interface_from_input_handler.hpp"
+#include "../../input_handler/include/smokey_data.hpp"
 
 int16_t value_to_can_encoder_;
 
 GetNewValues get_new_values_;
 
+Payload_t payload;
+
 int main() {
   int returnValue = false;
 
-  value_to_can_encoder_ = get_new_values_.getNewValues();
+  value_to_can_encoder_ = get_new_values_.getNewValues(payload);
   std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl; // NOLINT
   returnValue = true;
 

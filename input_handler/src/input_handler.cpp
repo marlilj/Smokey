@@ -19,42 +19,21 @@
 #include <string>
 
 #include "../../can_encoder/include/interface_from_input_handler.hpp"
-#include "../include/interface_to_can_encoder.hpp"
 #include "../include/mock_key_input.hpp"
 #include "../include/smokey_data.hpp"
 
 MockKeyInput mockKeyInput;
-
-SendNewValues send_new_values_;
-
 Payload_t payload;
-
 GetNewValues _get_new_values_;
 
 int main() {
-  bool returnValue = kFailure;
-  int16_t returnValue2 = kFailure;
-  int16_t returnValue3 = kFailure;
+  bool error_code = kFailure;
 
-  // std::thread mock_thread_object(MockKeyInput());
-
-  std::cout << "\npayload.throttle is set to: " << payload.throttle << " by default." << std::endl;  // NOLINT
-  std::cout << "payload.gear is set to: " << payload.gear << " by default.\n" << std::endl;  // NOLINT
-  returnValue2 = MockKeyInput::mock_key_input(payload);
-
-  returnValue3 = _get_new_values_.getNewValues(payload);
-
-  std::cout << "Return value from MockKeyInput is " << returnValue2 << "\n" << std::endl;  // NOLINT
-
-  std::cout << "Return value from GetNewValues is " << returnValue3 << "\n" << std::endl;  // NOLINT
-  // mock_thread_object.join();
-
-  std::cout << "payload_.throttle is set to " << payload.throttle << "\n" << std::endl;  // NOLINT
-
-if (returnValue2 != 0 && returnValue3 != 0) {
-  returnValue = kSuccess;
+if (MockKeyInput::mock_key_input(payload) != 0 &&
+  _get_new_values_.getNewValues(payload) != 0) {
+  error_code = kSuccess;
 }
 
-std::cout << "ErrorCode is: " << returnValue << std::endl;
-  return returnValue;
+std::cout << "ErrorCode is: " << error_code << std::endl;
+  return error_code;
 }

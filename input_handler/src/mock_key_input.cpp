@@ -17,13 +17,14 @@
 // Dependencies
 
 #include "../include/mock_key_input.hpp"
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
 
-#include <chrono>  // NOLINT
-#include <iostream>
 #include <thread>  // NOLINT
 
 #include "../include/input_handler.hpp"
 #include "../include/smokey_data.hpp"
+
+GetNewValues getNewValues_;
 
 int16_t mock_keypress = 0;
 
@@ -33,8 +34,7 @@ int16_t MockKeyInput::mock_key_input(Payload_t& payload) {
     for (mock_keypress; mock_keypress < 100; mock_keypress = mock_keypress + 10) {  // NOLINT
       payload.throttle = mock_keypress;
       payload.gear++;  // NOLINT
-      std::cout << "Throttle  " << payload.throttle << " & gear " << payload.gear << " to InputHandler.key_press.\n" // NOLINT
-                << std::endl;  // NOLINT
+      getNewValues_.getNewValues(payload);
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
   }
@@ -43,8 +43,7 @@ int16_t MockKeyInput::mock_key_input(Payload_t& payload) {
     for (mock_keypress; mock_keypress > 0; mock_keypress = mock_keypress - 10) {  // NOLINT
       payload.throttle = mock_keypress;
       payload.gear--;  // NOLINT
-      std::cout << "Throttle " << payload.throttle << " & gear " << payload.gear << " to InputHandler.key_press.\n" // NOLINT
-                << std::endl;  // NOLINT
+      getNewValues_.getNewValues(payload);
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
   }
