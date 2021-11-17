@@ -1,5 +1,6 @@
-/**
- * Copyright (C) - Volvo Car Corporation
+
+/*
+ * Copyright (C) 2021 - Volvo Car Corporation
  *
  * All Rights Reserved
  *
@@ -10,11 +11,7 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
- * This file was generated fri Nov 12 11:07:24 2021
- */
-
-//////////////////////////////////////////////////
-// Dependencies
+*/
 
 #include <string>
 
@@ -35,5 +32,40 @@ if (MockKeyInput::mock_key_input(payload) != 0 &&
 }
 
 std::cout << "ErrorCode is: " << error_code << std::endl;
+  return error_code;
+}
+ */
+#include <string>
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
+#include "../include/mock_key_input.hpp"
+#include "../include/smokey_data.hpp"
+#include "../include/input_handler.hpp"
+
+/*  
+MockKeyInput mockKeyInput;
+Payload_t payload;
+GetNewValues _get_new_values_;
+*/
+  
+int main(void) {
+  bool error_code = kFailure;
+/*
+if (MockKeyInput::mock_key_input(payload) != 0 &&
+  _get_new_values_.getNewValues(payload) != 0) {
+  error_code = kSuccess;
+}
+
+std::cout << "ErrorCode is: " << error_code << std::endl;
+  return error_code;
+*/
+  
+  InputHandler SmokeyInput;
+  GetNewValues get_new_values;
+
+  SmokeyInput.InitInputHandler();
+  SmokeyInput.ReadUserInput(get_new_values);
+  SmokeyInput.ExitInputHandler();
+  error_code = kSuccess;
+
   return error_code;
 }

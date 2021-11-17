@@ -1,5 +1,7 @@
-/**
- * Copyright (C) - Volvo Car Corporation
+
+/*
+ * Copyright (C) 2021 - Volvo Car Corporation
+
  *
  * All Rights Reserved
  *
@@ -9,9 +11,22 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
- *
- * This file was generated fri Nov 12 11:07:24 2021
- */
 
-//////////////////////////////////////////////////
-// Dependencies
+ */
+#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+
+#include "smokey_data.hpp"
+#include "../../can_encoder/include/interface_from_input_handler.hpp"
+
+class InputHandler {
+ private:
+ public:
+    Payload_t SmokeyInputData;
+    bool InitInputHandler();
+    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT 
+    bool ExitInputHandler();
+};
+
+#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+
