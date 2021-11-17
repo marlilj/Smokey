@@ -24,13 +24,8 @@
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;
 
-  std::cout << "GetNewValue function stores throttle value "
-                << payload.throttle << " and gear "
-                << payload.gear << "\n" << std::endl;
   CanFrame input_can_frame;
 
-  // std::cout << "GetNewValue function stores throttle value " << value_from_input_handler << "\n" << std::endl; // NOLINT
-  // Do stuff in the CAN Encoder.
   input_can_frame = GetNewValues::convertCANMessageFromStruct(payload);
   GetNewValues::printCANFrame(input_can_frame);
   bool message_sent = GetNewValues::sendMessageOnCAN(input_can_frame);
@@ -60,9 +55,18 @@ bool GetNewValues::sendMessageOnCAN(const CanFrame &frame_to_send) {
 }
 
 void GetNewValues::printCANFrame(const CanFrame &frame) {
-  printf("len %d byte, id: %d \ndata: ", frame.id, frame.len);
+  /* prints message using ncurses */
+
+  move(2, 0);  // move cursor
+  insdelln(2);
+  insdelln(3);
+  insdelln(4);
+  insdelln(5);
+  insdelln(6);
+
+  printw("\nSENDING MESSAGE\n");
+  printw("len %d byte, id: %d \ndata: ", frame.id, frame.len);
   for ( int i = 0 ; i < frame.len ; i++ ) {
-    printf("%02x ", frame.data[i]);
+    printw("%02x ", frame.data[i]);
   }
-  printf("\n");
 }

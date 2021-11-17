@@ -24,6 +24,10 @@ target_link_libraries(${PROJECT_NAME}
   gtest
   Threads::Threads
   ncurses
+  canio
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC ../libcanio/include/)
+target_link_directories(${PROJECT_NAME} PUBLIC ../libcanio/build/)
 
 add_test(NAME input_handler_gtest COMMAND ${PROJECT_NAME})

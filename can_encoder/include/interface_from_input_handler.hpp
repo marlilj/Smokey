@@ -19,6 +19,7 @@
 #ifndef INTERFACEFROMINPUTHANDLER_HPP  // NOLINT
 #define INTERFACEFROMINPUTHANDLER_HPP
 
+#include <curses.h>
 
 #include <string>
 #include <iostream>
