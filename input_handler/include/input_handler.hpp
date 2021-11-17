@@ -1,5 +1,7 @@
+
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
+
  *
  * All Rights Reserved
  *
@@ -9,6 +11,7 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
+
  */
 #ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
 #define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
@@ -26,3 +29,4 @@ class InputHandler {
 };
 
 #endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+

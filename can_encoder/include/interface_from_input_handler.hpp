@@ -1,6 +1,5 @@
-
-/*
- * Copyright (C) 2021 - Volvo Car Corporation
+/**
+ * Copyright (C) - Volvo Car Corporation
  *
  * All Rights Reserved
  *
@@ -10,9 +9,29 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-*/
+ *
+ * This file was generated fri Nov 12 11:07:24 2021
+ */
+
+//////////////////////////////////////////////////
+// Dependencies
+
+#ifndef INTERFACEFROMINPUTHANDLER_HPP  // NOLINT
+#define INTERFACEFROMINPUTHANDLER_HPP
 
 
-#include<vector>
+#include <string>
+#include <iostream>
 
-std::vector<int> calculateThrottleCurve(int input_value, int previous_value); // NOLINT
+#include "../../input_handler/include/smokey_data.hpp"
+
+
+class GetNewValues {
+ private:
+ public:
+  int16_t getNewValues(Payload_t &payload); // NOLINT
+};
+
+
+
+#endif  // INTERFACEFROMINPUTHANDLER_HPP // NOLINT

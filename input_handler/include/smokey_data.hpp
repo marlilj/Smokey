@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -9,10 +10,9 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
- */
-
-#ifndef INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
-#define INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
+*/
+#ifndef SMOKEYDATA_HPP  // NOLINT
+#define SMOKEYDATA_HPP
 
 
 typedef struct SmokeyPayload {
@@ -20,4 +20,8 @@ typedef struct SmokeyPayload {
   int gear;
 }Payload_t;
 
-#endif  // INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
+
+const bool kSuccess = true;
+const bool kFailure = false;
+
+#endif // SMOKEYDATA_HPP // NOLINT

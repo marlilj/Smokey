@@ -11,15 +11,21 @@
 class SmokeyTest : public ::testing::Test {
 public:
   void SetUp() {}
+  bool smokey_something_class() {
+    bool smokey_return_something_class = true;
+    return smokey_return_something_class;
+  }
+};
+
+
   bool smokey_something() {
     bool smokey_return_something = true;
     return smokey_return_something;
   }
-};
 
-using namespace ::testing;
+// using namespace ::testing;
 
-TEST_F(SmokeyTest, InitSuccess) {
+TEST(smokey_something, InitSuccess) {
   // EXPECT_CALL(something(true));
   EXPECT_TRUE(smokey_something());
   // EXPECT_FALSE

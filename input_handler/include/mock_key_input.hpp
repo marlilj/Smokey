@@ -1,6 +1,5 @@
-
-/*
- * Copyright (C) 2021 - Volvo Car Corporation
+/**
+ * Copyright (C) - Volvo Car Corporation
  *
  * All Rights Reserved
  *
@@ -10,9 +9,19 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-*/
+ *
+ * This file was generated fri Nov 12 11:07:24 2021
+ */
 
+//////////////////////////////////////////////////
+// Dependencies
 
-#include<vector>
+#include <iostream>
 
-std::vector<int> calculateThrottleCurve(int input_value, int previous_value); // NOLINT
+#include "smokey_data.hpp"
+
+class MockKeyInput {
+ private:
+ public:
+  static int16_t mock_key_input(Payload_t& payload); // NOLINT
+};
