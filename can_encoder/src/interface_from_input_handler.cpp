@@ -21,9 +21,6 @@
 
 #include <iostream> // NOLINT
 #include <string> // NOLINT
-const bool kSuccess = true;
-const bool kFailure = false;
-
 
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;

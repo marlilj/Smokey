@@ -25,6 +25,3 @@ class MockKeyInput {
  public:
   static int16_t mock_key_input(Payload_t& payload); // NOLINT
 };
-
-const bool kSuccess = true;
-const bool kFailure = false;

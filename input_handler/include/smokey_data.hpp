@@ -24,4 +24,7 @@ typedef struct SmokeyPayload {
   int gear;
 }Payload_t;
 
+const bool kSuccess = true;
+const bool kFailure = false;
+
 #endif // SMOKEYDATA_HPP // NOLINT
