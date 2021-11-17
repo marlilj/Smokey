@@ -10,11 +10,14 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include "input_handler.hpp"
+#include "../include/input_handler.hpp"
+#include <string>
+#include <ncurses.h>
+#include <unistd.h>
+#include <iostream>
 
-GetNewValues encoder;
 
-bool InitInputHandler() {
+bool InputHandler::InitInputHandler() {
   initscr();
   noecho();
   cbreak();
@@ -24,17 +27,18 @@ bool InitInputHandler() {
   return true;
 }
 
-bool ReadUserInput() {
+bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
   int ch;
   printw("Set the throttle! \n");
   printw("Current throttle setting: ");
 
   for (;;) {
     if ((ch = getch()) == ERR) {
-      // No user input
-    } else {
-      mvaddch(1, 26, ch);
-        encoder.getNewValues(&ch);
+      // No user input.throttle
+    } else if ( (48 <= ch) && (ch <= 57) ) {
+        mvaddch(1, 26, ch);
+        SmokeyInputData.throttle = ch;
+        get_new_values.getNewValues(SmokeyInputData);
     }
     usleep(5);
   }
@@ -42,7 +46,7 @@ bool ReadUserInput() {
   return true;
 }
 
-bool ExitInputHandler() {
+bool InputHandler::ExitInputHandler() {
   endwin();
   return true;
 }

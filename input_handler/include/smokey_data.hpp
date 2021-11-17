@@ -10,17 +10,14 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include "../include/input_handler.hpp"
+
+#ifndef INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
+#define INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
 
 
+typedef struct SmokeyPayload {
+  int throttle;
+  int gear;
+}Payload_t;
 
-int main(void) {
-  InputHandler SmokeyInput;
-  GetNewValues get_new_values;
-
-  SmokeyInput.InitInputHandler();
-  SmokeyInput.ReadUserInput(get_new_values);
-  SmokeyInput.ExitInputHandler();
-
-  return 0;
-}
+#endif  // INPUT_HANDLER_INCLUDE_SMOKEY_DATA_HPP_
