@@ -16,8 +16,8 @@
 #include <utility>
 #include <thread>
 #include <chrono>
-#include "../../input_handler/include/smokey_data.hpp"
-#include "../include/emulator.hpp"
+#include "../input_handler/include/smokey_data.hpp"
+#include "include/emulator.hpp"
 //#include decoder.hpp   <--- skaffa input från David.
 
 
