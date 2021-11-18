@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.5.1)
-project( test_build_all )
+cmake_minimum_required (VERSION 3.5.1)
+add_definitions(-std=c++14)
+project( smokey_lab )
 
-
-project(smokey)
 
 add_subdirectory(
   emulator)
