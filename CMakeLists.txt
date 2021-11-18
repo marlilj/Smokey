@@ -1,14 +1,18 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(Smokey LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 14)
+cmake_minimum_required (VERSION 3.5.1)
+add_definitions(-std=c++14)
+project( smokey_lab )
 
-add_executable(${PROJECT_NAME}
-#${CMAKE_CURRENT_SOURCE_DIR}/src/level.cpp
-# ${CMAKE_CURRENT_SOURCE_DIR}/src/import_playingfield.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-)
 
-target_include_directories(${PROJECT_NAME}
-  PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+add_subdirectory(
+  emulator)
+
+add_subdirectory(
+  input_handler)
+
+# Require out-of-source builds
+
+file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/input_handler/CMakeLists.txt" LOC_PATH)
+file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/emulator/CMakeLists.txt" LOC_PATH)
+if(EXISTS "${LOC_PATH}")
+    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
+endif()
