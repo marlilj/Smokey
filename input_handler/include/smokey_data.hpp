@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -11,6 +10,7 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
 */
+
 #ifndef SMOKEYDATA_HPP  // NOLINT
 #define SMOKEYDATA_HPP
 
