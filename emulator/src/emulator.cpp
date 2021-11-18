@@ -40,12 +40,9 @@ bool Emulator::Emulate() {
 
   // Read CAN message
   if(ReadData()) {
-
-    std::cout << "Throttle: " << this->emulator_data_.throttle_set_value << "Gear: " << this->emulator_data_.gear_set_value << std::endl;
-
-    usleep(5);
+    std::cout << "Throttle: " << this->emulator_data_.throttle_set_value << " Gear: " << this->emulator_data_.gear_set_value << std::endl;
   }
-  // 
+  usleep(5);
   
   error_code = kSuccess;
   
