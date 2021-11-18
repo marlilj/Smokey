@@ -13,22 +13,42 @@
 */
 
 #include <iostream>
-#include <utility>
-#include <thread>
-#include <chrono>
+#include <unistd.h>
 #include "../../input_handler/include/smokey_data.hpp"
 #include "../include/emulator.hpp"
-//#include decoder.hpp   <--- skaffa input från David.
+// #include decoder.hpp   <--- skaffa input från David.
 
+Emulator::Emulator(const std::string &interface_name)
+: socket_(interface_name) {}
+  // Data init
+  // this->emulator_data.rpm = EMULATOR_IDLE_RPM;
+// }
 
+bool Emulator::ReadData() {
+  CanFrame fr;
+  if (socket_.read(fr) == STATUS_OK) {
+  this->emulator_data_.throttle_set_value = fr.data[0];
+  this->emulator_data_.gear_set_value = fr.data[1];
+  return true;
+  } else {
+  return false;
+  }
+}
 
-
-int main() {
+bool Emulator::Emulate() {
   bool error_code = kFailure;
 
-  Emulator emulator("vcan0");
+  // Read CAN message
+  if(ReadData()) {
 
-  while(emulator.Emulate());
+    std::cout << "Throttle: " << this->emulator_data_.throttle_set_value << "Gear: " << this->emulator_data_.gear_set_value << std::endl;
+
+    usleep(5);
+  }
+  // 
   
+  error_code = kSuccess;
+  
+
   return error_code;
 }
