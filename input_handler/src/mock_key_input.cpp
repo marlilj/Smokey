@@ -1,5 +1,5 @@
-/**
- * Copyright (C) - Volvo Car Corporation
+/*
+ * Copyright (C) 2021 - Volvo Car Corporation
  *
  * All Rights Reserved
  *
@@ -10,11 +10,7 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
- * This file was generated fri Nov 12 11:07:24 2021
  */
-
-//////////////////////////////////////////////////
-// Dependencies
 
 #include "../include/mock_key_input.hpp"
 #include "../../can_encoder/include/interface_from_input_handler.hpp"

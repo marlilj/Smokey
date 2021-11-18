@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
  *
  * All Rights Reserved
  *
@@ -13,20 +12,23 @@
  *
  */
 
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#include <iostream>
+#include <utility>
+#include <thread>
+#include <chrono>
+#include "../input_handler/include/smokey_data.hpp"
+#include "include/emulator.hpp"
+//#include decoder.hpp   <--- skaffa input från David.
 
-#include "smokey_data.hpp"
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
 
-class InputHandler {
- private:
- public:
-    Payload_t SmokeyInputData;
-    bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
-    bool ExitInputHandler();
-};
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
 
+int main() {
+  bool error_code = kFailure;
+
+  Emulator emulator("vcan0");
+
+  while(emulator.Emulate());
+
+  return error_code;
+}

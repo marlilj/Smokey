@@ -27,11 +27,11 @@ GetNewValues get_new_values_;
 Payload_t payload;
 
 int main() {
-  int returnValue = false;
+  int error_code = kFailure;
 
-  value_to_can_encoder_ = get_new_values_.getNewValues(payload);
-  std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl; // NOLINT
-  returnValue = true;
+  // value_to_can_encoder_ = get_new_values_.getNewValues(payload);
+  // std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl; // NOLINT
+  // error_code = kSuccess;
 
-  return returnValue;
+  return error_code;
 }

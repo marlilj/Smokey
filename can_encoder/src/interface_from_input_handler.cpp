@@ -25,9 +25,10 @@
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;
 
-  std::cout << "GetNewValue function stores throttle value "
-                << payload.throttle << " and gear "
-                << payload.gear << "\n" << std::endl;
+  // std::cout << "GetNewValue function stores throttle value "
+  //               << payload.throttle << " and gear "
+  //               << payload.gear << "\n" << std::endl;
+
   // Do stuff in the CAN Encoder.
 
   error_code = kSuccess; // NOLINT

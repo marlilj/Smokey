@@ -10,7 +10,7 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
 
 #include <iostream>
 #include <unistd.h>
@@ -43,9 +43,9 @@ bool Emulator::Emulate() {
     std::cout << "Throttle: " << this->emulator_data_.throttle_set_value << " Gear: " << this->emulator_data_.gear_set_value << std::endl;
   }
   usleep(5);
-  
+
   error_code = kSuccess;
-  
+
 
   return error_code;
 }

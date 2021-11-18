@@ -10,25 +10,20 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
+
+#ifndef CANDECODER_HPP  // NOLINT
+#define CANDECODER_HPP
 
 #include <iostream>
-#include <utility>
-#include <thread>
-#include <chrono>
+#include <string>
+
 #include "../../input_handler/include/smokey_data.hpp"
-#include "../include/emulator.hpp"
-//#include decoder.hpp   <--- skaffa input från David.
 
+class DummyCanDecoderClass {
+ private:
+ public:
+  bool DummyCanDecoderFunction();
+};
 
-
-
-int main() {
-  bool error_code = kFailure;
-
-  Emulator emulator("vcan0");
-
-  while(emulator.Emulate());
-  
-  return error_code;
-}
+#endif  // CANDECODER_HPP // NOLINT

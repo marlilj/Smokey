@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
  *
  * All Rights Reserved
  *
@@ -13,20 +12,13 @@
  *
  */
 
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#include "../include/can_decoder.hpp"
 
-#include "smokey_data.hpp"
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
+#include "../../input_handler/include/smokey_data.hpp"
 
-class InputHandler {
- private:
- public:
-    Payload_t SmokeyInputData;
-    bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
-    bool ExitInputHandler();
-};
-
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-
+bool DummyCanDecoderClass::DummyCanDecoderFunction() {
+  int error_code = kFailure;
+  // Do nothing!
+  error_code = kSuccess;
+  return error_code;
+}

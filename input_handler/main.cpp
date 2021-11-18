@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -11,8 +10,9 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
 
+// ---------------------------------------
 /*
 // MOCK CODE
 #include <string>
@@ -23,15 +23,16 @@ MockKeyInput mockKeyInput;
 Payload_t payload;
 GetNewValues _get_new_values_;
 */
+// ---------------------------------------
 
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
-#include "../include/smokey_data.hpp"
-#include "../include/input_handler.hpp"
+#include "../can_encoder/include/interface_from_input_handler.hpp"
+#include "include/smokey_data.hpp"
+#include "include/input_handler.hpp"
 
-  
+
 int main(void) {
   bool error_code = kFailure;
-  
+
   InputHandler SmokeyInput;
   GetNewValues get_new_values;
 

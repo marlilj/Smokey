@@ -1,5 +1,6 @@
-/**
- * Copyright (C) - Volvo Car Corporation
+/*
+ * Copyright (C) 2021 - Volvo Car Corporation
+
  *
  * All Rights Reserved
  *
@@ -10,11 +11,10 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
- * This file was generated fri Nov 12 11:07:24 2021
  */
 
-//////////////////////////////////////////////////
-// Dependencies
+#ifndef MOCKKEYINPUT_HPP // NOLINT
+#define MOCKKEYINPUT_HPP
 
 #include <iostream>
 
@@ -25,3 +25,5 @@ class MockKeyInput {
  public:
   static int16_t mock_key_input(Payload_t& payload); // NOLINT
 };
+
+#endif // MOCKKEYINPUT_HPP // NOLINT
