@@ -11,14 +11,19 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 # Link runTests with what we want to test and the GTest and pthread library
 add_executable(${PROJECT_NAME}
-    src/CANEncoder.cpp
-    src/InterfaceFromInputHandler.cpp
+    src/can_encoder.cpp
+    src/interface_from_input_handler.cpp
     # ../../input_handler/src/InterfaceToCANEncoder.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
   gtest
   Threads::Threads
+  ncurses
+  canio
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC ../libcanio/include/)
+target_link_directories(${PROJECT_NAME} PUBLIC ../libcanio/build/)
 
 add_test(NAME can_encoder_gtest COMMAND ${PROJECT_NAME})
