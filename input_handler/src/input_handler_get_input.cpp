@@ -37,7 +37,7 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
       // No user input.throttle
     } else if ( (48 <= ch) && (ch <= 57) ) {
         mvaddch(1, 26, ch);
-        SmokeyInputData.throttle = ch;
+        SmokeyInputData.throttle = (ch-48)*10;
         get_new_values.getNewValues(SmokeyInputData);
     }
     usleep(5);
