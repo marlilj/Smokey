@@ -63,6 +63,7 @@ void GetNewValues::printCANFrame(const CanFrame &frame) {
   insdelln(4);
   insdelln(5);
   insdelln(6);
+  insdelln(7);
 
   printw("\nSENDING MESSAGE\n");
   printw("len %d byte, id: %d \ndata: ", frame.id, frame.len);
