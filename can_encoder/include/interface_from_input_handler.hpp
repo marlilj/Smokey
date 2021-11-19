@@ -25,7 +25,7 @@
 #include <iostream>
 
 #include "../../input_handler/include/smokey_data.hpp"
-#include "canio.hpp"
+#include "../../libcanio/include/canio.hpp"
 
 
 class GetNewValues {
