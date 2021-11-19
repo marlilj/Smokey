@@ -37,6 +37,7 @@ typedef struct EmulatorData {
   size_t speed;
 }EmulatorData_T;
 
+// Simple RPM curve
 const int throttle_to_RPM_one_gear[10] = {
   EMULATOR_IDLE_RPM,
   EMULATOR_IDLE_RPM + 400,
@@ -46,7 +47,7 @@ const int throttle_to_RPM_one_gear[10] = {
   EMULATOR_IDLE_RPM + 2000,
   EMULATOR_IDLE_RPM + 2400,
   EMULATOR_IDLE_RPM + 2800,
-  EMULATOR_IDLE_RPM + 3200,
+  EMULATOR_IDLE_RPM + 3000,
   EMULATOR_MAX_RPM};
 
 class Emulator{
