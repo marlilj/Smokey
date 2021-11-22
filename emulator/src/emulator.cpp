@@ -44,7 +44,8 @@ bool Emulator::Emulate() {
 
     this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
     this->emulator_data_.rpm = throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
-
+    // Ugly print...
+    std::cout << "                                                         \r" << std::flush;
     std::cout << "Throttle: " << this->emulator_data_.throttle << " RPM: " << this->emulator_data_.rpm << "\r" << std::flush;
   }
   usleep(5);
