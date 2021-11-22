@@ -17,7 +17,7 @@
 #define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
 
 #include "smokey_data.hpp"
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
+#include "interface_from_input_handler.hpp"
 
 class InputHandler {
  private:
