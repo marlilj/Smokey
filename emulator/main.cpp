@@ -18,7 +18,7 @@
 #include <chrono>
 #include "../input_handler/include/smokey_data.hpp"
 #include "include/emulator.hpp"
-//#include decoder.hpp   <--- skaffa input från David.
+// #include decoder.hpp   <--- skaffa input från David.
 
 
 
@@ -28,7 +28,7 @@ int main() {
 
   Emulator emulator("vcan0");
 
-  while(emulator.Emulate());
-  
+  while(emulator.Emulate()); // NOLINT
+
   return error_code;
 }

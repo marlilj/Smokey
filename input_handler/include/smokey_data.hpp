@@ -10,18 +10,17 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-*/
+ */
 #ifndef SMOKEYDATA_HPP  // NOLINT
 #define SMOKEYDATA_HPP
 
-
 typedef struct SmokeyPayload {
-  int throttle;
-  int gear;
-}Payload_t;
-
+  int throttle = 0;
+  int gear = 0;
+  int start = 0;
+} Payload_t;
 
 const bool kSuccess = true;
 const bool kFailure = false;
 
-#endif // SMOKEYDATA_HPP // NOLINT
+#endif  // SMOKEYDATA_HPP // NOLINT
