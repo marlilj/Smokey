@@ -10,42 +10,68 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
+
+#include "../include/emulator.hpp"
+
+#include <unistd.h>
 
 #include <iostream>
-#include <unistd.h>
+
 #include "../../input_handler/include/smokey_data.hpp"
-#include "../include/emulator.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
 
-Emulator::Emulator(const std::string &interface_name)
+Emulator::Emulator(const std::string& interface_name)
 : socket_(interface_name) {}
-  // Data init
-  // this->emulator_data.rpm = EMULATOR_IDLE_RPM;
+// Data init
+// this->emulator_data.rpm = EMULATOR_IDLE_RPM;
 // }
 
 bool Emulator::ReadData() {
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-  this->emulator_data_.throttle_set_value = fr.data[0];
-  this->emulator_data_.gear_set_value = fr.data[1];
-  return true;
+    this->emulator_data_.throttle_set_value = fr.data[0];
+    this->emulator_data_.gear_set_value = fr.data[1];
+    this->emulator_data_.start_set_value = fr.data[2];
+    return true;
   } else {
-  return false;
+    return false;
   }
 }
 
 bool Emulator::Emulate() {
   bool error_code = kFailure;
+  int8_t set_gear = 'P';
+  bool set_start = false;
+  int set_throttle = 0;
 
   // Read CAN message
-  if(ReadData()) {
-    std::cout << "Throttle: " << this->emulator_data_.throttle_set_value << " Gear: " << this->emulator_data_.gear_set_value << std::endl;
+  if (ReadData()) {
+    set_start = this->emulator_data_.start_set_value;
+    if (this->emulator_data_.start_set_value == 115 && set_start == false) {
+      set_start = true;
+    } else if (this->emulator_data_.gear_set_value == 100 && set_start == true) {
+      set_gear = 'D';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 112 && set_start == true) {
+      set_gear = 'P';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 110 && set_start == true) {
+      set_gear = 'N';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 114 && set_start == true) {
+      set_gear = 'R';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else {
+      set_start = false;
+      set_gear = 'P';
+      set_throttle = 0;
+    }
+    std::cout << "Throttle: " << set_throttle << " Gear: " << set_gear << " Start: " << set_start << std::endl;
   }
   usleep(5);
-  
+
   error_code = kSuccess;
-  
 
   return error_code;
 }

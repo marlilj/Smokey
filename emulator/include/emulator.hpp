@@ -32,6 +32,7 @@ typedef struct EmulatorData {
   size_t throttle_set_value;
   size_t throttle;
   size_t gear_set_value;
+  size_t start_set_value;
   size_t gear;
   size_t rpm;
   size_t speed;
@@ -49,4 +50,4 @@ class Emulator{
 
 
 
-#endif  // EMULATOR_HPP NOLINT 
+#endif  // EMULATOR_HPP NOLINT

@@ -31,7 +31,7 @@
 class GetNewValues {
  private:
  public:
-  int16_t getNewValues(Payload_t &payload);
+  int16_t getNewValues(Payload_t &payload); // NOLINT
   CanFrame convertCANMessageFromStruct(const SmokeyPayload &input_data);
   void printCANFrame(const CanFrame &frame);
   bool sendMessageOnCAN(const CanFrame &frame_to_send);
