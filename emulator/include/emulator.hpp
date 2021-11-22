@@ -16,6 +16,7 @@
 #define EMULATOR_HPP
 
 #include <iostream>
+#include <string>
 #include "../../libcanio/include/canio.hpp"
 
 #define EMULATOR_IDLE_RPM 800
@@ -27,11 +28,12 @@
 #define EMULATOR_GEAR_RATIO_4 10  // 1:1
 #define EMULATOR_GEAR_RATIO_5 5   // 0.5:1
 
+
 typedef struct EmulatorData {
-  size_t throttle_set_value;
+  size_t throttle_set_value = 0;
   size_t throttle;
-  size_t gear_set_value;
-  size_t start_set_value;
+  size_t gear_set_value = 112;
+  size_t start_set_value = 0;
   size_t gear;
   size_t rpm;
   size_t speed;
