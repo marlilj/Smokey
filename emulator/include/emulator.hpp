@@ -27,7 +27,6 @@
 #define EMULATOR_GEAR_RATIO_4 10  // 1:1
 #define EMULATOR_GEAR_RATIO_5 5   // 0.5:1
 
-
 typedef struct EmulatorData {
   size_t throttle_set_value;
   size_t throttle;
@@ -43,7 +42,7 @@ class Emulator{
   EmulatorData_T emulator_data_;
   SocketCan socket_;
  public:
-  Emulator(const std::string &);
+  Emulator(const std::string &); // NOLINT
   bool Emulate();
   bool ReadData();
 };
