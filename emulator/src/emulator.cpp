@@ -50,63 +50,43 @@ bool Emulator::Emulate() {
 
   // Read CAN message
   if (ReadData()) {
+    set_throttle = this->emulator_data_.throttle_set_value;
     set_start = this->emulator_data_.start_set_value;
+    set_gear = this->emulator_data_.gear_set_value;
     if (this->emulator_data_.start_set_value == 115
-        && this->emulator_data_.gear_set_value == 112 && set_start == false) {
+        && set_gear == 112 && set_start == false) {
       set_start = true;
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-      smokeyInputData.SmokeyInputData.gear = 112-32;
-      set_gear = smokeyInputData.SmokeyInputData.gear;
-    } else if (this->emulator_data_.gear_set_value == 100
-              && set_start == true) {
-      set_gear = 'D';
+      set_throttle = 0;
+      set_gear = 112-32;  // P
+    } else if (set_gear == 100 && set_start == true) {
+      set_gear = 100-32;  // D
       set_throttle = this->emulator_data_.throttle_set_value;
-    } else if (this->emulator_data_.gear_set_value == 100
-              && set_start != true) {
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-      smokeyInputData.SmokeyInputData.gear = 112-32;
-      set_gear = smokeyInputData.SmokeyInputData.gear;
-    } else if (this->emulator_data_.gear_set_value == 112
-              && set_start == true) {
-      set_gear = 'P';
+    } else if (set_gear == 100 && set_start != true) {
+      set_throttle = 0;
+      set_gear = 112-32;  // P
+    } else if (set_gear == 112 && set_start == true) {
       set_throttle = this->emulator_data_.throttle_set_value;
-    } else if (this->emulator_data_.gear_set_value == 112
-              && set_start != true) {
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-      smokeyInputData.SmokeyInputData.gear = 112-32;
-      set_gear = smokeyInputData.SmokeyInputData.gear;
-    } else if (this->emulator_data_.gear_set_value == 110
-              && set_start == true) {
-      set_gear = 'N';
+      set_gear = 112-32;  // P
+    } else if (set_gear == 112 && set_start != true) {
+      set_throttle = 0;
+      set_gear = 112-32;  // P
+    } else if (set_gear == 110 && set_start == true) {
+      set_gear = 110-32;  // N
       set_throttle = this->emulator_data_.throttle_set_value;
-    } else if (this->emulator_data_.gear_set_value == 110
-              && set_start != true) {
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-      smokeyInputData.SmokeyInputData.gear = 112-32;
-      set_gear = smokeyInputData.SmokeyInputData.gear;
-    } else if (this->emulator_data_.gear_set_value == 114
-              && set_start == true) {
-      set_gear = 'R';
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-    } else if (this->emulator_data_.gear_set_value == 114
-              && set_start != true) {
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
-      smokeyInputData.SmokeyInputData.gear = 112-32;
-      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else if (set_gear == 110 && set_start != true) {
+      set_gear = 112-32;  // P
+      set_throttle = 0;
+    } else if (set_gear == 114 && set_start == true) {
+      set_gear = 114-32;  // R
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (set_gear == 114 && set_start != true) {
+      set_gear = 112-32;  // P
+      set_throttle = 0;
     } else {
       set_start = this->emulator_data_.start_set_value;
-      set_gear = 'P';
-      smokeyInputData.SmokeyInputData.throttle = 0;
-      set_throttle = smokeyInputData.SmokeyInputData.throttle;
     }
     std::cout << "Throttle: " << set_throttle << " Gear: "
     << set_gear << " Start: " << set_start << std::endl;
-      // smokeyInputData.SmokeyInputData.throttle = 0;
       // smokeyInputData.SmokeyInputData.gear = 112;
   }
   usleep(5);
