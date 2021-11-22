@@ -17,8 +17,7 @@
 // Dependencies
 #include <string>
 
-#include "../include/interface_from_input_handler.hpp"
-#include "../../input_handler/include/smokey_data.hpp"
+#include "include/can_encoder.hpp"
 
 int16_t value_to_can_encoder_;
 

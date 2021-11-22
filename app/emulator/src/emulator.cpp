@@ -12,15 +12,14 @@
  *
  */
 
-#include "../include/emulator.hpp"
+#include "emulator.hpp"
 
 #include <unistd.h>
 
 #include <iostream>
 
-#include "../../input_handler/include/smokey_data.hpp"
-#include "../../input_handler/include/input_handler.hpp"
-// #include decoder.hpp   <--- skaffa input från David.
+#include "smokey_data.hpp"
+#include "input_handler.hpp"
 
 InputHandler smokeyInputData;
 
