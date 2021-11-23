@@ -10,48 +10,116 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
+
+#include "../include/emulator.hpp"
+
+#include <unistd.h>
 
 #include <iostream>
-#include <unistd.h>
+
 #include "../../input_handler/include/smokey_data.hpp"
-#include "../include/emulator.hpp"
+#include "../../input_handler/include/input_handler.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
 
-Emulator::Emulator(const std::string &interface_name)
+InputHandler smokeyInputData;
+
+Emulator::Emulator(const std::string& interface_name)
 : socket_(interface_name) {}
-  // Data init
-  // this->emulator_data.rpm = EMULATOR_IDLE_RPM;
+// Data init
+// this->emulator_data.rpm = EMULATOR_IDLE_RPM;
 // }
 
 bool Emulator::ReadData() {
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-  this->emulator_data_.throttle_set_value = fr.data[0];
-  this->emulator_data_.gear_set_value = fr.data[1];
-  return true;
+    this->emulator_data_.throttle_set_value = fr.data[0];
+    this->emulator_data_.gear_set_value = fr.data[1];
+    this->emulator_data_.start_set_value = fr.data[2];
+    return true;
   } else {
-  return false;
+    return false;
   }
 }
 
 bool Emulator::Emulate() {
   bool error_code = kFailure;
+  int8_t set_gear = 'P';
+  bool set_start = false;
+  int set_throttle = 0;
 
   // Read CAN message
   if(ReadData()) {
     // std::cout << "Throttle set value: " << this->emulator_data_.throttle_set_value << " Gear set value: " << this->emulator_data_.gear_set_value << std::endl;
-
+    set_start = this->emulator_data_.start_set_value;
+    
     this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
     this->emulator_data_.rpm = throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
     // Ugly print...
-    std::cout << "                                                         \r" << std::flush;
-    std::cout << "Throttle: " << this->emulator_data_.throttle << " RPM: " << this->emulator_data_.rpm << "\r" << std::flush;
+    // std::cout << "                                                         \r" << std::flush;
+    // std::cout << "Throttle: " << this->emulator_data_.throttle << " RPM: " << this->emulator_data_.rpm << "\r" << std::flush;
+    
+    if (this->emulator_data_.start_set_value == 115
+        && this->emulator_data_.gear_set_value == 112 && set_start == false) {
+      set_start = true;
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+      smokeyInputData.SmokeyInputData.gear = 112-32;
+      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else if (this->emulator_data_.gear_set_value == 100
+              && set_start == true) {
+      set_gear = 'D';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 100
+              && set_start != true) {
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+      smokeyInputData.SmokeyInputData.gear = 112-32;
+      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else if (this->emulator_data_.gear_set_value == 112
+              && set_start == true) {
+      set_gear = 'P';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 112
+              && set_start != true) {
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+      smokeyInputData.SmokeyInputData.gear = 112-32;
+      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else if (this->emulator_data_.gear_set_value == 110
+              && set_start == true) {
+      set_gear = 'N';
+      set_throttle = this->emulator_data_.throttle_set_value;
+    } else if (this->emulator_data_.gear_set_value == 110
+              && set_start != true) {
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+      smokeyInputData.SmokeyInputData.gear = 112-32;
+      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else if (this->emulator_data_.gear_set_value == 114
+              && set_start == true) {
+      set_gear = 'R';
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+    } else if (this->emulator_data_.gear_set_value == 114
+              && set_start != true) {
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+      smokeyInputData.SmokeyInputData.gear = 112-32;
+      set_gear = smokeyInputData.SmokeyInputData.gear;
+    } else {
+      set_start = this->emulator_data_.start_set_value;
+      set_gear = 'P';
+      smokeyInputData.SmokeyInputData.throttle = 0;
+      set_throttle = smokeyInputData.SmokeyInputData.throttle;
+    }
+    std::cout << "Throttle: " << set_throttle << " Gear: "
+    << set_gear << " Start: " << set_start << std::endl;
+      // smokeyInputData.SmokeyInputData.throttle = 0;
+      // smokeyInputData.SmokeyInputData.gear = 112;
   }
   usleep(5);
-  
+
   error_code = kSuccess;
-  
 
   return error_code;
 }

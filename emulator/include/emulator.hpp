@@ -16,6 +16,7 @@
 #define EMULATOR_HPP
 
 #include <iostream>
+#include <string>
 #include "../../libcanio/include/canio.hpp"
 
 #define EMULATOR_IDLE_RPM 800
@@ -29,9 +30,10 @@
 
 
 typedef struct EmulatorData {
-  size_t throttle_set_value;
+  size_t throttle_set_value = 0;
   size_t throttle;
-  size_t gear_set_value;
+  size_t gear_set_value = 112;
+  size_t start_set_value = 0;
   size_t gear;
   size_t rpm;
   size_t speed;
@@ -54,11 +56,11 @@ class Emulator{
   EmulatorData_T emulator_data_;
   SocketCan socket_;
  public:
-  Emulator(const std::string &);
+  Emulator(const std::string &); // NOLINT
   bool Emulate();
   bool ReadData();
 };
 
 
 
-#endif  // EMULATOR_HPP NOLINT 
+#endif  // EMULATOR_HPP NOLINT

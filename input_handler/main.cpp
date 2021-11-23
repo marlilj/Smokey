@@ -28,17 +28,16 @@ GetNewValues _get_new_values_;
 #include "include/smokey_data.hpp"
 #include "include/input_handler.hpp"
 
-  
+
 int main(void) {
   bool error_code = kFailure;
-  
+
   InputHandler SmokeyInput;
   GetNewValues get_new_values;
 
   SmokeyInput.InitInputHandler();
   SmokeyInput.ReadUserInput(get_new_values);
-  SmokeyInput.ExitInputHandler();
-  error_code = kSuccess;
+  error_code = SmokeyInput.ExitInputHandler();
 
   return error_code;
 

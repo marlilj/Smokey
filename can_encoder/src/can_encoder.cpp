@@ -32,6 +32,7 @@ int main() {
   Payload_t test_input;
   test_input.throttle = 9;
   test_input.gear = 6;
+  test_input.start = 0;
   value_to_can_encoder_ = get_new_values_.getNewValues(test_input);
   // std::cout << "1. In main calling GetNewValue: " << value_to_can_encoder_ << "\n" << std::endl; // NOLINT
   returnValue = true;

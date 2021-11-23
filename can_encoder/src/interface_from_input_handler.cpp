@@ -36,9 +36,10 @@ int16_t GetNewValues::getNewValues(Payload_t &payload) {
 CanFrame GetNewValues::convertCANMessageFromStruct(const Payload_t &input_data) {
   CanFrame input_can_frame;
   input_can_frame.id = 1;
-  input_can_frame.len = 2;
+  input_can_frame.len = 3;
   input_can_frame.data[0] = input_data.throttle;
   input_can_frame.data[1] = input_data.gear;
+  input_can_frame.data[2] = input_data.start;
   return input_can_frame;
 }
 
