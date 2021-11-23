@@ -16,7 +16,7 @@
 //////////////////////////////////////////////////
 // Dependencies
 
-#include "../include/interface_from_input_handler.hpp"
+#include "include/interface_from_input_handler.hpp"
 
 #include <iostream> // NOLINT
 #include <string> // NOLINT

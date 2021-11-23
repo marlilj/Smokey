@@ -4,10 +4,14 @@ project( smokey_lab )
 
 
 add_subdirectory(
-  emulator)
+  app/emulator)
 
 add_subdirectory(
-  input_handler)
+  app/input_handler)
+
+add_subdirectory(lib/libcanio)
+
+add_subdirectory(lib/libcanencoder)
 
 # Require out-of-source builds
 

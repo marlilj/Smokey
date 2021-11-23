@@ -1,4 +1,8 @@
-#include "../../libcanio/include/canio.hpp"
+/*
+ * Copyright (C) 2021 - Volvo Car Corporation
+ */
+
+#include "canio.hpp"
 
 int main() {
   SocketCan socket_can("vcan0");

@@ -24,7 +24,7 @@ Payload_t payload;
 GetNewValues _get_new_values_;
 */
 
-#include "../can_encoder/include/interface_from_input_handler.hpp"
+#include "interface_from_input_handler.hpp"
 #include "include/smokey_data.hpp"
 #include "include/input_handler.hpp"
 
