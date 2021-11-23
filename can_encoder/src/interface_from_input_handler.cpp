@@ -27,7 +27,7 @@ int16_t GetNewValues::getNewValues(Payload_t &payload) {
   CanFrame input_can_frame;
 
   input_can_frame = GetNewValues::convertCANMessageFromStruct(payload);
-  GetNewValues::printCANFrame(input_can_frame);
+  // GetNewValues::printCANFrame(input_can_frame);
   bool message_sent = GetNewValues::sendMessageOnCAN(input_can_frame);
   error_code = kSuccess; // NOLINT
   return error_code;

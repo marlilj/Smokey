@@ -49,8 +49,16 @@ bool Emulator::Emulate() {
   int set_throttle = 0;
 
   // Read CAN message
-  if (ReadData()) {
+  if(ReadData()) {
+    // std::cout << "Throttle set value: " << this->emulator_data_.throttle_set_value << " Gear set value: " << this->emulator_data_.gear_set_value << std::endl;
     set_start = this->emulator_data_.start_set_value;
+    
+    this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
+    this->emulator_data_.rpm = throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
+    // Ugly print...
+    // std::cout << "                                                         \r" << std::flush;
+    // std::cout << "Throttle: " << this->emulator_data_.throttle << " RPM: " << this->emulator_data_.rpm << "\r" << std::flush;
+    
     if (this->emulator_data_.start_set_value == 115
         && this->emulator_data_.gear_set_value == 112 && set_start == false) {
       set_start = true;
