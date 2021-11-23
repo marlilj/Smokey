@@ -28,9 +28,11 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_directories(${PROJECT_NAME}
   PUBLIC ../../lib/libcanio/build/
+  PUBLIC ../../lib/libcanencoder/build/
 )
 
 target_link_libraries(${PROJECT_NAME}
+  canencoder
   canio
   gtest
   Threads::Threads
