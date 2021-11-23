@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     main.cpp
     # src/mock_key_input.cpp
     src/emulator.cpp
+    src/engine_pindle_states.cpp
     ../../can_encoder/src/interface_from_input_handler.cpp
 )
 

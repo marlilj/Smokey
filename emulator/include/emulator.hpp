@@ -27,18 +27,39 @@
 #define EMULATOR_GEAR_RATIO_3 15  // 1.5:1
 #define EMULATOR_GEAR_RATIO_4 10  // 1:1
 #define EMULATOR_GEAR_RATIO_5 5   // 0.5:1
+#define PINDLE_PARKING 112  // Gear parking, dec 112
+#define PINDLE_NEUTRAL 110  // Gear parking, dec 112
+#define PINDLE_DRIVE 100  // Gear parking, dec 112
+#define PINDLE_REVERSE 114  // Gear parking, dec 112
 
 
 typedef struct EmulatorData {
   size_t throttle_set_value = 0;
   size_t throttle;
-  size_t gear_set_value = 112;
-  size_t start_set_value = 0;
+  size_t gear_set_value = PINDLE_PARKING;
+  size_t start_set_value = false;
   size_t gear;
   size_t rpm;
   size_t speed;
+  bool activate_engine = false;
+  bool gear_neutral = false;
+  bool gear_drive = false;
+  bool gear_reverse = false;
+  bool parking_flag = false;
 }EmulatorData_T;
 
+// Simple RPM curve
+const int throttle_to_RPM_one_gear[10] = {
+  EMULATOR_IDLE_RPM,
+  EMULATOR_IDLE_RPM + 400,
+  EMULATOR_IDLE_RPM + 800,
+  EMULATOR_IDLE_RPM + 1200,
+  EMULATOR_IDLE_RPM + 1600,
+  EMULATOR_IDLE_RPM + 2000,
+  EMULATOR_IDLE_RPM + 2400,
+  EMULATOR_IDLE_RPM + 2800,
+  EMULATOR_IDLE_RPM + 3000,
+  EMULATOR_MAX_RPM};
 
 class Emulator{
   EmulatorData_T emulator_data_;

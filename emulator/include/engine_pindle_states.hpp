@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -9,26 +10,22 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
- *
-*/
+ */
 
-#include <iostream>
-#include <utility>
-#include <thread>
-#include <chrono>
-#include "../input_handler/include/smokey_data.hpp"
-#include "include/emulator.hpp"
-// #include decoder.hpp   <--- skaffa input från David.
+#ifndef ENGINEPINDLESTATES_HPP  // NOLINT
+#define ENGINEPINDLESTATES_HPP
 
 
+#include "emulator.hpp"
+
+class PindleModes {
+ public:
+  static int16_t OffMode (EmulatorData_T &emulator_data_);
+  static int16_t PindleParking(EmulatorData_T &emulator_data_);
+  static int16_t PindleNeutral(EmulatorData_T &emulator_data_);
+  static int16_t PindleDrive(EmulatorData_T &emulator_data_);
+  static int16_t PindleReverse(EmulatorData_T &emulator_data_);
+};
 
 
-int main() {
-  int error_code = kFailure;
-
-  Emulator emulator("vcan0");
-
-  while(emulator.Emulate()); // NOLINT
-
-  return error_code;
-}
+#endif // ENGINEPINDLESTATES_HPP
