@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "emulator.hpp"
+#include "engine_pindle_states.hpp"
 
 Emulator::Emulator(const std::string& interface_name)
 : socket_(interface_name) {}

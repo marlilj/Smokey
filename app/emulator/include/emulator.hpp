@@ -22,7 +22,6 @@
 #include "interface_from_input_handler.hpp"
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
-#include "../include/engine_pindle_states.hpp"
 
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 4000
@@ -50,6 +49,7 @@ typedef struct EmulatorData {
   bool gear_drive = false;
   bool gear_reverse = false;
   bool parking_flag = false;
+} EmulatorData_t;
 
 
 // Simple RPM curve
@@ -66,7 +66,7 @@ const int throttle_to_RPM_one_gear[10] = {
   EMULATOR_MAX_RPM};
 
 class Emulator{
-  EmulatorData_T emulator_data_;
+  EmulatorData_t emulator_data_;
   SocketCan socket_;
  public:
   Emulator(const std::string &); // NOLINT

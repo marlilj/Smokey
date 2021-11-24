@@ -20,11 +20,11 @@
 
 class PindleModes {
  public:
-  static int16_t OffMode(EmulatorData_T &emulator_data_);  // NOLINT
-  static int16_t PindleParking(EmulatorData_T &emulator_data_);  // NOLINT
-  static int16_t PindleNeutral(EmulatorData_T &emulator_data_);  // NOLINT
-  static int16_t PindleDrive(EmulatorData_T &emulator_data_);  // NOLINT
-  static int16_t PindleReverse(EmulatorData_T &emulator_data_);  // NOLINT
+  static int16_t OffMode(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleParking(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleNeutral(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleDrive(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleReverse(EmulatorData_t &emulator_data_);  // NOLINT
 };
 
 

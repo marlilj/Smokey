@@ -14,10 +14,10 @@
 
 #include "../include/engine_pindle_states.hpp"
 
-#include "../../input_handler/include/smokey_data.hpp"
-#include "../include/emulator.hpp"
+#include "smokey_data.hpp"
 
-int16_t PindleModes::OffMode(EmulatorData_T &emulator_data_) {
+
+int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = false;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;
@@ -26,7 +26,7 @@ int16_t PindleModes::OffMode(EmulatorData_T &emulator_data_) {
   return 0;
 }
 
-int16_t PindleModes::PindleParking(EmulatorData_T &emulator_data_) {
+int16_t PindleModes::PindleParking(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;
@@ -36,7 +36,7 @@ int16_t PindleModes::PindleParking(EmulatorData_T &emulator_data_) {
   return 0;
 }
 
-int16_t PindleModes::PindleNeutral(EmulatorData_T &emulator_data_) {
+int16_t PindleModes::PindleNeutral(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = true;
   emulator_data_.gear_drive = false;
@@ -44,7 +44,7 @@ int16_t PindleModes::PindleNeutral(EmulatorData_T &emulator_data_) {
   emulator_data_.parking_flag = false;
   return 0;
 }
-int16_t PindleModes::PindleDrive(EmulatorData_T &emulator_data_) {
+int16_t PindleModes::PindleDrive(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = true;
@@ -52,7 +52,7 @@ int16_t PindleModes::PindleDrive(EmulatorData_T &emulator_data_) {
   emulator_data_.parking_flag = false;
   return 0;
 }
-int16_t PindleModes::PindleReverse(EmulatorData_T &emulator_data_) {
+int16_t PindleModes::PindleReverse(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;
