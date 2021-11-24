@@ -1,0 +1,3 @@
+add_subdirectory(avic)
+add_subdirectory(emulator)
+add_subdirectory(input_handler)

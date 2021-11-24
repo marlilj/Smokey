@@ -16,6 +16,8 @@
 
 #include <iostream>
 
+const unsigned k_FrameIdUserInput = 1;
+const unsigned k_FrameIdEmulator = 2;
 typedef struct SmokeyPayload {
   int throttle = 0;
   int gear = 0;

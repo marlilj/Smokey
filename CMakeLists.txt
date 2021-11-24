@@ -2,16 +2,10 @@ cmake_minimum_required (VERSION 3.5.1)
 add_definitions(-std=c++14)
 project( smokey_lab )
 
+add_subdirectory(app)
 
-add_subdirectory(
-  app/emulator)
+add_subdirectory(lib)
 
-add_subdirectory(
-  app/input_handler)
-
-add_subdirectory(lib/libcanio)
-
-add_subdirectory(lib/libcanencoder)
 
 # Require out-of-source builds
 

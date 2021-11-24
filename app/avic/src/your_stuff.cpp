@@ -2,6 +2,7 @@
 #include <thread>
 #include <iostream>
 #include "your_stuff.h"
+#include "smokey_data.hpp"
 //#include "canio/can_common.h"
 
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
@@ -9,12 +10,16 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
     this->InstrumentCluster.setRPM(*rpm);
     std::cout << "Recieved frame with " << *rpm << std::endl; */
 
-    if (_frame->can_id == 1) { // frame from input handler
-        char pindle = _frame->data[1] - 32;
-        std::cout << "Gear pindle: " << pindle << std::endl;
-        this->InstrumentCluster.setGearPindle_char(pindle);
-    } else if (_frame->can_id == 2) { // frame from emulator
-
+    if (_frame->can_id == k_FrameIdUserInput) {
+       const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
+       this->InstrumentCluster.ignite(ui->start);
+       this->InstrumentCluster.setGearPindle_int(ui->gear);
+        
+    } else if (_frame->can_id == k_FrameIdEmulator) { 
+        const EmulatorOutput_t *em = reinterpret_cast<const EmulatorOutput_t*>(_frame->data);
+        this->InstrumentCluster.setRPM(em->rpm);
+        this->InstrumentCluster.setSpeed(em->speed);
+        this->InstrumentCluster.setGear(em->gear);
     }
 
     /* const unsigned short rpm = _frame->data[0] * 100;
