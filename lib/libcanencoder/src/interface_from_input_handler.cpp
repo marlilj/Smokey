@@ -18,9 +18,6 @@
 
 #include "include/interface_from_input_handler.hpp"
 
-#include <iostream> // NOLINT
-#include <string> // NOLINT
-
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;
 
@@ -33,13 +30,24 @@ int16_t GetNewValues::getNewValues(Payload_t &payload) {
   return error_code;
 }
 
-CanFrame GetNewValues::convertCANMessageFromStruct(const Payload_t &input_data) {
+CanFrame GetNewValues::convertCANMessageFromStruct(
+                                          const Payload_t &input_data) {
   CanFrame input_can_frame;
   input_can_frame.id = 1;
   input_can_frame.len = 3;
   input_can_frame.data[0] = input_data.throttle;
   input_can_frame.data[1] = input_data.gear;
   input_can_frame.data[2] = input_data.start;
+  return input_can_frame;
+}
+
+CanFrame GetNewValues::convertCANMessageFromStruct(
+                                          const EmulatorOutput_t &input_data) {
+  CanFrame input_can_frame;
+  input_can_frame.id = 2;
+  input_can_frame.len = 4;
+  // Copying in little endian format
+  memcpy(input_can_frame.data, &input_data, sizeof(input_data));
   return input_can_frame;
 }
 

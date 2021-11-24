@@ -25,7 +25,7 @@ GetNewValues _get_new_values_;
 */
 
 #include "interface_from_input_handler.hpp"
-#include "include/smokey_data.hpp"
+#include "smokey_data.hpp"
 #include "include/input_handler.hpp"
 
 

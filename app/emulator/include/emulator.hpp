@@ -15,9 +15,13 @@
 #ifndef EMULATOR_HPP // NOLINT
 #define EMULATOR_HPP
 
+#include <unistd.h>
 #include <iostream>
 #include <string>
-#include "../../libcanio/include/canio.hpp"
+#include "canio.hpp"
+#include "interface_from_input_handler.hpp"
+#include "smokey_data.hpp"
+#include "input_handler.hpp"
 
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 4000
@@ -59,6 +63,7 @@ class Emulator{
   Emulator(const std::string &); // NOLINT
   bool Emulate();
   bool ReadData();
+  bool sendCAN();
 };
 
 
