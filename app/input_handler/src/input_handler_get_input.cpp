@@ -11,9 +11,9 @@
  * permission is obtained from Volvo Car Corporation.
  */
 #include "../include/input_handler.hpp"
-#include <string>
 #include <ncurses.h>
 #include <unistd.h>
+#include <string>
 #include <iostream>
 
 

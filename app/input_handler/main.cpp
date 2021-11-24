@@ -16,15 +16,16 @@
 /*
 // MOCK CODE
 #include <string>
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
+#include "../../lib/libcanencoder/include/interface_from_input_handler.hpp"
 #include "../include/mock_key_input.hpp"
 #include "../include/smokey_data.hpp"
+
 MockKeyInput mockKeyInput;
 Payload_t payload;
 GetNewValues _get_new_values_;
 */
 
-#include "../can_encoder/include/interface_from_input_handler.hpp"
+#include "../../lib/libcanencoder/include/interface_from_input_handler.hpp"
 #include "include/smokey_data.hpp"
 #include "include/input_handler.hpp"
 

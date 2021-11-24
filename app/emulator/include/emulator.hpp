@@ -17,7 +17,7 @@
 
 #include <iostream>
 #include <string>
-#include "../../libcanio/include/canio.hpp"
+#include "../../../lib/libcanio/include/canio.hpp"
 
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 4000

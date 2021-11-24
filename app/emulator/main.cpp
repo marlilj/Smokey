@@ -24,7 +24,7 @@
 
 
 int main() {
-  int error_code = kFailure;
+  bool error_code = kFailure;
 
   Emulator emulator("vcan0");
 

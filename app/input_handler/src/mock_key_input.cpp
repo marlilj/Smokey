@@ -17,7 +17,7 @@
 // Dependencies
 
 #include "../include/mock_key_input.hpp"
-#include "../../can_encoder/include/interface_from_input_handler.hpp"
+#include "../../../lib/libcanencoder/include/interface_from_input_handler.hpp"
 
 #include <thread>  // NOLINT
 
