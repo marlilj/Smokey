@@ -14,11 +14,19 @@
 #ifndef SMOKEYDATA_HPP  // NOLINT
 #define SMOKEYDATA_HPP
 
+#include <iostream>
+
 typedef struct SmokeyPayload {
   int throttle = 0;
   int gear = 0;
   int start = 0;
 } Payload_t;
+
+typedef struct __attribute__ ((__packed__)) EmulatorOutput {
+  uint8_t speed;
+  uint8_t gear;
+  uint16_t rpm;
+} EmulatorOutput_t;
 
 const bool kSuccess = true;
 const bool kFailure = false;

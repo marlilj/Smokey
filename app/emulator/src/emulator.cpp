@@ -14,13 +14,6 @@
 
 #include "emulator.hpp"
 
-#include <unistd.h>
-
-#include <iostream>
-
-#include "smokey_data.hpp"
-#include "input_handler.hpp"
-
 InputHandler smokeyInputData;
 
 Emulator::Emulator(const std::string& interface_name)
@@ -111,14 +104,27 @@ bool Emulator::Emulate() {
       smokeyInputData.SmokeyInputData.throttle = 0;
       set_throttle = smokeyInputData.SmokeyInputData.throttle;
     }
-    std::cout << "Throttle: " << set_throttle << " Gear: "
-    << set_gear << " Start: " << set_start << std::endl;
-      // smokeyInputData.SmokeyInputData.throttle = 0;
-      // smokeyInputData.SmokeyInputData.gear = 112;
+    this->sendCAN();
+    // std::cout << "Throttle: " << set_throttle << " Gear: "
+    // << set_gear << " Start: " << set_start << std::endl;
   }
   usleep(5);
 
   error_code = kSuccess;
 
   return error_code;
+}
+
+bool Emulator::sendCAN() {
+  // Construct the data to be sent
+  EmulatorOutput_t data_to_send;
+  data_to_send.speed = static_cast<uint8_t>(this->emulator_data_.speed);
+  data_to_send.gear = static_cast<uint8_t>(this->emulator_data_.gear);
+  data_to_send.rpm = static_cast<uint16_t>(this->emulator_data_.rpm);
+
+  // Construct obejct from libcanencoder
+  GetNewValues gnv;
+  CanFrame frame_to_send = gnv.convertCANMessageFromStruct(data_to_send);
+  bool return_value = gnv.sendMessageOnCAN(frame_to_send);
+  return return_value;
 }
