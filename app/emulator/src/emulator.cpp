@@ -12,16 +12,10 @@
  *
  */
 
-#include "../include/emulator.hpp"
-#include "../include/engine_pindle_states.hpp"
-
 #include <unistd.h>
-
 #include <iostream>
 
-#include "../../input_handler/include/smokey_data.hpp"
-#include "../../input_handler/include/input_handler.hpp"
-// #include decoder.hpp   <--- skaffa input från David.
+#include "emulator.hpp"
 
 Emulator::Emulator(const std::string& interface_name)
 : socket_(interface_name) {}
@@ -95,10 +89,26 @@ bool Emulator::Emulate() {
   }
     std::cout << " print_set_gear: " << print_set_gear << "\n"  // NOLINT
     << " set_start: " << set_start << "\n"<< std::endl;  // NOLINT
+
+    this->sendCAN();
   }
   usleep(5);
 
   error_code = kSuccess;
 
   return error_code;
+ }
+
+bool Emulator::sendCAN() {
+  // Construct the data to be sent
+  EmulatorOutput_t data_to_send;
+  data_to_send.speed = static_cast<uint8_t>(this->emulator_data_.speed);
+  data_to_send.gear = static_cast<uint8_t>(this->emulator_data_.gear);
+  data_to_send.rpm = static_cast<uint16_t>(this->emulator_data_.rpm);
+
+  // Construct obejct from libcanencoder
+  GetNewValues gnv;
+  CanFrame frame_to_send = gnv.convertCANMessageFromStruct(data_to_send);
+  bool return_value = gnv.sendMessageOnCAN(frame_to_send);
+  return return_value;
 }

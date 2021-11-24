@@ -20,23 +20,25 @@
 #define INTERFACEFROMINPUTHANDLER_HPP
 
 #include <ncurses.h>
+#include <string.h>
 
 #include <string>
 #include <iostream>
 
-#include "../../input_handler/include/smokey_data.hpp"
-#include "../../libcanio/include/canio.hpp"
+#include "smokey_data.hpp"
+#include "canio.hpp"
 
 
 class GetNewValues {
  private:
  public:
   int16_t getNewValues(Payload_t &payload); // NOLINT
-  CanFrame convertCANMessageFromStruct(const SmokeyPayload &input_data);
+
+  CanFrame convertCANMessageFromStruct(const Payload_t &input_data);
+  CanFrame convertCANMessageFromStruct(const EmulatorOutput_t &input_data);
+  
   void printCANFrame(const CanFrame &frame);
   bool sendMessageOnCAN(const CanFrame &frame_to_send);
 };
-
-
 
 #endif  // INTERFACEFROMINPUTHANDLER_HPP // NOLINT

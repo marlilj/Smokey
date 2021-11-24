@@ -1,7 +1,6 @@
 
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
  *
  * All Rights Reserved
  *
@@ -11,21 +10,25 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-
  */
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#ifndef SMOKEYDATA_HPP  // NOLINT
+#define SMOKEYDATA_HPP
 
-#include "smokey_data.hpp"
-#include "interface_from_input_handler.hpp"
+#include <iostream>
 
-class InputHandler {
- private:
- public:
-    Payload_t SmokeyInputData;
-    bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
-    bool ExitInputHandler();
-};
+typedef struct SmokeyPayload {
+  int throttle = 0;
+  int gear = 0;
+  int start = 0;
+} Payload_t;
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+typedef struct __attribute__ ((__packed__)) EmulatorOutput {
+  uint8_t speed;
+  uint8_t gear;
+  uint16_t rpm;
+} EmulatorOutput_t;
+
+const bool kSuccess = true;
+const bool kFailure = false;
+
+#endif  // SMOKEYDATA_HPP // NOLINT

@@ -15,13 +15,17 @@
 #ifndef EMULATOR_HPP // NOLINT
 #define EMULATOR_HPP
 
+#include <unistd.h>
 #include <iostream>
 #include <string>
-#include "../../../lib/libcanio/include/canio.hpp"
+#include "canio.hpp"
+#include "interface_from_input_handler.hpp"
+#include "smokey_data.hpp"
+#include "input_handler.hpp"
+#include "../include/engine_pindle_states.hpp"
 
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 4000
-
 #define EMULATOR_GEAR_RATIO_1 30  // 3:1
 #define EMULATOR_GEAR_RATIO_2 20  // 2:1
 #define EMULATOR_GEAR_RATIO_3 15  // 1.5:1
@@ -46,7 +50,7 @@ typedef struct EmulatorData {
   bool gear_drive = false;
   bool gear_reverse = false;
   bool parking_flag = false;
-}EmulatorData_T;
+
 
 // Simple RPM curve
 const int throttle_to_RPM_one_gear[10] = {
@@ -68,8 +72,7 @@ class Emulator{
   Emulator(const std::string &); // NOLINT
   bool Emulate();
   bool ReadData();
+  bool sendCAN();
 };
 
-
-
-#endif  // EMULATOR_HPP NOLINT
+#endif  // EMULATOR_HPP  // NOLINT

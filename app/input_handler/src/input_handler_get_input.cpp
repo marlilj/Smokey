@@ -14,8 +14,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include <string>
-#include <iostream>
 
+#include <iostream>
 
 bool InputHandler::InitInputHandler() {
   initscr();
