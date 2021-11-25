@@ -56,7 +56,7 @@
 // Emulator calculation data
 #define WHEEL_RADIUS 33.909   // 225/55R17
 #define VEHICLE_MASS 1700     // kg
-#define DT 1000000              // dt delay for calculating velocity, TODO use system timer instead.
+#define DT 1000000              // dt delay for calculating speed, TODO use system timer instead.
 
 #define AIR_DENSITY 1.202       // kg/m3
 #define VEHICLE_FRONTAL_AREA 3  // m3
@@ -107,18 +107,6 @@
 // 5 0.867
 // 6 0.691
 // Final drive 3.460
-
-// typedef struct EmulatorData {
-//   size_t throttle_set_value;
-//   size_t throttle;
-//   size_t gear_set_value;
-//   size_t start_set_value;
-//   size_t gear;
-//   size_t rpm;
-//   size_t velocity;
-//   size_t forward_force;
-//   bool gear_drive;
-// }EmulatorData_T;
 
 typedef struct EmulatorData {
   size_t throttle_set_value = 0;

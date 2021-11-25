@@ -37,15 +37,17 @@ Emulator::Emulator(const std::string& interface_name)
 
 
 bool Emulator::ReadData() {
+  bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-    this->emulator_data_.throttle_set_value = fr.data[0];
-    this->emulator_data_.gear_set_value = fr.data[1];
-    this->emulator_data_.start_set_value = fr.data[2];
-    return true;
-  } else {
-    return false;
+    if (fr.id==1) {  // TODO: add macro for CAN frame IDs
+      this->emulator_data_.throttle_set_value = fr.data[0];
+      this->emulator_data_.gear_set_value = fr.data[1];
+      this->emulator_data_.start_set_value = fr.data[2];
+      retval = true;
+    }
   }
+  return retval;
 }
 
 bool Emulator::Emulate() {
@@ -55,12 +57,14 @@ bool Emulator::Emulate() {
   bool set_start = false;
 
   // Read CAN message
-  if (ReadData()) {
+  bool test = ReadData(); 
+  if (test) {
+//    std::cout << "Data has been read." << std::endl;
     set_start = this->emulator_data_.start_set_value;
     set_gear = this->emulator_data_.gear_set_value;
     this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-    this->emulator_data_.rpm =
-    throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
+    // this->emulator_data_.rpm =
+    // throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
 
     if (set_gear == PINDLE_PARKING && set_start) {
       PindleModes::PindleParking(emulator_data_);
@@ -100,26 +104,19 @@ bool Emulator::Emulate() {
         print_set_gear = this->emulator_data_.gear_set_value-32;  // P
         set_start = false;
     }
-    std::cout << " print_set_gear: " << print_set_gear << "\n"  // NOLINT
-    << " set_start: " << set_start << "\n"<< std::endl;  // NOLINT
 
-    this->sendCAN();
   }
-  // Run emulation if the engine is running
-  this->emulator_data_.activate_engine = true;  // TODO: Remove
-  this->emulator_data_.gear_drive = true;       // TODO: Remove
   if (this->emulator_data_.activate_engine) {
     if (this->emulator_data_.gear_drive) {
-
       this->FancyEmulation();
-
+      this->sendCAN();
       // Postponed functionality
 //      this->UpdateGearAutomatic();
 //      this->CalculateSpeed();
     }
   }
 
-  usleep(5);
+  usleep(1000);
 //  usleep(DT);
   error_code = kSuccess;
 
@@ -129,75 +126,67 @@ bool Emulator::Emulate() {
 
 bool Emulator::FancyEmulation() {
   bool error_code = kFailure;
-  switch (this->emulator_data_.throttle_set_value) {
+  switch (this->emulator_data_.throttle) {
     case 10:
       this->emulator_data_.gear = FE_GEAR_AT_10;
       this->emulator_data_.rpm = FE_RPM_AT_10;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_10;
+      this->emulator_data_.speed = FE_VELOCITY_AT_10;
       break;
     case 20:
       this->emulator_data_.gear = FE_GEAR_AT_20;
       this->emulator_data_.rpm = FE_RPM_AT_20;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_20;
+      this->emulator_data_.speed = FE_VELOCITY_AT_20;
       break;
     case 30:
       this->emulator_data_.gear = FE_GEAR_AT_30;
       this->emulator_data_.rpm = FE_RPM_AT_30;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_30;
+      this->emulator_data_.speed = FE_VELOCITY_AT_30;
       break;
     case 40:
       this->emulator_data_.gear = FE_GEAR_AT_40;
       this->emulator_data_.rpm = FE_RPM_AT_40;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_40;
+      this->emulator_data_.speed = FE_VELOCITY_AT_40;
       break;
     case 50:
       this->emulator_data_.gear = FE_GEAR_AT_50;
       this->emulator_data_.rpm = FE_RPM_AT_50;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_50;
+      this->emulator_data_.speed = FE_VELOCITY_AT_50;
       break;
     case 60:
       this->emulator_data_.gear = FE_GEAR_AT_60;
       this->emulator_data_.rpm = FE_RPM_AT_60;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_60;
+      this->emulator_data_.speed = FE_VELOCITY_AT_60;
       break;
     case 70:
       this->emulator_data_.gear = FE_GEAR_AT_70;
       this->emulator_data_.rpm = FE_RPM_AT_70;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_70;
+      this->emulator_data_.speed = FE_VELOCITY_AT_70;
       break;
     case 80:
       this->emulator_data_.gear = FE_GEAR_AT_80;
       this->emulator_data_.rpm = FE_RPM_AT_80;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_80;
+      this->emulator_data_.speed = FE_VELOCITY_AT_80;
       break;
     case 90:
       this->emulator_data_.gear = FE_GEAR_AT_90;
       this->emulator_data_.rpm = FE_RPM_AT_90;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_90;
+      this->emulator_data_.speed = FE_VELOCITY_AT_90;
       break;
     case 100:
       this->emulator_data_.gear = FE_GEAR_AT_100;
       this->emulator_data_.rpm = FE_RPM_AT_100;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_100;
+      this->emulator_data_.speed = FE_VELOCITY_AT_100;
       break;
     default:
       this->emulator_data_.gear = FE_GEAR_AT_0;
       this->emulator_data_.rpm = FE_RPM_AT_0;
-      this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-      this->emulator_data_.velocity = FE_VELOCITY_AT_0;
+      this->emulator_data_.speed = FE_VELOCITY_AT_0;
       break;
   }
   error_code = kSuccess;
+
+  std::cout << " gear: " << this->emulator_data_.gear << "\n"  // NOLINT
+    << " rpm: " << this->emulator_data_.rpm << "\n"<< " trottle: " << this->emulator_data_.throttle << std::endl;  // NOLINT
 
   return error_code;
 }
@@ -276,10 +265,10 @@ bool Emulator::CalculateSpeed() {
 
   CalculateForce();
 
-  this->emulator_data_.velocity = this->emulator_data_.velocity + ( (this->emulator_data_.forward_force / VEHICLE_MASS) * DT);  // NOLINT
+  this->emulator_data_.speed = this->emulator_data_.speed + ( (this->emulator_data_.forward_force / VEHICLE_MASS) * DT);  // NOLINT
 
 //  std::cout << "Elapsed(ms)=" << since(start).count() << std::endl;
-//  this->emulator_data.velocity = this->emulator_data.velocity + ( (forward_force / VEHICLE_MASS) * (since(start).count())));
+//  this->emulator_data.speed = this->emulator_data.speed + ( (forward_force / VEHICLE_MASS) * (since(start).count())));
 //  static auto start = std::chrono::steady_clock::now();
 
   error_code = kSuccess;
@@ -312,6 +301,7 @@ bool Emulator::sendCAN() {
   CanFrame frame_to_send = gnv.convertCANMessageFromStruct(data_to_send);
   bool return_value = gnv.sendMessageOnCAN(frame_to_send);
   return return_value;
+}
 
 size_t Emulator::GetEngineTorque() {
   double torque = 0;
@@ -339,5 +329,5 @@ size_t Emulator::GetEngineTorque() {
 
 size_t Emulator::GetAirResistance() {
   return (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
-        * (std::pow((this->emulator_data_.velocity / 3.6), 2))) / 2;
+        * (std::pow((this->emulator_data_.speed / 3.6), 2))) / 2;
 }

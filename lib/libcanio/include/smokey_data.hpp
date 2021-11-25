@@ -18,7 +18,7 @@
 
 typedef struct SmokeyPayload {
   int throttle = 0;
-  int gear = 0;
+  int gear = 112;
   int start = 0;
 } Payload_t;
 
