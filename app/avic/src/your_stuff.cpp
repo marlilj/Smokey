@@ -13,7 +13,30 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
        this->InstrumentCluster.ignite(ui->start);
-       this->InstrumentCluster.setGearPindle_char(static_cast<char>(ui->gear - 32));
+        if (ui->start) {
+            this->InstrumentCluster.setTXT("SMOKEY");
+        }
+
+       int pindle = 0;
+       switch (ui->gear) {
+        case 'p':
+           pindle = 0;
+           break;
+        case 'n':
+           pindle = 1;
+           break;
+        case 'r':
+           pindle = 2;
+           break;
+        case 'd':
+           pindle = 3;
+           break;
+        default:
+           pindle = 0;
+       }
+       this->InstrumentCluster.setGearPindle_int(pindle);
+           
+       
        std::cout << "Pindle: " << ui->gear << std::endl;
        std::cout << "Ignt: " << ui->start << std::endl;
         
