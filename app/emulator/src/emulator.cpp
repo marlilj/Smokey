@@ -24,19 +24,12 @@
 
 InputHandler smokeyInputData;
 
-// Emulator::Emulator(const std::string& interface_name){
-
-// Data init
-//   this->socket_ = SocketCan(interface_name);
-
-// this->emulator_data.rpm = EMULATOR_IDLE_RPM;
-// }
-
 Emulator::Emulator(const std::string& interface_name)
-  : socket_(interface_name) {}
+/* : socket_(interface_name) */ {}
 
 
 bool Emulator::ReadData() {
+  SocketCan socket_("vcan0");
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
