@@ -50,7 +50,7 @@ bool Emulator::Emulate() {
     this->emulator_data_.rpm =
     throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
 
-  if (set_gear == PINDLE_PARKING && set_start) {
+    if (set_gear == PINDLE_PARKING && set_start) {
       PindleModes::PindleParking(emulator_data_);
       print_set_gear = this->emulator_data_.gear_set_value-32;  // P
     } else if (set_gear == PINDLE_PARKING && !set_start) {
@@ -87,7 +87,7 @@ bool Emulator::Emulate() {
         PindleModes::PindleParking(emulator_data_);
         print_set_gear = this->emulator_data_.gear_set_value-32;  // P
         set_start = false;
-  }
+    }
     std::cout << " print_set_gear: " << print_set_gear << "\n"  // NOLINT
     << " set_start: " << set_start << "\n"<< std::endl;  // NOLINT
 
@@ -98,7 +98,7 @@ bool Emulator::Emulate() {
   error_code = kSuccess;
 
   return error_code;
- }
+}
 
 bool Emulator::sendCAN() {
   // Construct the data to be sent
