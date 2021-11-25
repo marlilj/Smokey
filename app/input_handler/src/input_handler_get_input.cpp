@@ -11,11 +11,11 @@
  * permission is obtained from Volvo Car Corporation.
  */
 #include "../include/input_handler.hpp"
-#include <string>
 #include <ncurses.h>
 #include <unistd.h>
-#include <iostream>
+#include <string>
 
+#include <iostream>
 
 bool InputHandler::InitInputHandler() {
   initscr();

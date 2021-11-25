@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  */
@@ -22,4 +23,5 @@ int main() {
     printf("Cannot open can socket!");
   }
   return 0;
+
 }

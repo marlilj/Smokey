@@ -1,7 +1,5 @@
-
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
  *
  * All Rights Reserved
  *
@@ -11,21 +9,31 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
+ *
+*/
 
- */
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#ifndef TEMPSETGEAR_HPP  // NOLINT
+#define TEMPSETGEAR_HPP
 
-#include "smokey_data.hpp"
-#include "interface_from_input_handler.hpp"
+#include <iostream>
+#include <string>
 
-class InputHandler {
- private:
+#include "../../include/smokey_data.hpp"
+
+class GearInput {
  public:
-    Payload_t SmokeyInputData;
-    bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
-    bool ExitInputHandler();
+  const int kNotSet = 2;
+  const int kBadValue = 3;
+  int error_code = kFailure;
+  int gear = -1;
+  bool GearIsSet = false;
+
+    int SetGear(int8_t selected_gear);
+
+ private:
 };
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+
+
+
+#endif // TEMPSETGEAR_HPP // NOLINT

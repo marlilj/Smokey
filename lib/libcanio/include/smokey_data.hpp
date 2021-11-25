@@ -20,7 +20,7 @@ const unsigned k_FrameIdUserInput = 1;
 const unsigned k_FrameIdEmulator = 2;
 typedef struct __attribute__((__packed__)) SmokeyPayload {
   uint8_t throttle = 0;
-  uint8_t gear = 0;
+  uint8_t gear = 112;
   uint8_t start = 0;
 } Payload_t;
 

@@ -16,6 +16,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME}
     main.cpp
     src/emulator.cpp
+    src/engine_pindle_states.cpp
 )
 
 
@@ -27,8 +28,8 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_directories(${PROJECT_NAME}
-  PUBLIC ../../lib/libcanio/build/
   PUBLIC ../../lib/libcanencoder/build/
+  PUBLIC ../../lib/libcanio/build/
 )
 
 target_link_libraries(${PROJECT_NAME}

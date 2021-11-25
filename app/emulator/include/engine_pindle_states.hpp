@@ -1,7 +1,6 @@
 
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
  *
  * All Rights Reserved
  *
@@ -11,21 +10,22 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-
  */
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
 
-#include "smokey_data.hpp"
-#include "interface_from_input_handler.hpp"
+#ifndef ENGINEPINDLESTATES_HPP  // NOLINT
+#define ENGINEPINDLESTATES_HPP
 
-class InputHandler {
- private:
+
+#include "emulator.hpp"
+
+class PindleModes {
  public:
-    Payload_t SmokeyInputData;
-    bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
-    bool ExitInputHandler();
+  static int16_t OffMode(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleParking(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleNeutral(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleDrive(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleReverse(EmulatorData_t &emulator_data_);  // NOLINT
 };
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+
+#endif // ENGINEPINDLESTATES_HPP  // NOLINT
