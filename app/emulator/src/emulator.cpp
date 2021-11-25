@@ -17,12 +17,13 @@
 InputHandler smokeyInputData;
 
 Emulator::Emulator(const std::string& interface_name)
-: socket_(interface_name) {}
+/* : socket_(interface_name) */ {}
 // Data init
 // this->emulator_data.rpm = EMULATOR_IDLE_RPM;
 // }
 
 bool Emulator::ReadData() {
+  SocketCan socket_("vcan0");
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
     this->emulator_data_.throttle_set_value = fr.data[0];

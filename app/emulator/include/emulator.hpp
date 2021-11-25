@@ -58,7 +58,7 @@ const int throttle_to_RPM_one_gear[10] = {
 
 class Emulator{
   EmulatorData_T emulator_data_;
-  SocketCan socket_;
+  /* SocketCan socket_; */
  public:
   Emulator(const std::string &); // NOLINT
   bool Emulate();

@@ -13,7 +13,9 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
        this->InstrumentCluster.ignite(ui->start);
-       this->InstrumentCluster.setGearPindle_int(ui->gear);
+       this->InstrumentCluster.setGearPindle_char(static_cast<char>(ui->gear - 32));
+       std::cout << "Pindle: " << ui->gear << std::endl;
+       std::cout << "Ignt: " << ui->start << std::endl;
         
     } else if (_frame->can_id == k_FrameIdEmulator) { 
         const EmulatorOutput_t *em = reinterpret_cast<const EmulatorOutput_t*>(_frame->data);

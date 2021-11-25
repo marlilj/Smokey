@@ -18,10 +18,10 @@
 
 const unsigned k_FrameIdUserInput = 1;
 const unsigned k_FrameIdEmulator = 2;
-typedef struct SmokeyPayload {
-  int throttle = 0;
-  int gear = 0;
-  int start = 0;
+typedef struct __attribute__((__packed__)) SmokeyPayload {
+  uint8_t throttle = 0;
+  uint8_t gear = 0;
+  uint8_t start = 0;
 } Payload_t;
 
 typedef struct __attribute__ ((__packed__)) EmulatorOutput {
