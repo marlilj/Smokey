@@ -13,10 +13,9 @@
  * This file was generated fri Nov 12 11:07:24 2021
  */
 
-//////////////////////////////////////////////////
-// Dependencies
 
 #include "include/interface_from_input_handler.hpp"
+
 
 int16_t GetNewValues::getNewValues(Payload_t &payload) {
   bool error_code = kFailure;
@@ -25,6 +24,7 @@ int16_t GetNewValues::getNewValues(Payload_t &payload) {
 
   input_can_frame = GetNewValues::convertCANMessageFromStruct(payload);
   // GetNewValues::printCANFrame(input_can_frame);
+
   bool message_sent = GetNewValues::sendMessageOnCAN(input_can_frame);
   error_code = kSuccess; // NOLINT
   return error_code;

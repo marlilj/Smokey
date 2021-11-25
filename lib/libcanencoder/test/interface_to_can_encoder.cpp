@@ -13,9 +13,7 @@
  * This file was generated fri Nov 12 11:07:24 2021
  */
 
-//////////////////////////////////////////////////
-// Dependencies
-
+#include "../include/interface_to_can_encoder.hpp"
 #include "smokey_data.hpp"
 
 #include <iostream> // NOLINT

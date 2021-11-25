@@ -11,24 +11,21 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#ifndef SMOKEYDATA_HPP  // NOLINT
-#define SMOKEYDATA_HPP
 
-#include <iostream>
+#ifndef ENGINEPINDLESTATES_HPP  // NOLINT
+#define ENGINEPINDLESTATES_HPP
 
-typedef struct SmokeyPayload {
-  int throttle = 0;
-  int gear = 112;
-  int start = 0;
-} Payload_t;
 
-typedef struct __attribute__ ((__packed__)) EmulatorOutput {
-  uint8_t speed;
-  uint8_t gear;
-  uint16_t rpm;
-} EmulatorOutput_t;
+#include "emulator.hpp"
 
-const bool kSuccess = true;
-const bool kFailure = false;
+class PindleModes {
+ public:
+  static int16_t OffMode(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleParking(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleNeutral(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleDrive(EmulatorData_t &emulator_data_);  // NOLINT
+  static int16_t PindleReverse(EmulatorData_t &emulator_data_);  // NOLINT
+};
 
-#endif  // SMOKEYDATA_HPP // NOLINT
+
+#endif // ENGINEPINDLESTATES_HPP  // NOLINT

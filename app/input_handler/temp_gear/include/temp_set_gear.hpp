@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
  *
@@ -10,25 +9,31 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
- */
-#ifndef SMOKEYDATA_HPP  // NOLINT
-#define SMOKEYDATA_HPP
+ *
+*/
+
+#ifndef TEMPSETGEAR_HPP  // NOLINT
+#define TEMPSETGEAR_HPP
 
 #include <iostream>
+#include <string>
 
-typedef struct SmokeyPayload {
-  int throttle = 0;
-  int gear = 112;
-  int start = 0;
-} Payload_t;
+#include "../../include/smokey_data.hpp"
 
-typedef struct __attribute__ ((__packed__)) EmulatorOutput {
-  uint8_t speed;
-  uint8_t gear;
-  uint16_t rpm;
-} EmulatorOutput_t;
+class GearInput {
+ public:
+  const int kNotSet = 2;
+  const int kBadValue = 3;
+  int error_code = kFailure;
+  int gear = -1;
+  bool GearIsSet = false;
 
-const bool kSuccess = true;
-const bool kFailure = false;
+    int SetGear(int8_t selected_gear);
 
-#endif  // SMOKEYDATA_HPP // NOLINT
+ private:
+};
+
+
+
+
+#endif // TEMPSETGEAR_HPP // NOLINT

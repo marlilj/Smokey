@@ -33,12 +33,12 @@ class GetNewValues {
  private:
  public:
   int16_t getNewValues(Payload_t &payload); // NOLINT
+
   CanFrame convertCANMessageFromStruct(const Payload_t &input_data);
   CanFrame convertCANMessageFromStruct(const EmulatorOutput_t &input_data);
+  
   void printCANFrame(const CanFrame &frame);
   bool sendMessageOnCAN(const CanFrame &frame_to_send);
 };
-
-
 
 #endif  // INTERFACEFROMINPUTHANDLER_HPP // NOLINT

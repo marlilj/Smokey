@@ -24,9 +24,8 @@ class InputHandler {
  public:
     Payload_t SmokeyInputData;
     bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT 
+    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
     bool ExitInputHandler();
 };
 
 #endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-

@@ -40,3 +40,7 @@ temp/
 
 # Config files
 *.code-workspace
+
+# Other files
+branches.txt
+can-utils.txt
