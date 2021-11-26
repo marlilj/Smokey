@@ -28,10 +28,11 @@ int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
 
 int16_t PindleModes::PindleParking(EmulatorData_t &emulator_data_) {
   emulator_data_.activate_engine = true;
+  emulator_data_.rpm = EMULATOR_IDLE_RPM;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;
   emulator_data_.gear_reverse = false;
-  emulator_data_.gear_set_value = PINDLE_PARKING;
+  emulator_data_.pindle_set_value = PINDLE_PARKING;
   emulator_data_.parking_flag = true;
   return 0;
 }
@@ -45,6 +46,7 @@ int16_t PindleModes::PindleNeutral(EmulatorData_t &emulator_data_) {
   return 0;
 }
 int16_t PindleModes::PindleDrive(EmulatorData_t &emulator_data_) {
+  emulator_data_.gear = 1;
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = true;
