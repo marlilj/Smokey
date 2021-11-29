@@ -154,7 +154,7 @@ class EmulatorData {
   void SetPindleNeutral(const bool &);
   void SetPindleDrive(const bool &);
   void SetPindleReverse(const bool &);
-  void SetParkingFlag(const bool &); 
+  void SetParkingFlag(const bool &);
 };
 
 typedef EmulatorData EmulatorData_t;
