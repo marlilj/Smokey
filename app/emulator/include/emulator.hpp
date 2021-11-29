@@ -23,6 +23,7 @@
 // #include "smokey_data.hpp"
 #include "input_handler.hpp"
 #include <utility>
+#include <mutex>
 
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
@@ -108,7 +109,8 @@
 // 6 0.691
 // Final drive 3.460
 
-typedef struct EmulatorData {
+class EmulatorData {
+ private:
   size_t throttle_set_value = 0;
   size_t throttle;
   size_t gear_set_value = PINDLE_PARKING;
@@ -118,11 +120,44 @@ typedef struct EmulatorData {
   size_t speed;
   size_t forward_force = 0;
   bool activate_engine = false;
-  bool gear_neutral = false;
-  bool gear_drive = false;
-  bool gear_reverse = false;
+  bool pindle_neutral = false;
+  bool pindle_drive = false;
+  bool pindle_reverse = false;
   bool parking_flag = false;
-} EmulatorData_t;
+  std::recursive_mutex emulator_data_mutex_;
+
+ public:
+  size_t GetThrottleSetValue();
+  size_t GetThrottle();
+  size_t GetGearSetValue();
+  size_t GetStartSetValue();
+  size_t GetGear();
+  size_t GetRpm();
+  size_t GetSpeed();
+  size_t GetForwardForce();
+  bool GetActivateEngine();
+  bool GetPindleNeutral();
+  bool GetPindleDrive();
+  bool GetPindleReverse();
+  bool GetParkingFlag();
+
+  void SetThrottleSetValue(const size_t &);
+  void SetThrottle(const size_t &);
+  void SetGearSetValue(const size_t &);
+  void SetStartSetValue(const size_t &);
+  void SetPindleDrive(const size_t &);
+  void SetGear(const size_t &);
+  void SetRpm(const size_t &);
+  void SetSpeed(const size_t &);
+  void SetForwardForce(const size_t &);
+  void SetActivateEngine(const bool &);
+  void SetPindleNeutral(const bool &);
+  void SetPindleDrive(const bool &);
+  void SetPindleReverse(const bool &);
+  void SetParkingFlag(const bool &); 
+};
+
+typedef EmulatorData EmulatorData_t;
 
 #define RPM_TORQUE_DATA_LENGTH 9
 const std::pair<double, double> RPM_Torque[RPM_TORQUE_DATA_LENGTH] = {

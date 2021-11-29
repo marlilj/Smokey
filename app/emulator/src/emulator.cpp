@@ -58,9 +58,10 @@ while(true) {
 //      this->CalculateSpeed();
       }
     }
-  }
+  
 
-std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+}
   // usleep(1000);
 //  usleep(DT);
   error_code = kSuccess;
