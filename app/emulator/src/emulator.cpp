@@ -18,22 +18,18 @@
 #include "emulator.hpp"
 #include "engine_pindle_states.hpp"
 #include <chrono>
-#include <math.h> 
+#include <math.h>
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
 
 InputHandler smokeyInputData;
-
-Emulator::Emulator(const std::string& interface_name)
-/* : socket_(interface_name) */ {}
-
 
 bool Emulator::ReadData() {
   SocketCan socket_("vcan0");
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-    if (fr.id==1) {  // TODO: add macro for CAN frame IDs
+    if (fr.id == 1) {  // TODO(Niklas): add macro for CAN frame IDs
       this->emulator_data_.throttle_set_value = fr.data[0];
       this->emulator_data_.gear_set_value = fr.data[1];
       this->emulator_data_.start_set_value = fr.data[2];
@@ -43,14 +39,39 @@ bool Emulator::ReadData() {
   return retval;
 }
 
+Emulator::Emulator(const std::string& interface_name) {
+/* : socket_(interface_name)  {} */
+  // Emulator::ReadAndSetPindle();
+  // Emulator::ReadData();
+}
+
 bool Emulator::Emulate() {
+  int error_code = kFailure;
+
+  if (this->emulator_data_.activate_engine) {
+    if (this->emulator_data_.gear_drive) {
+      this->FancyEmulation();
+      this->sendCAN();
+      // Postponed functionality
+//      this->UpdateGearAutomatic();
+//      this->CalculateSpeed();
+    }
+  }
+
+  usleep(1000);
+//  usleep(DT);
+  error_code = kSuccess;
+
+  return error_code;
+}
+
+bool Emulator::ReadAndSetPindle() {
   int error_code = kFailure;
   int8_t set_gear = PINDLE_PARKING;
   int8_t print_set_gear = '.';
   bool set_start = false;
-
   // Read CAN message
-  bool test = ReadData(); 
+  bool test = ReadData();
   if (test) {
 //    std::cout << "Data has been read." << std::endl;
     set_start = this->emulator_data_.start_set_value;
@@ -97,31 +118,15 @@ bool Emulator::Emulate() {
         print_set_gear = this->emulator_data_.gear_set_value-32;  // P
         set_start = false;
     }
-
   }
-  if (this->emulator_data_.activate_engine) {
-    if (this->emulator_data_.gear_drive) {
-      this->FancyEmulation();
-      this->sendCAN();
-      // Postponed functionality
-//      this->UpdateGearAutomatic();
-//      this->CalculateSpeed();
-    }
-  }
-
-  usleep(1000);
-//  usleep(DT);
-  error_code = kSuccess;
-
   return error_code;
 }
-
 
 bool Emulator::FancyEmulation() {
   bool error_code = kFailure;
   switch (this->emulator_data_.throttle) {
     case 10:
-      this->emulator_data_.gear = FE_GEAR_AT_10;
+      emulator_data_.gear = FE_GEAR_AT_10;
       this->emulator_data_.rpm = FE_RPM_AT_10;
       this->emulator_data_.speed = FE_VELOCITY_AT_10;
       break;
@@ -183,7 +188,6 @@ bool Emulator::FancyEmulation() {
 
   return error_code;
 }
-
 
 bool Emulator::UpdateGearAutomatic() {
   bool error_code = kFailure;
@@ -323,4 +327,11 @@ size_t Emulator::GetEngineTorque() {
 size_t Emulator::GetAirResistance() {
   return (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
         * (std::pow((this->emulator_data_.speed / 3.6), 2))) / 2;
+}
+
+bool GracefulShutdown() {
+  bool error_code = kFailure;
+  // Delete stuff!
+  error_code = kSuccess;
+  return error_code;
 }

@@ -28,7 +28,13 @@ int main() {
 
   Emulator emulator("vcan0");
 
-  while(emulator.Emulate()); // NOLINT
+  std::thread thread1(emulator.ReadAndSetPindle()); // NOLINT
+  std::thread thread2(emulator.Emulate()); // NOLINT
+
+  thread1.join();
+  thread2.join();
+
+  error_code = emulator.GracefulShutdown();
 
   return error_code;
 }

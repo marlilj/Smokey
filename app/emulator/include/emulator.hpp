@@ -150,7 +150,7 @@ const int throttle_to_RPM_one_gear[10] = {
   EMULATOR_IDLE_RPM + 3000,
   EMULATOR_MAX_RPM};
 
-class Emulator{
+class Emulator {
   EmulatorData_t emulator_data_;
   /* SocketCan socket_; */
  public:
@@ -169,6 +169,8 @@ class Emulator{
 
   // ...
   bool FancyEmulation();
+  bool ReadAndSetPindle();
+  bool GracefulShutdown();
 };
 
 #endif  // EMULATOR_HPP  // NOLINT
