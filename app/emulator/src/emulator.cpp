@@ -18,6 +18,7 @@
 #include "emulator.hpp"
 #include "engine_pindle_states.hpp"
 #include <chrono>
+#include <thread>
 #include <math.h>
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
@@ -47,7 +48,7 @@ Emulator::Emulator(const std::string& interface_name) {
 
 bool Emulator::Emulate() {
   int error_code = kFailure;
-
+while(true) {
   if (this->emulator_data_.activate_engine) {
     if (this->emulator_data_.gear_drive) {
       this->FancyEmulation();
@@ -55,10 +56,12 @@ bool Emulator::Emulate() {
       // Postponed functionality
 //      this->UpdateGearAutomatic();
 //      this->CalculateSpeed();
+      }
     }
   }
 
-  usleep(1000);
+std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  // usleep(1000);
 //  usleep(DT);
   error_code = kSuccess;
 
@@ -70,9 +73,10 @@ bool Emulator::ReadAndSetPindle() {
   int8_t set_gear = PINDLE_PARKING;
   int8_t print_set_gear = '.';
   bool set_start = false;
+
   // Read CAN message
-  bool test = ReadData();
-  if (test) {
+  while(true) {
+  if (ReadData()) {
 //    std::cout << "Data has been read." << std::endl;
     set_start = this->emulator_data_.start_set_value;
     set_gear = this->emulator_data_.gear_set_value;
@@ -85,7 +89,7 @@ bool Emulator::ReadAndSetPindle() {
       print_set_gear = this->emulator_data_.gear_set_value-32;  // P
     } else if (set_gear == PINDLE_PARKING && !set_start) {
         PindleModes::OffMode(emulator_data_);
-        print_set_gear = '.';  // P
+        print_set_gear = '.';  // .
         set_start = false;
     } else if (emulator_data_.parking_flag && set_gear == PINDLE_DRIVE
               && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
@@ -117,6 +121,7 @@ bool Emulator::ReadAndSetPindle() {
         PindleModes::PindleParking(emulator_data_);
         print_set_gear = this->emulator_data_.gear_set_value-32;  // P
         set_start = false;
+      }
     }
   }
   return error_code;
@@ -329,7 +334,7 @@ size_t Emulator::GetAirResistance() {
         * (std::pow((this->emulator_data_.speed / 3.6), 2))) / 2;
 }
 
-bool GracefulShutdown() {
+bool Emulator::GracefulShutdown() {
   bool error_code = kFailure;
   // Delete stuff!
   error_code = kSuccess;

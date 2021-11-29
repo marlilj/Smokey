@@ -15,9 +15,14 @@
 #include "../include/engine_pindle_states.hpp"
 
 #include "smokey_data.hpp"
+#include <mutex>
+
+
+// std::recursive_mutex Funktion1_mutex;
 
 
 int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
+// std::lock_guard<std::recursive_mutex> guard(Funktion1_mutex);
   emulator_data_.activate_engine = false;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;

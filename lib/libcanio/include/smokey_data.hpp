@@ -30,7 +30,7 @@ typedef struct __attribute__ ((__packed__)) EmulatorOutput {
   uint16_t rpm;
 } EmulatorOutput_t;
 
-const bool kSuccess = true;
-const bool kFailure = false;
+const bool kSuccess = false;
+const bool kFailure = true;
 
 #endif  // SMOKEYDATA_HPP // NOLINT

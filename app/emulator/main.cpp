@@ -16,7 +16,8 @@
 #include <utility>
 #include <thread>
 #include <chrono>
-#include "smokey_data.hpp"
+// #include "smokey_data.hpp"
+#include "../../lib/libcanio/include/smokey_data.hpp"
 #include "include/emulator.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
 
@@ -28,8 +29,8 @@ int main() {
 
   Emulator emulator("vcan0");
 
-  std::thread thread1(emulator.ReadAndSetPindle()); // NOLINT
-  std::thread thread2(emulator.Emulate()); // NOLINT
+  std::thread thread1(&Emulator::ReadAndSetPindle, &emulator);
+  std::thread thread2(&Emulator::Emulate, &emulator);
 
   thread1.join();
   thread2.join();
