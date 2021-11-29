@@ -15,66 +15,53 @@
 #include "../include/engine_pindle_states.hpp"
 
 #include "smokey_data.hpp"
-#include <mutex>
-
-
- std::recursive_mutex thread1_mutex;
 
 
 int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
- std::lock_guard<std::recursive_mutex> guard(thread1_mutex);
-  emulator_data_.activate_engine = false;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = true;
-  std::lock_guard<std::recursive_mutex> unlock(thread1_mutex);
+  emulator_data_.SetActivateEngine(false);
+  emulator_data_.SetPindleNeutral(false);
+  emulator_data_.SetPindleDrive(false);
+  emulator_data_.SetPindleReverse(false);
+  emulator_data_.SetParkingFlag(true);
+
   return 0;
 }
 
 int16_t PindleModes::PindleParking(EmulatorData_t &emulator_data_) {
-  std::lock_guard<std::recursive_mutex> guard(thread1_mutex);
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.gear_set_value = PINDLE_PARKING;
-  emulator_data_.parking_flag = true;
-  std::lock_guard<std::recursive_mutex> unlock(thread1_mutex);
+  emulator_data_.SetActivateEngine(true);
+  emulator_data_.SetPindleNeutral(false);
+  emulator_data_.SetPindleDrive(false);
+  emulator_data_.SetPindleReverse(false);
+  emulator_data_.SetGearSetValue(PINDLE_PARKING);
+  emulator_data_.SetParkingFlag(true);
 
   return 0;
 }
 
 int16_t PindleModes::PindleNeutral(EmulatorData_t &emulator_data_) {
-  std::lock_guard<std::recursive_mutex> guard(thread1_mutex);
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = true;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = false;
-  std::lock_guard<std::recursive_mutex> unlock(thread1_mutex);
+  emulator_data_.SetActivateEngine(true);
+  emulator_data_.SetPindleNeutral(true);
+  emulator_data_.SetPindleDrive(false);
+  emulator_data_.SetPindleReverse(false);
+  emulator_data_.SetParkingFlag(false);
 
   return 0;
 }
 int16_t PindleModes::PindleDrive(EmulatorData_t &emulator_data_) {
-  std::lock_guard<std::recursive_mutex> guard(thread1_mutex);
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = true;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = false;
-  std::lock_guard<std::recursive_mutex> unlock(thread1_mutex);
+  emulator_data_.SetActivateEngine(true);
+  emulator_data_.SetPindleNeutral(false);
+  emulator_data_.SetPindleDrive(true);
+  emulator_data_.SetPindleReverse(false);
+  emulator_data_.SetParkingFlag(false);
 
   return 0;
 }
 int16_t PindleModes::PindleReverse(EmulatorData_t &emulator_data_) {
-  std::lock_guard<std::recursive_mutex> guard(thread1_mutex);
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = true;
-  emulator_data_.parking_flag = false;
-  std::lock_guard<std::recursive_mutex> unlock(thread1_mutex);
+  emulator_data_.SetActivateEngine(true);
+  emulator_data_.SetPindleNeutral(false);
+  emulator_data_.SetPindleDrive(false);
+  emulator_data_.SetPindleReverse(true);
+  emulator_data_.SetParkingFlag(false);
 
   return 0;
 }
