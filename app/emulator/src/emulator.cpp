@@ -70,30 +70,30 @@ while(true) {
 bool Emulator::ReadAndSetPindle() {
   int error_code = kFailure;
   int8_t set_pindle = PINDLE_PARKING;
-  bool set_start = false;
+  bool started = false;
 
   // Read CAN message
   while (true) {
     Values_t values = emulator_data_.GetAll();
   if (ReadData(values)) {
-    set_start = values.start_set_value;
+    started = values.start_set_value;
     set_pindle = values.pindle_set_value;
     values.throttle = values.throttle_set_value;
 
-    if (set_pindle == PINDLE_PARKING && set_start) {
+    if (set_pindle == PINDLE_PARKING && started) {
         PindleModes::PindleParking(values);  // P
-    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && set_start) {
+    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
         PindleModes::PindleDrive(values);  // D
-        set_start = true;
-    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && set_start) {  // NOLINT Due to line break making it less readable.
+        started = true;
+    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
         PindleModes::PindleNeutral(values);  // N
-        set_start = true;
-    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && set_start) {  // NOLINT Due to line break making it less readable.
+        started = true;
+    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
         PindleModes::PindleReverse(values);  // R
-        set_start = true;
-    } else if (set_pindle == PINDLE_PARKING && !set_start) {
+        started = true;
+    } else if (set_pindle == PINDLE_PARKING && !started) {
         PindleModes::PindleParking(values);  // P
-        set_start = false;
+        started = false;
       }
     }
     error_code = emulator_data_.SetAll(values);
