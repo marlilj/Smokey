@@ -13,19 +13,22 @@
  * permission is obtained from Volvo Car Corporation.
 
  */
-#ifndef INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
-#define INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#ifndef INPUT_HANDLER_HPP_ // NOLINT
+#define INPUT_HANDLER_HPP_
 
-#include "smokey_data.hpp"
-#include "interface_from_input_handler.hpp"
+// #include "smokey_data.hpp"
+#include "../../../lib/libcanio/include/smokey_data.hpp"
+// #include "interface_from_input_handler.hpp"
+#include "../../../lib/libcanencoder/include/interface_from_input_handler.hpp"
 
 class InputHandler {
  private:
  public:
     Payload_t SmokeyInputData;
     bool InitInputHandler();
-    bool ReadUserInput(GetNewValues &get_new_values); // NOLINT
+    bool ReadUserInput(GetNewValues &get_new_values);  // NOLINT
     bool ExitInputHandler();
+    bool GracefulShutdown();
 };
 
-#endif  // INPUT_HANDLER_INCLUDE_INPUT_HANDLER_HPP_
+#endif  // INPUT_HANDLER_HPP_  // NOLINT

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
+ *
  *
  * All Rights Reserved
  *
@@ -10,19 +10,21 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-
+ *
  */
+
 #ifndef EMULATOR_HPP // NOLINT
 #define EMULATOR_HPP
 
 #include <unistd.h>
 #include <iostream>
 #include <string>
+#include <utility>
+#include <mutex>  // NOLINT due to unapproved C++11 header
+#include <shared_mutex>
 #include "canio.hpp"
 #include "interface_from_input_handler.hpp"
-#include "smokey_data.hpp"
 #include "input_handler.hpp"
-#include <utility>
 
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
@@ -108,21 +110,63 @@
 // 6 0.691
 // Final drive 3.460
 
-typedef struct EmulatorData {
-  size_t throttle_set_value = 0;
-  size_t throttle;
-  size_t gear_set_value = PINDLE_PARKING;
-  size_t start_set_value = false;
-  size_t gear;
-  size_t rpm;
-  size_t speed;
-  size_t forward_force = 0;
-  bool activate_engine = false;
-  bool gear_neutral = false;
-  bool gear_drive = false;
-  bool gear_reverse = false;
-  bool parking_flag = false;
-} EmulatorData_t;
+
+
+typedef struct Values {
+    size_t throttle_set_value = 0;
+    size_t throttle;
+    size_t pindle_set_value = PINDLE_PARKING;
+    size_t start_set_value = false;
+    size_t gear;
+    size_t rpm;
+    size_t speed;
+    size_t forward_force = 0;
+    bool activate_engine = false;
+    bool pindle_neutral = false;
+    bool pindle_drive = false;
+    bool pindle_reverse = false;
+    bool parking_flag = false;
+  } Values_t;
+
+class EmulatorData {
+ private:
+  Values_t values;
+  std::shared_mutex emulator_data_mutex_;
+
+ public:
+  size_t GetThrottleSetValue();
+  size_t GetThrottle();
+  size_t GetGearSetValue();
+  size_t GetStartSetValue();
+  size_t GetGear();
+  size_t GetRpm();
+  size_t GetSpeed();
+  size_t GetForwardForce();
+  bool GetActivateEngine();
+  bool GetPindleNeutral();
+  bool GetPindleDrive();
+  bool GetPindleReverse();
+  bool GetParkingFlag();
+  Values GetAll();
+
+  void SetThrottleSetValue(const size_t &);
+  void SetThrottle(const size_t &);
+  void SetGearSetValue(const size_t &);
+  void SetStartSetValue(const size_t &);
+  void SetPindleDrive(const size_t &);
+  void SetGear(const size_t &);
+  void SetRpm(const size_t &);
+  void SetSpeed(const size_t &);
+  void SetForwardForce(const size_t &);
+  void SetActivateEngine(const bool &);
+  void SetPindleNeutral(const bool &);
+  void SetPindleDrive(const bool &);
+  void SetPindleReverse(const bool &);
+  void SetParkingFlag(const bool &);
+  bool SetAll(const Values &);
+};
+
+typedef EmulatorData EmulatorData_t;
 
 #define RPM_TORQUE_DATA_LENGTH 9
 const std::pair<double, double> RPM_Torque[RPM_TORQUE_DATA_LENGTH] = {
@@ -150,14 +194,14 @@ const int throttle_to_RPM_one_gear[10] = {
   EMULATOR_IDLE_RPM + 3000,
   EMULATOR_MAX_RPM};
 
-class Emulator{
+class Emulator {
   EmulatorData_t emulator_data_;
   /* SocketCan socket_; */
  public:
-  Emulator(const std::string &); // NOLINT
+  Emulator(const std::string &); // NOLINT no marking explixit.
   bool Emulate();
-  bool ReadData();
-  bool sendCAN();
+  bool ReadData(Values_t &);
+  bool sendCAN(const Values_t &);
 // Calculations
   bool UpdateGearAutomatic();
   bool SetRPM(size_t _rpm);
@@ -168,7 +212,9 @@ class Emulator{
   size_t GetAirResistance();
 
   // ...
-  bool FancyEmulation();
+  bool FancyEmulation(Values_t &);
+  bool ReadAndSetPindle();
+  bool GracefulShutdown();
 };
 
 #endif  // EMULATOR_HPP  // NOLINT

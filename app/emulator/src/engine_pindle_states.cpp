@@ -12,51 +12,55 @@
  *
  */
 
-#include "../include/engine_pindle_states.hpp"
-
+#include "engine_pindle_states.hpp"
 #include "smokey_data.hpp"
 
 
-int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
-  emulator_data_.activate_engine = false;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = true;
+int16_t PindleModes::OffMode(Values_t &data) {
+  data.activate_engine = false;
+  data.pindle_neutral = false;
+  data.pindle_drive = false;
+  data.pindle_reverse = false;
+  data.parking_flag = true;
+
   return 0;
 }
 
-int16_t PindleModes::PindleParking(EmulatorData_t &emulator_data_) {
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.gear_set_value = PINDLE_PARKING;
-  emulator_data_.parking_flag = true;
+int16_t PindleModes::PindleParking(Values_t &data) {
+  data.activate_engine = true;
+  data.pindle_neutral = false;
+  data.pindle_drive = false;
+  data.pindle_reverse = false;
+  data.pindle_set_value = PINDLE_PARKING;
+  data.parking_flag = true;
+
   return 0;
 }
 
-int16_t PindleModes::PindleNeutral(EmulatorData_t &emulator_data_) {
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = true;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = false;
+int16_t PindleModes::PindleNeutral(Values_t &data) {
+  data.activate_engine = true;
+  data.pindle_neutral = true;
+  data.pindle_drive = false;
+  data.pindle_reverse = false;
+  data.parking_flag = false;
+
   return 0;
 }
-int16_t PindleModes::PindleDrive(EmulatorData_t &emulator_data_) {
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = true;
-  emulator_data_.gear_reverse = false;
-  emulator_data_.parking_flag = false;
+int16_t PindleModes::PindleDrive(Values_t &data) {
+  data.activate_engine = true;
+  data.pindle_neutral = false;
+  data.pindle_drive = true;
+  data.pindle_reverse = false;
+  data.parking_flag = false;
+
   return 0;
 }
-int16_t PindleModes::PindleReverse(EmulatorData_t &emulator_data_) {
-  emulator_data_.activate_engine = true;
-  emulator_data_.gear_neutral = false;
-  emulator_data_.gear_drive = false;
-  emulator_data_.gear_reverse = true;
-  emulator_data_.parking_flag = false;
+int16_t PindleModes::PindleReverse(Values_t &data) {
+  data.activate_engine = true;
+  data.pindle_neutral = false;
+  data.pindle_drive = false;
+  data.pindle_reverse = true;
+  data.parking_flag = false;
+
   return 0;
 }

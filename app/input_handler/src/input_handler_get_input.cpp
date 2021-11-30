@@ -10,7 +10,7 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  */
-#include "../include/input_handler.hpp"
+#include "input_handler.hpp"
 #include <ncurses.h>
 #include <unistd.h>
 #include <string>
@@ -64,3 +64,9 @@ bool InputHandler::ExitInputHandler() {
   return true;
 }
 
+bool InputHandler::GracefulShutdown() {
+  bool error_code = kFailure;
+  // Delete stuff!
+  error_code = kSuccess;
+  return error_code;
+}

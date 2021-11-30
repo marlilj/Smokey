@@ -12,190 +12,178 @@
  *
  */
 
-#include <unistd.h>
-#include <iostream>
 
+#include <unistd.h>
+#include <math.h>
+#include <iostream>
+#include <chrono>  // NOLINT due to unapproved C++11 header
+#include <thread>  // NOLINT due to unapproved C++11 header
 #include "emulator.hpp"
 #include "engine_pindle_states.hpp"
-#include <chrono>
-#include <math.h> 
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
 
 InputHandler smokeyInputData;
 
-Emulator::Emulator(const std::string& interface_name)
-/* : socket_(interface_name) */ {}
-
-
-bool Emulator::ReadData() {
+bool Emulator::ReadData(Values_t &data) {
   SocketCan socket_("vcan0");
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-    if (fr.id==1) {  // TODO: add macro for CAN frame IDs
-      this->emulator_data_.throttle_set_value = fr.data[0];
-      this->emulator_data_.gear_set_value = fr.data[1];
-      this->emulator_data_.start_set_value = fr.data[2];
+    if (fr.id == 1) {  // TODO(Niklas): add macro for CAN frame IDs
+      data.throttle_set_value = fr.data[0];
+      data.pindle_set_value = fr.data[1];
+      data.start_set_value = fr.data[2];
       retval = true;
     }
   }
   return retval;
 }
 
+Emulator::Emulator(const std::string& interface_name) {
+/* : socket_(interface_name)  {} */
+  // Emulator::ReadAndSetPindle();
+  // Emulator::ReadData();
+}
+
 bool Emulator::Emulate() {
   int error_code = kFailure;
-  int8_t set_gear = PINDLE_PARKING;
-  int8_t print_set_gear = '.';
+while(true) {
+  Values_t values = emulator_data_.GetAll();
+  if (values.activate_engine) {
+    if (values.pindle_drive) {
+      this->FancyEmulation(values);
+      this->sendCAN(values);
+      error_code = emulator_data_.SetAll(values);
+      // Postponed functionality
+      // this->UpdateGearAutomatic();
+      // this->CalculateSpeed();
+      }
+    }
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+}
+
+  return error_code;
+}
+
+bool Emulator::ReadAndSetPindle() {
+  int error_code = kFailure;
+  int8_t set_pindle = PINDLE_PARKING;
   bool set_start = false;
 
   // Read CAN message
-  bool test = ReadData(); 
-  if (test) {
-//    std::cout << "Data has been read." << std::endl;
-    set_start = this->emulator_data_.start_set_value;
-    set_gear = this->emulator_data_.gear_set_value;
-    this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-    // this->emulator_data_.rpm =
-    // throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
+  while (true) {
+    Values_t values = emulator_data_.GetAll();
+  if (ReadData(values)) {
+    set_start = values.start_set_value;
+    set_pindle = values.pindle_set_value;
+    values.throttle = values.throttle_set_value;
 
-    if (set_gear == PINDLE_PARKING && set_start) {
-      PindleModes::PindleParking(emulator_data_);
-      print_set_gear = this->emulator_data_.gear_set_value-32;  // P
-    } else if (set_gear == PINDLE_PARKING && !set_start) {
-        PindleModes::OffMode(emulator_data_);
-        print_set_gear = '.';  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_DRIVE
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleDrive(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // D
+    if (set_pindle == PINDLE_PARKING && set_start) {
+        PindleModes::PindleParking(values);  // P
+    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && set_start) {
+        PindleModes::PindleDrive(values);  // D
         set_start = true;
-    } else if (set_gear == PINDLE_DRIVE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_NEUTRAL
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleNeutral(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // N
+    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && set_start) {  // NOLINT Due to line break making it less readable.
+        PindleModes::PindleNeutral(values);  // N
         set_start = true;
-    } else if (set_gear == PINDLE_NEUTRAL && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_REVERSE
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleReverse(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // R
+    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && set_start) {  // NOLINT Due to line break making it less readable.
+        PindleModes::PindleReverse(values);  // R
         set_start = true;
-    } else if (set_gear == PINDLE_REVERSE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.gear_set_value-32;  // P
+    } else if (set_pindle == PINDLE_PARKING && !set_start) {
+        PindleModes::PindleParking(values);  // P
         set_start = false;
+      }
     }
-
+    error_code = emulator_data_.SetAll(values);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
-  if (this->emulator_data_.activate_engine) {
-    if (this->emulator_data_.gear_drive) {
-      this->FancyEmulation();
-      this->sendCAN();
-      // Postponed functionality
-//      this->UpdateGearAutomatic();
-//      this->CalculateSpeed();
-    }
-  }
-
-  usleep(1000);
-//  usleep(DT);
-  error_code = kSuccess;
-
   return error_code;
 }
 
-
-bool Emulator::FancyEmulation() {
+bool Emulator::FancyEmulation(Values_t &data) {
   bool error_code = kFailure;
-  switch (this->emulator_data_.throttle) {
+  switch (data.throttle) {
     case 10:
-      this->emulator_data_.gear = FE_GEAR_AT_10;
-      this->emulator_data_.rpm = FE_RPM_AT_10;
-      this->emulator_data_.speed = FE_VELOCITY_AT_10;
+      data.gear = FE_GEAR_AT_10;
+      data.rpm = FE_RPM_AT_10;
+      data.speed = FE_VELOCITY_AT_10;
+
       break;
     case 20:
-      this->emulator_data_.gear = FE_GEAR_AT_20;
-      this->emulator_data_.rpm = FE_RPM_AT_20;
-      this->emulator_data_.speed = FE_VELOCITY_AT_20;
+      data.gear = FE_GEAR_AT_20;
+      data.rpm = FE_RPM_AT_20;
+      data.speed = FE_VELOCITY_AT_20;
+
       break;
     case 30:
-      this->emulator_data_.gear = FE_GEAR_AT_30;
-      this->emulator_data_.rpm = FE_RPM_AT_30;
-      this->emulator_data_.speed = FE_VELOCITY_AT_30;
+      data.gear = FE_GEAR_AT_30;
+      data.rpm = FE_RPM_AT_30;
+      data.speed = FE_VELOCITY_AT_30;
       break;
     case 40:
-      this->emulator_data_.gear = FE_GEAR_AT_40;
-      this->emulator_data_.rpm = FE_RPM_AT_40;
-      this->emulator_data_.speed = FE_VELOCITY_AT_40;
+      data.gear = FE_GEAR_AT_40;
+      data.rpm = FE_RPM_AT_40;
+      data.speed = FE_VELOCITY_AT_40;
       break;
     case 50:
-      this->emulator_data_.gear = FE_GEAR_AT_50;
-      this->emulator_data_.rpm = FE_RPM_AT_50;
-      this->emulator_data_.speed = FE_VELOCITY_AT_50;
+      data.gear = FE_GEAR_AT_50;
+      data.rpm = FE_RPM_AT_50;
+      data.speed = FE_VELOCITY_AT_50;
       break;
     case 60:
-      this->emulator_data_.gear = FE_GEAR_AT_60;
-      this->emulator_data_.rpm = FE_RPM_AT_60;
-      this->emulator_data_.speed = FE_VELOCITY_AT_60;
+      data.gear = FE_GEAR_AT_60;
+      data.rpm = FE_RPM_AT_60;
+      data.speed = FE_VELOCITY_AT_60;
       break;
     case 70:
-      this->emulator_data_.gear = FE_GEAR_AT_70;
-      this->emulator_data_.rpm = FE_RPM_AT_70;
-      this->emulator_data_.speed = FE_VELOCITY_AT_70;
+      data.gear = FE_GEAR_AT_70;
+      data.rpm = FE_RPM_AT_70;
+      data.speed = FE_VELOCITY_AT_70;
       break;
     case 80:
-      this->emulator_data_.gear = FE_GEAR_AT_80;
-      this->emulator_data_.rpm = FE_RPM_AT_80;
-      this->emulator_data_.speed = FE_VELOCITY_AT_80;
+      data.gear = FE_GEAR_AT_80;
+      data.rpm = FE_RPM_AT_80;
+      data.speed = FE_VELOCITY_AT_80;
+
       break;
     case 90:
-      this->emulator_data_.gear = FE_GEAR_AT_90;
-      this->emulator_data_.rpm = FE_RPM_AT_90;
-      this->emulator_data_.speed = FE_VELOCITY_AT_90;
+      data.gear = FE_GEAR_AT_90;
+      data.rpm = FE_RPM_AT_90;
+      data.speed = FE_VELOCITY_AT_90;
       break;
     case 100:
-      this->emulator_data_.gear = FE_GEAR_AT_100;
-      this->emulator_data_.rpm = FE_RPM_AT_100;
-      this->emulator_data_.speed = FE_VELOCITY_AT_100;
+      data.gear = FE_GEAR_AT_100;
+      data.rpm = FE_RPM_AT_100;
+      data.speed = FE_VELOCITY_AT_100;
       break;
     default:
-      this->emulator_data_.gear = FE_GEAR_AT_0;
-      this->emulator_data_.rpm = FE_RPM_AT_0;
-      this->emulator_data_.speed = FE_VELOCITY_AT_0;
+      data.gear = FE_GEAR_AT_0;
+      data.rpm = FE_RPM_AT_0;
+      data.speed = FE_VELOCITY_AT_0;
       break;
   }
+
   error_code = kSuccess;
 
-  std::cout << " gear: " << this->emulator_data_.gear << "\n"  // NOLINT
-    << " rpm: " << this->emulator_data_.rpm << "\n"<< " trottle: " << this->emulator_data_.throttle << std::endl;  // NOLINT
+  std::cout << " gear: " << data.gear << "\n"  // NOLINT
+    << " rpm: " << data.rpm << "\n"<< " trottle: " << data.throttle << std::endl;  // NOLINT
 
   return error_code;
 }
-
 
 bool Emulator::UpdateGearAutomatic() {
   bool error_code = kFailure;
   size_t new_gear = 0;
   size_t new_rpm = 0;
 
-//  if (this->emulator_data_.gear < this->emulator_data_.gear_set_value) {  // TODO: byt till automatiskt istället... NOLINT
+//  if (this->emulator_data_.gear < this->emulator_data_.GetGearSetValue()) {  // TODO: byt till automatiskt istället... NOLINT
 
-  if (this->emulator_data_.rpm >= GEAR_HIGH_RPM) {
+  if (this->emulator_data_.GetRpm() >= GEAR_HIGH_RPM) {
     // Switch up to next gear
     new_rpm = GEAR_LOW_RPM;
-    switch (this->emulator_data_.gear) {
+    switch (this->emulator_data_.GetGear()) {
       case EMULATOR_GEAR_1:
         new_gear = EMULATOR_GEAR_2;
         break;
@@ -211,11 +199,11 @@ bool Emulator::UpdateGearAutomatic() {
       default:  // EMULATOR_GEAR_5
         break;
     }
-//  } else if (this->emulator_data_.gear < this->emulator_data_.gear_set_value) {
-  } else if (this->emulator_data_.rpm <= GEAR_LOW_RPM) {
+//  } else if (this->emulator_data_.gear < this->emulator_data_.GetGearSetValue()) {
+  } else if (this->emulator_data_.GetRpm() <= GEAR_LOW_RPM) {
     // Switch gear down
     new_rpm = GEAR_HIGH_RPM;
-    switch (this->emulator_data_.gear) {
+    switch (this->emulator_data_.GetGear()) {
       case EMULATOR_GEAR_2:
         new_gear = EMULATOR_GEAR_1;
         break;
@@ -244,12 +232,12 @@ bool Emulator::UpdateGearAutomatic() {
 }
 
 bool Emulator::SetRPM(size_t _rpm) {
-  this->emulator_data_.rpm = _rpm;
+  this->emulator_data_.SetRpm(_rpm);
   return true;
 }
 
 bool Emulator::SetGear(size_t _gear) {
-  this->emulator_data_.gear = _gear;
+  this->emulator_data_.SetGear(_gear);
   return true;
 }
 
@@ -258,7 +246,7 @@ bool Emulator::CalculateSpeed() {
 
   CalculateForce();
 
-  this->emulator_data_.speed = this->emulator_data_.speed + ( (this->emulator_data_.forward_force / VEHICLE_MASS) * DT);  // NOLINT
+  this->emulator_data_.SetSpeed(this->emulator_data_.GetSpeed() + ( (this->emulator_data_.GetForwardForce() / VEHICLE_MASS) * DT));  // NOLINT
 
 //  std::cout << "Elapsed(ms)=" << since(start).count() << std::endl;
 //  this->emulator_data.speed = this->emulator_data.speed + ( (forward_force / VEHICLE_MASS) * (since(start).count())));
@@ -272,22 +260,22 @@ bool Emulator::CalculateSpeed() {
 bool Emulator::CalculateForce() {
   bool error_code = kFailure;
 
-  this->emulator_data_.forward_force = (DRIVE_TRAIN_RATIO
-      * this->emulator_data_.gear
+  this->emulator_data_.SetForwardForce((DRIVE_TRAIN_RATIO
+      * this->emulator_data_.GetGear()
       * this->GetEngineTorque() / WHEEL_RADIUS )
-      - this->GetAirResistance();  // TODO: Add road resistance etc... NOLINT
+      - this->GetAirResistance());  // TODO: Add road resistance etc... NOLINT
 
   error_code = kSuccess;
 
   return error_code;
 }
 
-bool Emulator::sendCAN() {
+bool Emulator::sendCAN(const Values_t &data) {
   // Construct the data to be sent
   EmulatorOutput_t data_to_send;
-  data_to_send.speed = static_cast<uint8_t>(this->emulator_data_.speed);
-  data_to_send.gear = static_cast<uint8_t>(this->emulator_data_.gear);
-  data_to_send.rpm = static_cast<uint16_t>(this->emulator_data_.rpm);
+  data_to_send.speed = static_cast<uint8_t>(data.speed);
+  data_to_send.gear = static_cast<uint8_t>(data.gear);
+  data_to_send.rpm = static_cast<uint16_t>(data.rpm);
 
   // Construct obejct from libcanencoder
   GetNewValues gnv;
@@ -300,13 +288,13 @@ size_t Emulator::GetEngineTorque() {
   double torque = 0;
 
   for (size_t i = 0; i < RPM_TORQUE_DATA_LENGTH; i++) {
-    if (this->emulator_data_.rpm == RPM_Torque[i].first) {
+    if (this->emulator_data_.GetRpm() == RPM_Torque[i].first) {
       torque = RPM_Torque[i].second;
       break;
-    } else if (this->emulator_data_.rpm < EMULATOR_IDLE_RPM) {
+    } else if (this->emulator_data_.GetRpm() < EMULATOR_IDLE_RPM) {
       // Engine not running
       break;
-    } else if (this->emulator_data_.rpm < RPM_Torque[i].first) {
+    } else if (this->emulator_data_.GetRpm() < RPM_Torque[i].first) {
       // Interpolate
       torque = RPM_Torque[i-1].second +
         (RPM_Torque[i].first-RPM_Torque[i-1].first)*
@@ -322,5 +310,13 @@ size_t Emulator::GetEngineTorque() {
 
 size_t Emulator::GetAirResistance() {
   return (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
-        * (std::pow((this->emulator_data_.speed / 3.6), 2))) / 2;
+        * (std::pow((this->emulator_data_.GetSpeed() / 3.6), 2))) / 2;
 }
+
+bool Emulator::GracefulShutdown() {
+  bool error_code = kFailure;
+  // Delete stuff!
+  error_code = kSuccess;
+  return error_code;
+}
+

@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.5.1)
 project(smokey_input_handler LANGUAGES CXX)
 
 
-add_definitions(-std=c++14)
+add_definitions(-std=c++17)
 
 # Locate GTest
 find_package(GTest REQUIRED)

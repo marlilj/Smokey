@@ -27,7 +27,7 @@ GetNewValues _get_new_values_;
 
 #include "interface_from_input_handler.hpp"
 #include "smokey_data.hpp"
-#include "include/input_handler.hpp"
+#include "input_handler.hpp"
 
 
 int main(void) {
@@ -38,7 +38,9 @@ int main(void) {
 
   SmokeyInput.InitInputHandler();
   SmokeyInput.ReadUserInput(get_new_values);
-  error_code = SmokeyInput.ExitInputHandler();
+  SmokeyInput.ExitInputHandler();
+
+  error_code = SmokeyInput.GracefulShutdown();
 
   return error_code;
 

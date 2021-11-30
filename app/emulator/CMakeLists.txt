@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.5.1)
 project(smokey_emulator LANGUAGES CXX)
 
 
-add_definitions(-std=c++14)
+add_definitions(-std=c++17)
 
 # Locate GTest
 find_package(GTest REQUIRED)
@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     main.cpp
     src/emulator.cpp
     src/engine_pindle_states.cpp
+    src/emulator_data.cpp
 )
 
 
