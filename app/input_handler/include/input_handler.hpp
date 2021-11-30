@@ -28,6 +28,7 @@ class InputHandler {
     bool InitInputHandler();
     bool ReadUserInput(GetNewValues &get_new_values);  // NOLINT
     bool ExitInputHandler();
+    bool GracefulShutdown();
 };
 
 #endif  // INPUT_HANDLER_HPP_  // NOLINT

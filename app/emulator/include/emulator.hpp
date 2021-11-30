@@ -21,7 +21,6 @@
 #include <string>
 #include "canio.hpp"
 #include "interface_from_input_handler.hpp"
-// #include "smokey_data.hpp"
 #include "input_handler.hpp"
 #include <utility>
 #include <mutex>
