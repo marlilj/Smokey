@@ -112,8 +112,10 @@ Values EmulatorData::GetAll() {
 }
 
 bool EmulatorData::SetAll(const Values_t &values) {
+  int error_code = kFailure;
   std::unique_lock lock_u(emulator_data_mutex_);
   this->values = values;
-  return false;
+  error_code = kSuccess;
+  return error_code;
 }
 
