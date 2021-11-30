@@ -12,14 +12,14 @@
  *
  */
 
-#include <unistd.h>
-#include <iostream>
 
+#include <unistd.h>
+#include <math.h>
+#include <iostream>
+#include <chrono>  // NOLINT due to unapproved C++11 header
+#include <thread>  // NOLINT due to unapproved C++11 header
 #include "emulator.hpp"
 #include "engine_pindle_states.hpp"
-#include <chrono>
-#include <thread>
-#include <math.h>
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
 
@@ -91,7 +91,7 @@ bool Emulator::ReadAndSetPindle() {
     } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && set_start) {  // NOLINT Due to line break making it less readable.
         PindleModes::PindleReverse(values);  // R
         set_start = true;
-    } else if (!set_start) {
+    } else if (set_pindle == PINDLE_PARKING && !set_start) {
         PindleModes::PindleParking(values);  // P
         set_start = false;
       }

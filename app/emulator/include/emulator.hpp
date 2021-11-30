@@ -198,7 +198,7 @@ class Emulator {
   EmulatorData_t emulator_data_;
   /* SocketCan socket_; */
  public:
-  Emulator(const std::string &); // NOLINT
+  Emulator(const std::string &); // NOLINT no marking explixit.
   bool Emulate();
   bool ReadData(Values_t &);
   bool sendCAN(const Values_t &);
