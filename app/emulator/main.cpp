@@ -16,8 +16,7 @@
 #include <utility>
 #include <thread>
 #include <chrono>
-// #include "smokey_data.hpp"
-#include "../../lib/libcanio/include/smokey_data.hpp"
+#include "smokey_data.hpp"
 #include "include/emulator.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
 
