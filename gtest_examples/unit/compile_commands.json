@@ -1,7 +1,0 @@
-[
-  {
-      "directory": "pwd path",
-      "command": "/usr/bin/clang -g main_test.cpp -o file.o",
-      "file": "main_test.cpp"
-  }
-]
