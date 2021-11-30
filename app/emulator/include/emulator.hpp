@@ -110,21 +110,27 @@
 // 6 0.691
 // Final drive 3.460
 
+
+
+typedef struct Values {
+    size_t throttle_set_value = 0;
+    size_t throttle;
+    size_t gear_set_value = PINDLE_PARKING;
+    size_t start_set_value = false;
+    size_t gear;
+    size_t rpm;
+    size_t speed;
+    size_t forward_force = 0;
+    bool activate_engine = false;
+    bool pindle_neutral = false;
+    bool pindle_drive = false;
+    bool pindle_reverse = false;
+    bool parking_flag = false;
+  } Values_t;
+
 class EmulatorData {
  private:
-  size_t throttle_set_value = 0;
-  size_t throttle;
-  size_t gear_set_value = PINDLE_PARKING;
-  size_t start_set_value = false;
-  size_t gear;
-  size_t rpm;
-  size_t speed;
-  size_t forward_force = 0;
-  bool activate_engine = false;
-  bool pindle_neutral = false;
-  bool pindle_drive = false;
-  bool pindle_reverse = false;
-  bool parking_flag = false;
+  Values_t values;
   std::shared_mutex emulator_data_mutex_;
 
  public:
@@ -141,6 +147,7 @@ class EmulatorData {
   bool GetPindleDrive();
   bool GetPindleReverse();
   bool GetParkingFlag();
+  Values GetAll();
 
   void SetThrottleSetValue(const size_t &);
   void SetThrottle(const size_t &);
@@ -156,6 +163,7 @@ class EmulatorData {
   void SetPindleDrive(const bool &);
   void SetPindleReverse(const bool &);
   void SetParkingFlag(const bool &);
+  void SetAll(const Values &);
 };
 
 typedef EmulatorData EmulatorData_t;
@@ -192,8 +200,8 @@ class Emulator {
  public:
   Emulator(const std::string &); // NOLINT
   bool Emulate();
-  bool ReadData();
-  bool sendCAN();
+  bool ReadData(Values_t &);
+  bool sendCAN(const Values_t &);
 // Calculations
   bool UpdateGearAutomatic();
   bool SetRPM(size_t _rpm);
@@ -204,7 +212,7 @@ class Emulator {
   size_t GetAirResistance();
 
   // ...
-  bool FancyEmulation();
+  bool FancyEmulation(Values_t &);
   bool ReadAndSetPindle();
   bool GracefulShutdown();
 };
