@@ -71,8 +71,7 @@ while(true) {
 
 bool Emulator::ReadAndSetPindle() {
   int error_code = kFailure;
-  int8_t set_gear = PINDLE_PARKING;
-  int8_t print_set_gear = '.';
+  int8_t set_pindle = PINDLE_PARKING;
   bool set_start = false;
 
   // Read CAN message
@@ -80,50 +79,47 @@ bool Emulator::ReadAndSetPindle() {
   if (ReadData()) {
 //    std::cout << "Data has been read." << std::endl;
     set_start = this->emulator_data_.GetStartSetValue();
-    set_gear = this->emulator_data_.GetGearSetValue();
+    set_pindle = this->emulator_data_.GetGearSetValue();
     emulator_data_.SetThrottle(emulator_data_.GetThrottleSetValue());
     // this->emulator_data_.rpm =
     // throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
 
-    if (set_gear == PINDLE_PARKING && set_start) {
-      PindleModes::PindleParking(emulator_data_);
-      print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // P
-    } else if (set_gear == PINDLE_PARKING && !set_start) {
-        PindleModes::OffMode(emulator_data_);
-        print_set_gear = '.';  // .
+    if (set_pindle == PINDLE_PARKING && set_start) {
+      PindleModes::PindleParking(emulator_data_);  // P
+    } else if (set_pindle == PINDLE_PARKING && !set_start) {
+        PindleModes::OffMode(emulator_data_);  // No gear selected.
         set_start = false;
-    } else if (emulator_data_.GetParkingFlag() && set_gear == PINDLE_DRIVE
-              && !emulator_data_.GetPindleNeutral() && !emulator_data_.GetPindleDrive()
+    } else if (emulator_data_.GetParkingFlag() && set_pindle == PINDLE_DRIVE
+              && !emulator_data_.GetPindleNeutral() &&
+              !emulator_data_.GetPindleDrive()
               && !emulator_data_.GetPindleReverse() && set_start) {
-        PindleModes::PindleDrive(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // D
+        PindleModes::PindleDrive(emulator_data_);  // D
         set_start = true;
-    } else if (set_gear == PINDLE_DRIVE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // P
+    } else if (set_pindle == PINDLE_DRIVE && !set_start) {
+        PindleModes::PindleParking(emulator_data_);  // P
         set_start = false;
-    } else if (emulator_data_.GetParkingFlag() && set_gear == PINDLE_NEUTRAL
-              && !emulator_data_.GetPindleNeutral() && !emulator_data_.GetPindleDrive()
+    } else if (emulator_data_.GetParkingFlag() && set_pindle == PINDLE_NEUTRAL
+              && !emulator_data_.GetPindleNeutral() &&
+              !emulator_data_.GetPindleDrive()
               && !emulator_data_.GetPindleReverse() && set_start) {
-        PindleModes::PindleNeutral(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // N
+        PindleModes::PindleNeutral(emulator_data_);  // N
         set_start = true;
-    } else if (set_gear == PINDLE_NEUTRAL && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // P
+    } else if (set_pindle == PINDLE_NEUTRAL && !set_start) {
+        PindleModes::PindleParking(emulator_data_);  // P
         set_start = false;
-    } else if (emulator_data_.GetParkingFlag() && set_gear == PINDLE_REVERSE
-              && !emulator_data_.GetPindleNeutral() && !emulator_data_.GetPindleDrive()
+    } else if (emulator_data_.GetParkingFlag() && set_pindle == PINDLE_REVERSE
+              && !emulator_data_.GetPindleNeutral() &&
+              !emulator_data_.GetPindleDrive()
               && !emulator_data_.GetPindleReverse() && set_start) {
-        PindleModes::PindleReverse(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // R
+        PindleModes::PindleReverse(emulator_data_);  // R
         set_start = true;
-    } else if (set_gear == PINDLE_REVERSE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.GetGearSetValue()-32;  // P
+    } else if (set_pindle == PINDLE_REVERSE && !set_start) {
+        PindleModes::PindleParking(emulator_data_);  // P
         set_start = false;
       }
     }
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   return error_code;
 }
@@ -187,6 +183,7 @@ bool Emulator::FancyEmulation() {
       this->emulator_data_.SetSpeed(FE_VELOCITY_AT_0);
       break;
   }
+
   error_code = kSuccess;
 
   std::cout << " gear: " << this->emulator_data_.GetGear() << "\n"  // NOLINT

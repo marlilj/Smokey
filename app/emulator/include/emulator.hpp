@@ -25,6 +25,7 @@
 #include "input_handler.hpp"
 #include <utility>
 #include <mutex>
+#include <shared_mutex>
 
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
@@ -125,7 +126,7 @@ class EmulatorData {
   bool pindle_drive = false;
   bool pindle_reverse = false;
   bool parking_flag = false;
-  std::recursive_mutex emulator_data_mutex_;
+  std::shared_timed_mutex emulator_data_mutex_;
 
  public:
   size_t GetThrottleSetValue();
