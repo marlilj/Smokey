@@ -126,7 +126,7 @@ class EmulatorData {
   bool pindle_drive = false;
   bool pindle_reverse = false;
   bool parking_flag = false;
-  std::shared_timed_mutex emulator_data_mutex_;
+  std::shared_mutex emulator_data_mutex_;
 
  public:
   size_t GetThrottleSetValue();
