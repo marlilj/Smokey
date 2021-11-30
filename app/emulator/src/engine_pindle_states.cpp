@@ -32,7 +32,7 @@ int16_t PindleModes::PindleParking(Values_t &data) {
   data.pindle_neutral = false;
   data.pindle_drive = false;
   data.pindle_reverse = false;
-  data.gear_set_value = PINDLE_PARKING;
+  data.pindle_set_value = PINDLE_PARKING;
   data.parking_flag = true;
 
   return 0;

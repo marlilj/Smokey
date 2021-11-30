@@ -115,7 +115,7 @@
 typedef struct Values {
     size_t throttle_set_value = 0;
     size_t throttle;
-    size_t gear_set_value = PINDLE_PARKING;
+    size_t pindle_set_value = PINDLE_PARKING;
     size_t start_set_value = false;
     size_t gear;
     size_t rpm;
@@ -163,7 +163,7 @@ class EmulatorData {
   void SetPindleDrive(const bool &);
   void SetPindleReverse(const bool &);
   void SetParkingFlag(const bool &);
-  void SetAll(const Values &);
+  bool SetAll(const Values &);
 };
 
 typedef EmulatorData EmulatorData_t;

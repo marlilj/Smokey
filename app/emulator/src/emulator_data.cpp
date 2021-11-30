@@ -10,7 +10,7 @@ size_t EmulatorData::GetThrottle() {
 }
 size_t EmulatorData::GetGearSetValue() {
   const std::shared_lock lock_s(emulator_data_mutex_);
-  return values.gear_set_value;
+  return values.pindle_set_value;
 }
 size_t EmulatorData::GetStartSetValue() {
   const std::shared_lock lock_s(emulator_data_mutex_);
@@ -63,7 +63,7 @@ void EmulatorData::SetThrottle(const size_t& throttle_in_val) {
 }
 void EmulatorData::SetGearSetValue(const size_t& gear_in_set_val) {
   std::unique_lock lock_u(emulator_data_mutex_);
-  values.gear_set_value = gear_in_set_val;
+  values.pindle_set_value = gear_in_set_val;
 }
 void EmulatorData::SetStartSetValue(const size_t& start_in_val) {
   std::unique_lock lock_u(emulator_data_mutex_);
@@ -111,8 +111,9 @@ Values EmulatorData::GetAll() {
   return values;
 }
 
-void EmulatorData::SetAll(const Values_t &values) {
+bool EmulatorData::SetAll(const Values_t &values) {
   std::unique_lock lock_u(emulator_data_mutex_);
   this->values = values;
+  return false;
 }
 

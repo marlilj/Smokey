@@ -32,7 +32,7 @@ bool Emulator::ReadData(Values_t &data) {
   if (socket_.read(fr) == STATUS_OK) {
     if (fr.id == 1) {  // TODO(Niklas): add macro for CAN frame IDs
       data.throttle_set_value = fr.data[0];
-      data.gear_set_value = fr.data[1];
+      data.pindle_set_value = fr.data[1];
       data.start_set_value = fr.data[2];
       retval = true;
     }
@@ -54,78 +54,50 @@ while(true) {
     if (values.pindle_drive) {
       this->FancyEmulation(values);
       this->sendCAN(values);
-      emulator_data_.SetAll(values);
+      error_code = emulator_data_.SetAll(values);
       // Postponed functionality
-//      this->UpdateGearAutomatic();
-//      this->CalculateSpeed();
+      // this->UpdateGearAutomatic();
+      // this->CalculateSpeed();
       }
     }
 
-
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
-  // usleep(1000);
-//  usleep(DT);
-  error_code = kSuccess;
 
   return error_code;
 }
 
 bool Emulator::ReadAndSetPindle() {
-  
   int error_code = kFailure;
   int8_t set_pindle = PINDLE_PARKING;
   bool set_start = false;
 
   // Read CAN message
-  while(true) {
+  while (true) {
     Values_t values = emulator_data_.GetAll();
   if (ReadData(values)) {
-//    std::cout << "Data has been read." << std::endl;
     set_start = values.start_set_value;
-    set_pindle = values.gear_set_value;
+    set_pindle = values.pindle_set_value;
     values.throttle = values.throttle_set_value;
-    
-    // this->emulator_data_.rpm =
-    // throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
 
     if (set_pindle == PINDLE_PARKING && set_start) {
-      PindleModes::PindleParking(values);  // P
-    } else if (set_pindle == PINDLE_PARKING && !set_start) {
-        PindleModes::OffMode(values);  // No gear selected.
-        set_start = false;
-    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE
-              && !values.pindle_neutral &&
-              !values.pindle_drive
-              && !values.pindle_reverse && set_start) {
+        PindleModes::PindleParking(values);  // P
+    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && set_start) {
         PindleModes::PindleDrive(values);  // D
         set_start = true;
-    } else if (set_pindle == PINDLE_DRIVE && !set_start) {
-        PindleModes::PindleParking(values);  // P
-        set_start = false;
-    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL
-              && !values.pindle_neutral &&
-              !values.pindle_drive
-              && !values.pindle_reverse && set_start) {
+    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && set_start) {  // NOLINT Due to line break making it less readable.
         PindleModes::PindleNeutral(values);  // N
         set_start = true;
-    } else if (set_pindle == PINDLE_NEUTRAL && !set_start) {
-        PindleModes::PindleParking(values);  // P
-        set_start = false;
-    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE
-              && !values.pindle_neutral &&
-              !values.pindle_drive
-              && !values.pindle_reverse && set_start) {
+    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && set_start) {  // NOLINT Due to line break making it less readable.
         PindleModes::PindleReverse(values);  // R
         set_start = true;
-    } else if (set_pindle == PINDLE_REVERSE && !set_start) {
+    } else if (!set_start) {
         PindleModes::PindleParking(values);  // P
         set_start = false;
       }
     }
-    emulator_data_.SetAll(values);
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    error_code = emulator_data_.SetAll(values);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   return error_code;
 }
@@ -137,13 +109,13 @@ bool Emulator::FancyEmulation(Values_t &data) {
       data.gear = FE_GEAR_AT_10;
       data.rpm = FE_RPM_AT_10;
       data.speed = FE_VELOCITY_AT_10;
-      
+
       break;
     case 20:
       data.gear = FE_GEAR_AT_20;
       data.rpm = FE_RPM_AT_20;
       data.speed = FE_VELOCITY_AT_20;
-      
+
       break;
     case 30:
       data.gear = FE_GEAR_AT_30;
@@ -174,7 +146,7 @@ bool Emulator::FancyEmulation(Values_t &data) {
       data.gear = FE_GEAR_AT_80;
       data.rpm = FE_RPM_AT_80;
       data.speed = FE_VELOCITY_AT_80;
-      
+
       break;
     case 90:
       data.gear = FE_GEAR_AT_90;
