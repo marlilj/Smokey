@@ -18,6 +18,8 @@
 
 
 int16_t PindleModes::OffMode(EmulatorData_t &emulator_data_) {
+  emulator_data_.rpm = 0;
+  emulator_data_.speed = 0;
   emulator_data_.activate_engine = false;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = false;
@@ -47,6 +49,7 @@ int16_t PindleModes::PindleNeutral(EmulatorData_t &emulator_data_) {
 }
 int16_t PindleModes::PindleDrive(EmulatorData_t &emulator_data_) {
   emulator_data_.gear = 1;
+  emulator_data_.rpm = EMULATOR_IDLE_RPM;
   emulator_data_.activate_engine = true;
   emulator_data_.gear_neutral = false;
   emulator_data_.gear_drive = true;
