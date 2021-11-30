@@ -12,8 +12,7 @@
  *
  */
 
-#include "../include/engine_pindle_states.hpp"
-
+#include "engine_pindle_states.hpp"
 #include "smokey_data.hpp"
 
 

@@ -19,12 +19,12 @@
 #include <unistd.h>
 #include <iostream>
 #include <string>
+#include <utility>
+#include <mutex>  // NOLINT due to unapproved C++11 header
+#include <shared_mutex>
 #include "canio.hpp"
 #include "interface_from_input_handler.hpp"
 #include "input_handler.hpp"
-#include <utility>
-#include <mutex>
-#include <shared_mutex>
 
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
