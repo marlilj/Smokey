@@ -22,6 +22,8 @@ typedef struct __attribute__((__packed__)) SmokeyPayload {
   uint8_t throttle = 0;
   uint8_t gear = 112;
   uint8_t start = 0;
+  uint8_t breaking = 0;
+  uint8_t shutdown = 0;
 } Payload_t;
 
 typedef struct __attribute__ ((__packed__)) EmulatorOutput {
