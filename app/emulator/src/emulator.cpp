@@ -12,146 +12,127 @@
  *
  */
 
-#include <unistd.h>
-#include <iostream>
 
+#include <unistd.h>
+#include <math.h>
+#include <iostream>
+#include <chrono>  // NOLINT due to unapproved C++11 header
+#include <thread>  // NOLINT due to unapproved C++11 header
 #include "emulator.hpp"
 #include "engine_pindle_states.hpp"
-#include <chrono>
-#include <math.h> 
 #include "smokey_data.hpp"
 #include "input_handler.hpp"
 
 InputHandler smokeyInputData;
 
-Emulator::Emulator(const std::string& interface_name)
-/* : socket_(interface_name) */ {}
-
-
-bool Emulator::ReadData() {
+bool Emulator::ReadData(Values_t &data) {
   SocketCan socket_("vcan0");
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
-    if (fr.id==1) {  // TODO: add macro for CAN frame IDs
-      this->emulator_data_.throttle_set_value = fr.data[0];
-      this->emulator_data_.pindle_set_value = fr.data[1];
-      this->emulator_data_.start_set_value = fr.data[2];
+    if (fr.id == 1) {  // TODO(Niklas): add macro for CAN frame IDs
+      data.throttle_set_value = fr.data[0];
+      data.pindle_set_value = fr.data[1];
+      data.start_set_value = fr.data[2];
       retval = true;
     }
   }
   return retval;
 }
 
+Emulator::Emulator(const std::string& interface_name) {
+/* : socket_(interface_name)  {} */
+  // Emulator::ReadAndSetPindle();
+  // Emulator::ReadData();
+}
+
 bool Emulator::Emulate() {
   int error_code = kFailure;
-  int8_t set_gear = PINDLE_PARKING;
-  int8_t print_set_gear = '.';
-  bool set_start = false;
 
-  // TODO: Move to separate function
+  while (true) {
+    Values_t values = emulator_data_.GetAll();
+    if (values.activate_engine) {
+      if (values.pindle_drive
+          && (values.throttle > 0 || values.speed > 0)
+          && values.gear != 0) {
+        this->calculateEngineTorque(&values);
+        this->CalculateForce(&values);
+        this->CalculateSpeed(&values);
+      }
+      this->CalculateRPM(&values);
+      this->UpdateGearAutomatic(&values);
+      this->sendCAN(values);
+      error_code = emulator_data_.SetAll(values);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+  return error_code;
+}
+
+bool Emulator::CalculateSpeed(Values_t *data) {
+  bool error_code = kFailure;
+
+  if (data->speed < MAX_SPEED) {
+    data->speed = data->speed
+      + ( (data->forward_force / VEHICLE_MASS) * (DT/1000.0));
+  }
+  error_code = kSuccess;
+
+  return error_code;
+}
+
+
+bool Emulator::ReadAndSetPindle() {
+  int error_code = kFailure;
+  int8_t set_pindle = PINDLE_PARKING;
+  bool started = false;
+
   // Read CAN message
-  if (ReadData()) {
-//    std::cout << "Data has been read." << std::endl;
-    set_start = this->emulator_data_.start_set_value;
-    set_gear = this->emulator_data_.pindle_set_value;
- 
+  while (true) {
+    Values_t values = emulator_data_.GetAll();
+    if (ReadData(values)) {
+      started = values.start_set_value;
+      set_pindle = values.pindle_set_value;
+      values.throttle = values.throttle_set_value;
 
-    this->emulator_data_.throttle = this->emulator_data_.throttle_set_value;
-    // this->emulator_data_.rpm =
-    // throttle_to_RPM_one_gear[(this->emulator_data_.throttle)/10];
-
-    if (set_gear == PINDLE_PARKING && set_start) {
-      PindleModes::PindleParking(emulator_data_);
-      print_set_gear = this->emulator_data_.pindle_set_value-32;  // P
-    } else if (set_gear == PINDLE_PARKING && !set_start) {
-        PindleModes::OffMode(emulator_data_);
-        print_set_gear = '.';  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_DRIVE
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleDrive(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // D
-        set_start = true;
-    } else if (set_gear == PINDLE_DRIVE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_NEUTRAL
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleNeutral(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // N
-        set_start = true;
-    } else if (set_gear == PINDLE_NEUTRAL && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // P
-        set_start = false;
-    } else if (emulator_data_.parking_flag && set_gear == PINDLE_REVERSE
-              && !emulator_data_.gear_neutral && !emulator_data_.gear_drive
-              && !emulator_data_.gear_reverse && set_start) {
-        PindleModes::PindleReverse(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // R
-        set_start = true;
-    } else if (set_gear == PINDLE_REVERSE && !set_start) {
-        PindleModes::PindleParking(emulator_data_);
-        print_set_gear = this->emulator_data_.pindle_set_value-32;  // P
-        set_start = false;
+      if (set_pindle == PINDLE_PARKING && started) {
+          PindleModes::PindleParking(values);  // P
+      } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
+          PindleModes::PindleDrive(values);  // D
+          started = true;
+      } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleNeutral(values);  // N
+          started = true;
+      } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleReverse(values);  // R
+          started = true;
+      } else if (set_pindle == PINDLE_PARKING && !started) {
+          PindleModes::PindleParking(values);  // P
+          started = false;
+        }
+      }
+      error_code = emulator_data_.SetAll(values);
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-
-  }
-  if (this->emulator_data_.activate_engine) {
-    if (this->emulator_data_.gear_drive
-      && (this->emulator_data_.throttle > 0 || this->emulator_data_.speed > 0)
-      && this->emulator_data_.gear != 0) {
-//      this->FancyEmulation();
-
-      this->calculateEngineTorque();
-      this->CalculateForce();
-      this->CalculateSpeed();
-      // this->CalculateRPM();
-
-      // this->UpdateGearAutomatic();
-      // this->sendCAN();
-    }
-    this->CalculateRPM();
-    this->UpdateGearAutomatic();
-    this->sendCAN();
-  }
-
-  usleep(DT);
-  error_code = kSuccess;
-
   return error_code;
 }
 
-bool Emulator::CalculateSpeed() {
-  bool error_code = kFailure;
-
-  if (this->emulator_data_.speed < MAX_SPEED) {
-    this->emulator_data_.speed = this->emulator_data_.speed
-      + ( (this->emulator_data_.forward_force / VEHICLE_MASS) * (DT/1000.0));
-  }
-  error_code = kSuccess;
-
-  return error_code;
-}
-
-bool Emulator::CalculateForce() {
+bool Emulator::CalculateForce(Values_t *data) {
   bool error_code = kFailure;
 
 
-  float f_t = (this->emulator_data_.engine_torque
-    * emulator_gear_ratio[this->emulator_data_.gear-1]
+  float f_t = (data->engine_torque
+    * emulator_gear_ratio[data->gear-1]
     * DRIVE_TRAIN_RATIO
     * DRIVE_TRAIN_EFFICIENY )
     / WHEEL_RADIUS;
 
   float f_a = 0.5 * (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
-        * ((this->emulator_data_.speed)*(this->emulator_data_.speed)) );
+        * ((data->speed)*(data->speed)) );
 
-  this->emulator_data_.forward_force = f_t - f_a - ROAD_RESISTANCE_FORCE;
+  data->forward_force = f_t - f_a - ROAD_RESISTANCE_FORCE;
 
   error_code = kSuccess;
 
@@ -159,22 +140,22 @@ bool Emulator::CalculateForce() {
 }
 
 
-bool Emulator::calculateEngineTorque() {
+bool Emulator::calculateEngineTorque(Values_t *data) {
   bool error_code = kSuccess;
   double torque = 0;
 
-  if (this->emulator_data_.rpm < EMULATOR_IDLE_RPM) {
+  if (data->rpm < EMULATOR_IDLE_RPM) {
       // Engine not running
       torque = RPM_Torque[0].second;  // Set to torque for idle rpm
   } else {
     for (size_t i = 0; i < RPM_TORQUE_DATA_LENGTH-1; i++) {
-      if (this->emulator_data_.rpm == RPM_Torque[i].first) {
+      if (data->rpm == RPM_Torque[i].first) {
         torque = RPM_Torque[i].second;
         break;
-      } else if (this->emulator_data_.rpm < RPM_Torque[i+1].first) {
+      } else if (data->rpm < RPM_Torque[i+1].first) {
         // Interpolate
         torque = RPM_Torque[i].second +
-          (this->emulator_data_.rpm-RPM_Torque[i].first)*
+          (data->rpm-RPM_Torque[i].first)*
           ((RPM_Torque[i+1].second-RPM_Torque[i].second)/
           (RPM_Torque[i+1].first-RPM_Torque[i].first));
           break;
@@ -185,63 +166,60 @@ bool Emulator::calculateEngineTorque() {
     }
   }
 
-  this->emulator_data_.engine_torque = (torque
-    * this->emulator_data_.throttle * 0.01);
+  data->engine_torque = (torque
+    * data->throttle * 0.01);
 
   return error_code;
 }
 
-
-
-
-bool Emulator::UpdateGearAutomatic() {
+bool Emulator::UpdateGearAutomatic(Values_t *data) {
   bool error_code = kFailure;
 
-  if ((this->emulator_data_.rpm > GEAR_HIGH_RPM)
-      && (emulator_gear_limits[(this->emulator_data_.throttle)/10].second
-      > this->emulator_data_.gear) ) {
+  if ((data->rpm > GEAR_HIGH_RPM)
+      && (emulator_gear_limits[(data->throttle)/10].second
+      > data->gear) ) {
     // Switch up to next gear
-    switch (this->emulator_data_.gear) {
+    switch (data->gear) {
       case EMULATOR_GEAR_1:
-        this->emulator_data_.gear = EMULATOR_GEAR_2;
-        this->emulator_data_.rpm = GEAR_LOW_RPM;
+        data->gear = EMULATOR_GEAR_2;
+        data->rpm = GEAR_LOW_RPM;
         break;
       case EMULATOR_GEAR_2:
-        this->emulator_data_.gear = EMULATOR_GEAR_3;
-        this->emulator_data_.rpm = GEAR_LOW_RPM;
+        data->gear = EMULATOR_GEAR_3;
+        data->rpm = GEAR_LOW_RPM;
         break;
       case EMULATOR_GEAR_3:
-        this->emulator_data_.gear = EMULATOR_GEAR_4;
-        this->emulator_data_.rpm = GEAR_LOW_RPM;
+        data->gear = EMULATOR_GEAR_4;
+        data->rpm = GEAR_LOW_RPM;
         break;
       case EMULATOR_GEAR_4:
-        this->emulator_data_.gear = EMULATOR_GEAR_5;
-        this->emulator_data_.rpm = GEAR_LOW_RPM;
+        data->gear = EMULATOR_GEAR_5;
+        data->rpm = GEAR_LOW_RPM;
         break;
       default:  // EMULATOR_GEAR_5
         break;
     }
     error_code = kSuccess;
-  } else if ((this->emulator_data_.rpm < GEAR_LOW_RPM)
-      && (emulator_gear_limits[(this->emulator_data_.throttle)/10].first <
-      this->emulator_data_.gear)) {
+  } else if ((data->rpm < GEAR_LOW_RPM)
+      && (emulator_gear_limits[(data->throttle)/10].first <
+      data->gear)) {
     // Switch gear down
-    switch (this->emulator_data_.gear) {
+    switch (data->gear) {
       case EMULATOR_GEAR_2:
-        this->emulator_data_.gear = EMULATOR_GEAR_1;
-        this->emulator_data_.rpm = GEAR_HIGH_RPM;
+        data->gear = EMULATOR_GEAR_1;
+        data->rpm = GEAR_HIGH_RPM;
         break;
       case EMULATOR_GEAR_3:
-        this->emulator_data_.gear = EMULATOR_GEAR_2;
-        this->emulator_data_.rpm = GEAR_HIGH_RPM;
+        data->gear = EMULATOR_GEAR_2;
+        data->rpm = GEAR_HIGH_RPM;
         break;
       case EMULATOR_GEAR_4:
-        this->emulator_data_.gear = EMULATOR_GEAR_3;
-        this->emulator_data_.rpm = GEAR_HIGH_RPM;
+        data->gear = EMULATOR_GEAR_3;
+        data->rpm = GEAR_HIGH_RPM;
         break;
       case EMULATOR_GEAR_5:
-        this->emulator_data_.gear = EMULATOR_GEAR_4;
-        this->emulator_data_.rpm = GEAR_HIGH_RPM;
+        data->gear = EMULATOR_GEAR_4;
+        data->rpm = GEAR_HIGH_RPM;
         break;
       default:  // EMULATOR_GEAR_1
         break;
@@ -252,27 +230,28 @@ bool Emulator::UpdateGearAutomatic() {
   return error_code;
 }
 
-bool Emulator::CalculateRPM() {
-  if (this->emulator_data_.speed >= 0) {
-    this->emulator_data_.rpm = (30/3.14)
-      * (this->emulator_data_.speed / WHEEL_RADIUS)
-      * DRIVE_TRAIN_RATIO * emulator_gear_ratio[this->emulator_data_.gear-1];
+bool Emulator::CalculateRPM(Values_t *data) {
+  if (data->speed >= 0) {
+    data->rpm = (30/3.14)
+      * (data->speed / WHEEL_RADIUS)
+      * DRIVE_TRAIN_RATIO * emulator_gear_ratio[data->gear-1];
   }
 
-  if (this->emulator_data_.rpm <= EMULATOR_IDLE_RPM) {
-    this->emulator_data_.rpm = EMULATOR_IDLE_RPM - std::rand()%50;
-  } else if (this->emulator_data_.rpm >= EMULATOR_MAX_RPM) {
-    this->emulator_data_.rpm = EMULATOR_MAX_RPM + std::rand()%50;
+  if (data->rpm <= EMULATOR_IDLE_RPM) {
+    data->rpm = EMULATOR_IDLE_RPM - std::rand()%50;
+  } else if (data->rpm >= EMULATOR_MAX_RPM) {
+    data->rpm = EMULATOR_MAX_RPM + std::rand()%50;
   }
   return true;
 }
 
-bool Emulator::sendCAN() {
+
+bool Emulator::sendCAN(const Values_t &data) {
   // Construct the data to be sent
   EmulatorOutput_t data_to_send;
-  data_to_send.speed = static_cast<uint8_t>(this->emulator_data_.speed*3.6);
-  data_to_send.gear = static_cast<uint8_t>(this->emulator_data_.gear);
-  data_to_send.rpm = static_cast<uint16_t>(this->emulator_data_.rpm);
+  data_to_send.speed = static_cast<uint8_t>(data.speed*3.6);
+  data_to_send.gear = static_cast<uint8_t>(data.gear);
+  data_to_send.rpm = static_cast<uint16_t>(data.rpm);
 
   // Construct obejct from libcanencoder
   GetNewValues gnv;
@@ -280,3 +259,11 @@ bool Emulator::sendCAN() {
   bool return_value = gnv.sendMessageOnCAN(frame_to_send);
   return return_value;
 }
+
+bool Emulator::GracefulShutdown() {
+  bool error_code = kFailure;
+  // Delete stuff!
+  error_code = kSuccess;
+  return error_code;
+}
+

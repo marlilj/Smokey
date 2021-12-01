@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.5.1)
-add_definitions(-std=c++14)
+add_definitions(-std=c++17)
 project( smokey_lab )
 
 add_subdirectory(app)

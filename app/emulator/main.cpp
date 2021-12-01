@@ -17,7 +17,7 @@
 #include <thread>
 #include <chrono>
 #include "smokey_data.hpp"
-#include "include/emulator.hpp"
+#include "emulator.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
 
 
@@ -28,7 +28,13 @@ int main() {
 
   Emulator emulator("vcan0");
 
-  while(emulator.Emulate()); // NOLINT
+  std::thread thread1(&Emulator::ReadAndSetPindle, &emulator);
+  std::thread thread2(&Emulator::Emulate, &emulator);
+
+  thread1.join();
+  thread2.join();
+
+  error_code = emulator.GracefulShutdown();
 
   return error_code;
 }
