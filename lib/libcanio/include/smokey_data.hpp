@@ -30,6 +30,8 @@ typedef struct __attribute__ ((__packed__)) EmulatorOutput {
   uint8_t speed;
   uint8_t gear;
   uint16_t rpm;
+  uint8_t breaking;
+  uint16_t shutdown;
 } EmulatorOutput_t;
 
 const bool kSuccess = false;
