@@ -39,20 +39,17 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     } else if ( (48 <= ch) && (ch <= 57) ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.throttle = (ch-48)*10;
-        get_new_values.getNewValues(SmokeyInputData);
     } else if ( ch == 112 || ch == 110 || ch == 100 || ch == 114 ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.gear = ch;
-        get_new_values.getNewValues(SmokeyInputData);
     } else if ( ch == 115 && !SmokeyInputData.start ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.start = 1;
-        get_new_values.getNewValues(SmokeyInputData);
     } else if ( ch == 115 && SmokeyInputData.start ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.start = 0;
-        get_new_values.getNewValues(SmokeyInputData);
     }
+    get_new_values.getNewValues(SmokeyInputData);
     usleep(5);
   }
 
