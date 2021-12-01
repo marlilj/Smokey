@@ -65,6 +65,9 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     usleep(5);
   }
   std::cout << "Exiting ..." << std::endl;
+
+  SmokeyInputData.gear = 0;
+  SmokeyInputData.start = 0;
   // Sending multiple times to make sure message is sent
   for (size_t i = 0; i < 10 ; i++) {
     get_new_values.getNewValues(SmokeyInputData);
