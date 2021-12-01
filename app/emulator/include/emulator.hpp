@@ -23,6 +23,8 @@
 #include <utility>
 #include <mutex>  // NOLINT due to unapproved C++11 header
 #include <shared_mutex>
+#include <atomic>
+#include <functional>
 #include "canio.hpp"
 #include "interface_from_input_handler.hpp"
 #include "input_handler.hpp"
@@ -93,8 +95,8 @@ typedef struct Values {
     size_t start_set_value = false;
     size_t break_set_value = CAR_BREAK;
     size_t shutdown_set_value = CAR_START;
-    size_t gear;
-    size_t rpm;
+    size_t gear = 0;
+    float rpm = EMULATOR_IDLE_RPM;
     float speed = 0.0;
     float forward_force = 0.0;
     float engine_torque = 0.0;
@@ -194,7 +196,7 @@ class Emulator {
   std::string interface_name_{};
  public:
   Emulator(const std::string &); // NOLINT no marking explixit.
-  bool Emulate();
+  bool Emulate(std::atomic<bool> *exit_flag);
   bool ReadData(Values_t &);
   bool sendCAN(const Values_t &);
 // Calculations
@@ -205,7 +207,7 @@ class Emulator {
   bool calculateEngineTorque(Values_t *data);
 
   // ...
-  bool ReadAndSetPindle();
+  bool ReadAndSetPindle(std::atomic<bool> *exit_flag);
   bool GracefulShutdown();
 };
 

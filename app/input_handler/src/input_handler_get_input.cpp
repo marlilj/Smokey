@@ -33,7 +33,7 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
   // printw("Current throttle setting: \n");
   printw("Current input: \n");
 
-  for (;;) {
+  while (SmokeyInputData.shutdown == 0) {
     if ((ch = getch()) == ERR) {
       // No user input.throttle
     } else if ( (48 <= ch) && (ch <= 57) ) {
@@ -61,6 +61,12 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
         mvaddch(1, 26, ch);
         SmokeyInputData.shutdown = 0;
     }
+    get_new_values.getNewValues(SmokeyInputData);
+    usleep(5);
+  }
+  std::cout << "Exiting ..." << std::endl;
+  // Sending multiple times to make sure message is sent
+  for (size_t i = 0; i < 10 ; i++) {
     get_new_values.getNewValues(SmokeyInputData);
     usleep(5);
   }

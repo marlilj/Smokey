@@ -34,8 +34,8 @@ bool Emulator::ReadData(Values_t &data) {
       data.throttle_set_value = fr.data[0];
       data.pindle_set_value = fr.data[1];
       data.start_set_value = fr.data[2];
-      data.break_set_value = fr.data[2];
-      data.shutdown_set_value = fr.data[2];
+      data.break_set_value = fr.data[3];
+      data.shutdown_set_value = fr.data[4];
       retval = true;
     }
   }
@@ -46,10 +46,10 @@ Emulator::Emulator(const std::string& interface_name) {
   interface_name_ = interface_name;
 }
 
-bool Emulator::Emulate() {
+bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
   int error_code = kFailure;
 
-  while (true) {
+  while (!exit_flag->load()) {
     Values_t values = emulator_data_.GetAll();
     if (values.activate_engine) {
       if (values.pindle_drive
@@ -65,6 +65,16 @@ bool Emulator::Emulate() {
       error_code = emulator_data_.SetAll(values);
     }
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+  Values_t values = emulator_data_.GetAll();
+  values.speed = 0.0;
+  values.rpm = 0;
+  values.activate_engine = 0;
+  values.gear = 0;
+
+  for (size_t i = 0 ; i < 10 ; i++) {
+    this->sendCAN(values);
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
@@ -84,42 +94,47 @@ bool Emulator::CalculateSpeed(Values_t *data) {
 }
 
 
-bool Emulator::ReadAndSetPindle() {
+bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
   int error_code = kFailure;
   int8_t set_pindle = PINDLE_PARKING;
   bool started = false;
   bool shutdown = false;
 
   // Read CAN message
-  while (true) {
+  while (!exit_flag->load()) {
     Values_t values = emulator_data_.GetAll();
-  if (ReadData(values)) {
-    started = values.start_set_value;
-    set_pindle = values.pindle_set_value;
-    values.throttle = values.throttle_set_value;
-    values.breaking_flag = values.break_set_value;
-    values.shutdown_flag = values.shutdown_set_value;
+    if (ReadData(values)) {
+      started = values.start_set_value;
+      set_pindle = values.pindle_set_value;
+      values.throttle = values.throttle_set_value;
+      values.breaking_flag = values.break_set_value;
+      values.shutdown_flag = values.shutdown_set_value;
 
-    if (set_pindle == PINDLE_PARKING && started) {
-        PindleModes::PindleParking(values);  // P
-    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
-        PindleModes::PindleDrive(values);  // D
-        started = true;
-    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
-        PindleModes::PindleNeutral(values);  // N
-        started = true;
-    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-        PindleModes::PindleReverse(values);  // R
-        started = true;
-    } else if (set_pindle == PINDLE_PARKING && !started) {
-        PindleModes::PindleParking(values);  // P
-        started = false;
+      if (values.shutdown_flag) {
+        *exit_flag = true;
+        std::cout << "Exiting .. " << std::endl;
       }
-      error_code = emulator_data_.SetAll(values);
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+      if (set_pindle == PINDLE_PARKING && started) {
+          PindleModes::PindleParking(values);  // P
+      } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
+          PindleModes::PindleDrive(values);  // D
+          started = true;
+      } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleNeutral(values);  // N
+          started = true;
+      } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleReverse(values);  // R
+          started = true;
+      } else if (set_pindle == PINDLE_PARKING && !started) {
+          PindleModes::PindleParking(values);  // P
+          started = false;
+      }
     }
-  return error_code;
+    error_code = emulator_data_.SetAll(values);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+  return error_code;
 }
 
 bool Emulator::CalculateForce(Values_t *data) {

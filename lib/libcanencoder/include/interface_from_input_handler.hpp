@@ -36,7 +36,7 @@ class GetNewValues {
 
   CanFrame convertCANMessageFromStruct(const Payload_t &input_data);
   CanFrame convertCANMessageFromStruct(const EmulatorOutput_t &input_data);
-  
+
   void printCANFrame(const CanFrame &frame);
   bool sendMessageOnCAN(const CanFrame &frame_to_send);
 };
