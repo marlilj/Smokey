@@ -48,7 +48,6 @@ Emulator::Emulator(const std::string& interface_name) {
 
 bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
   int error_code = kFailure;
-  bool brake = false;
   bool brake_toggle = false;
 
   while (!exit_flag->load()) {
@@ -57,7 +56,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
       if (values.pindle == PindleModes::D
           && (values.throttle > 0 || values.speed > 0)
           && values.gear != 0) {
-        if (!brake) {
+        if (!values.breaking_flag) {
           // Break is inactive
           if (brake_toggle) {
             // Brake has been released
