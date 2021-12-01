@@ -84,7 +84,7 @@ const float VEHICLE_MASS = 1700.0;     // kg
 const float ROAD_COEFF = 0.011;
 const float ROAD_RESISTANCE_FORCE = (VEHICLE_MASS * ROAD_COEFF * 9.82);
 const int DT = 100;  // dt delay for calculating speed in mikro seconds
-
+const float BRAKE_POWER = 0.02;
 #define AIR_DENSITY 1.202       // kg/m3
 #define VEHICLE_FRONTAL_AREA 3.0  // m2
 #define VEHICLE_DRAG_COEFF 0.5
