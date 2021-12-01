@@ -118,7 +118,7 @@ bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
       if (set_pindle == PINDLE_PARKING && started) {
           values.pindle = PindleModes::P;
           values.activate_engine = true;
-      } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::D) &&  // NOLINT Due to line break making it less readable.
+      } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::N) &&  // NOLINT Due to line break making it less readable.
                   set_pindle == PINDLE_DRIVE && started) {
           values.pindle = PindleModes::D;
           started = true;
