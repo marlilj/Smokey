@@ -34,17 +34,17 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         default:
            pindle = 0;
        }
-       this->InstrumentCluster.setGearPindle_int(pindle);
+       //this->InstrumentCluster.setGearPindle_int(pindle);
            
        
-       std::cout << "Pindle: " << ui->gear << std::endl;
-       std::cout << "Ignt: " << ui->start << std::endl;
+       
         
     } else if (_frame->can_id == k_FrameIdEmulator) { 
         const EmulatorOutput_t *em = reinterpret_cast<const EmulatorOutput_t*>(_frame->data);
         this->InstrumentCluster.setRPM(em->rpm);
         this->InstrumentCluster.setSpeed(em->speed);
         this->InstrumentCluster.setGear(em->gear);
+        this->InstrumentCluster.setGearPindle_int(em->pindle);
     }
 
     /* const unsigned short rpm = _frame->data[0] * 100;
