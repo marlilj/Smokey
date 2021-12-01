@@ -24,7 +24,7 @@ bool InputHandler::InitInputHandler() {
   nodelay(stdscr, TRUE);
   curs_set(0);
 
-  return true;
+  return kSuccess;
 }
 
 bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
@@ -53,12 +53,13 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     usleep(5);
   }
 
-  return true;
+  return kSuccess;
 }
 
 bool InputHandler::ExitInputHandler() {
   endwin();
-  return true;
+
+  return kSuccess;
 }
 
 bool InputHandler::GracefulShutdown() {

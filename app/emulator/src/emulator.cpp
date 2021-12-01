@@ -26,7 +26,7 @@
 InputHandler smokeyInputData;
 
 bool Emulator::ReadData(Values_t &data) {
-  SocketCan socket_("vcan0");
+  SocketCan socket_(interface_name_);
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
@@ -41,9 +41,7 @@ bool Emulator::ReadData(Values_t &data) {
 }
 
 Emulator::Emulator(const std::string& interface_name) {
-/* : socket_(interface_name)  {} */
-  // Emulator::ReadAndSetPindle();
-  // Emulator::ReadData();
+  interface_name_ = interface_name;
 }
 
 bool Emulator::Emulate() {
@@ -88,30 +86,32 @@ bool Emulator::ReadAndSetPindle() {
   int error_code = kFailure;
   int8_t set_pindle = PINDLE_PARKING;
   bool started = false;
+  bool shutdown = false;
 
   // Read CAN message
   while (true) {
     Values_t values = emulator_data_.GetAll();
-    if (ReadData(values)) {
-      started = values.start_set_value;
-      set_pindle = values.pindle_set_value;
-      values.throttle = values.throttle_set_value;
+  if (ReadData(values)) {
+    started = values.start_set_value;
+    set_pindle = values.pindle_set_value;
+    values.throttle = values.throttle_set_value;
+    values.breaking_flag = values.break_set_value;
+    values.shutdown_flag = values.shutdown_set_value;
 
-      if (set_pindle == PINDLE_PARKING && started) {
-          PindleModes::PindleParking(values);  // P
-      } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
-          PindleModes::PindleDrive(values);  // D
-          started = true;
-      } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleNeutral(values);  // N
-          started = true;
-      } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleReverse(values);  // R
-          started = true;
-      } else if (set_pindle == PINDLE_PARKING && !started) {
-          PindleModes::PindleParking(values);  // P
-          started = false;
-        }
+    if (set_pindle == PINDLE_PARKING && started) {
+        PindleModes::PindleParking(values);  // P
+    } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
+        PindleModes::PindleDrive(values);  // D
+        started = true;
+    } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
+        PindleModes::PindleNeutral(values);  // N
+        started = true;
+    } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
+        PindleModes::PindleReverse(values);  // R
+        started = true;
+    } else if (set_pindle == PINDLE_PARKING && !started) {
+        PindleModes::PindleParking(values);  // P
+        started = false;
       }
       error_code = emulator_data_.SetAll(values);
       std::this_thread::sleep_for(std::chrono::milliseconds(1));

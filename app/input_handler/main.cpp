@@ -11,22 +11,8 @@
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
  *
-*/
+ */
 
-/*
-// MOCK CODE
-#include <string>
-#include "interface_from_input_handler.hpp"
-#include "../include/mock_key_input.hpp"
-#include "../include/smokey_data.hpp"
-
-MockKeyInput mockKeyInput;
-Payload_t payload;
-GetNewValues _get_new_values_;
-*/
-
-#include "interface_from_input_handler.hpp"
-#include "smokey_data.hpp"
 #include "input_handler.hpp"
 
 
@@ -36,22 +22,18 @@ int main(void) {
   InputHandler SmokeyInput;
   GetNewValues get_new_values;
 
-  SmokeyInput.InitInputHandler();
-  SmokeyInput.ReadUserInput(get_new_values);
-  SmokeyInput.ExitInputHandler();
-
-  error_code = SmokeyInput.GracefulShutdown();
+  error_code = SmokeyInput.InitInputHandler();
+  if (error_code == kSuccess) {
+    error_code = SmokeyInput.ReadUserInput(get_new_values);
+  }
+  if (error_code == kSuccess) {
+    error_code = SmokeyInput.ExitInputHandler();
+  }
+  if (error_code == kSuccess) {
+    error_code = SmokeyInput.GracefulShutdown();
+  } else {
+    error_code = kFailure;
+  }
 
   return error_code;
-
-// MOCK CODE
-/*
-if (MockKeyInput::mock_key_input(payload) != 0 &&
-  _get_new_values_.getNewValues(payload) != 0) {
-  error_code = kSuccess;
-}
-
-std::cout << "ErrorCode is: " << error_code << std::endl;
-  return error_code;
-*/
 }

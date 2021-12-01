@@ -48,9 +48,17 @@ bool EmulatorData::GetPindleReverse() {
   std::shared_lock lock_s(emulator_data_mutex_);
   return values.pindle_reverse;
 }
+bool EmulatorData::GetBreakingFlag() {
+  std::shared_lock lock_s(emulator_data_mutex_);
+  return values.breaking_flag;
+}
 bool EmulatorData::GetParkingFlag() {
   std::shared_lock lock_s(emulator_data_mutex_);
   return values.parking_flag;
+}
+bool EmulatorData::GetShutdownFlag() {
+  std::shared_lock lock_s(emulator_data_mutex_);
+  return values.shutdown_flag;
 }
 
 void EmulatorData::SetThrottleSetValue(const size_t& throttle_in_set_val) {
@@ -101,9 +109,17 @@ void EmulatorData::SetPindleReverse(const bool& pindle_reverse_val) {
   std::unique_lock lock_u(emulator_data_mutex_);
   values.pindle_reverse = pindle_reverse_val;
 }
+void EmulatorData::SetBreakingFlag(const bool& breaking_flag_val) {
+  std::unique_lock lock_u(emulator_data_mutex_);
+  values.breaking_flag = breaking_flag_val;
+}
 void EmulatorData::SetParkingFlag(const bool& parking_flag_val) {
   std::unique_lock lock_u(emulator_data_mutex_);
   values.parking_flag = parking_flag_val;
+}
+void EmulatorData::SetShutdownFlag(const bool& shutdown_flag_val) {
+  std::unique_lock lock_u(emulator_data_mutex_);
+  values.shutdown_flag = shutdown_flag_val;
 }
 
 Values EmulatorData::GetAll() {

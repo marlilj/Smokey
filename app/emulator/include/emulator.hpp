@@ -41,10 +41,12 @@
 #define EMULATOR_GEAR_RATIO_5 1.0   // 0.5:1
 #define DRIVE_TRAIN_RATIO 3.460   // 3.460
 #define DRIVE_TRAIN_EFFICIENY 0.97
-#define PINDLE_PARKING 112  // Gear parking, dec 112
-#define PINDLE_NEUTRAL 110  // Gear parking, dec 112
-#define PINDLE_DRIVE 100  // Gear parking, dec 112
-#define PINDLE_REVERSE 114  // Gear parking, dec 112
+#define PINDLE_PARKING 112  // Pindle parking, dec 112
+#define PINDLE_NEUTRAL 110  // Pindle neutral, dec 110
+#define PINDLE_DRIVE 100  // Pindle frive, dec 110
+#define PINDLE_REVERSE 114  // Pindle reverse, dec 114
+#define CAR_START 113  // Car start, dec 113
+#define CAR_BREAK 98  // Pindle break, dec 98
 
 const float emulator_gear_ratio[5] = {
   EMULATOR_GEAR_RATIO_1,
@@ -89,16 +91,20 @@ typedef struct Values {
     size_t throttle = 0;
     size_t pindle_set_value = PINDLE_PARKING;
     size_t start_set_value = false;
-    size_t gear = 0;
-    size_t rpm = 0;
-    float speed = 0.0;
-    float forward_force = 0.0;
+    size_t break_set_value = CAR_BREAK;
+    size_t shutdown_set_value = CAR_START;
+    size_t gear;
+    size_t rpm;
+    size_t speed;
+    size_t forward_force = 0;
     float engine_torque = 0.0;
     bool activate_engine = false;
     bool pindle_neutral = false;
     bool pindle_drive = false;
     bool pindle_reverse = false;
     bool parking_flag = false;
+    bool breaking_flag = false;
+    bool shutdown_flag = false;
   } Values_t;
 
 class EmulatorData {
@@ -119,7 +125,9 @@ class EmulatorData {
   bool GetPindleNeutral();
   bool GetPindleDrive();
   bool GetPindleReverse();
+  bool GetBreakingFlag();
   bool GetParkingFlag();
+  bool GetShutdownFlag();
   Values GetAll();
 
   void SetThrottleSetValue(const size_t &);
@@ -135,7 +143,9 @@ class EmulatorData {
   void SetPindleNeutral(const bool &);
   void SetPindleDrive(const bool &);
   void SetPindleReverse(const bool &);
+  void SetBreakingFlag(const bool &);
   void SetParkingFlag(const bool &);
+  void SetShutdownFlag(const bool &);
   bool SetAll(const Values &);
 };
 
@@ -181,6 +191,7 @@ const int throttle_to_RPM_one_gear[10] = {
 class Emulator {
   EmulatorData_t emulator_data_;
   /* SocketCan socket_; */
+  std::string interface_name_{};
  public:
   Emulator(const std::string &); // NOLINT no marking explixit.
   bool Emulate();
