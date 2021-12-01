@@ -28,6 +28,7 @@
 #include "canio.hpp"
 #include "interface_from_input_handler.hpp"
 #include "input_handler.hpp"
+#include "engine_pindle_states.hpp"
 
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
@@ -107,6 +108,7 @@ typedef struct Values {
     bool parking_flag = false;
     bool breaking_flag = false;
     bool shutdown_flag = false;
+    PindleModes pindle;
   } Values_t;
 
 class EmulatorData {
