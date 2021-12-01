@@ -95,8 +95,8 @@ typedef struct Values {
     size_t shutdown_set_value = CAR_START;
     size_t gear;
     size_t rpm;
-    size_t speed;
-    size_t forward_force = 0;
+    float speed = 0.0;
+    float forward_force = 0.0;
     float engine_torque = 0.0;
     bool activate_engine = false;
     bool pindle_neutral = false;
