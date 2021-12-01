@@ -117,39 +117,7 @@ class EmulatorData {
   std::shared_mutex emulator_data_mutex_;
 
  public:
-  size_t GetThrottleSetValue();
-  size_t GetThrottle();
-  size_t GetGearSetValue();
-  size_t GetStartSetValue();
-  size_t GetGear();
-  size_t GetRpm();
-  size_t GetSpeed();
-  size_t GetForwardForce();
-  bool GetActivateEngine();
-  bool GetPindleNeutral();
-  bool GetPindleDrive();
-  bool GetPindleReverse();
-  bool GetBreakingFlag();
-  bool GetParkingFlag();
-  bool GetShutdownFlag();
   Values GetAll();
-
-  void SetThrottleSetValue(const size_t &);
-  void SetThrottle(const size_t &);
-  void SetGearSetValue(const size_t &);
-  void SetStartSetValue(const size_t &);
-  void SetPindleDrive(const size_t &);
-  void SetGear(const size_t &);
-  void SetRpm(const size_t &);
-  void SetSpeed(const size_t &);
-  void SetForwardForce(const size_t &);
-  void SetActivateEngine(const bool &);
-  void SetPindleNeutral(const bool &);
-  void SetPindleDrive(const bool &);
-  void SetPindleReverse(const bool &);
-  void SetBreakingFlag(const bool &);
-  void SetParkingFlag(const bool &);
-  void SetShutdownFlag(const bool &);
   bool SetAll(const Values &);
 };
 
