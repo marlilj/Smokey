@@ -57,21 +57,22 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     } else if ( ch == 113 && !SmokeyInputData.shutdown ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.shutdown = 1;
+        SmokeyInputData.start = 0;
     } else if ( ch == 113 && SmokeyInputData.shutdown ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.shutdown = 0;
+        SmokeyInputData.start = 1;
     }
     get_new_values.getNewValues(SmokeyInputData);
     usleep(5);
   }
-  std::cout << "Exiting ..." << std::endl;
-
+  usleep(100000);
   SmokeyInputData.gear = 0;
   SmokeyInputData.start = 0;
   // Sending multiple times to make sure message is sent
   for (size_t i = 0; i < 10 ; i++) {
     get_new_values.getNewValues(SmokeyInputData);
-    usleep(5);
+    usleep(10000);
   }
 
   return kSuccess;

@@ -63,6 +63,8 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
       this->UpdateGearAutomatic(&values);
       this->sendCAN(values);
       error_code = emulator_data_.SetAll(values);
+    } else {
+      this->sendCAN(values);
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
@@ -133,6 +135,7 @@ bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
       } else if (set_pindle == PINDLE_PARKING && !started) {
           values.pindle = PindleModes::P;
           values.activate_engine = false;
+          values.rpm = 0;
           started = false;
       }
     }
