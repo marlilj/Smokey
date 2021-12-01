@@ -16,6 +16,8 @@
 #include <utility>
 #include <thread>
 #include <chrono>
+#include <atomic>
+#include <functional>
 #include "smokey_data.hpp"
 #include "emulator.hpp"
 // #include decoder.hpp   <--- skaffa input från David.
@@ -27,16 +29,17 @@ int main(int argc, char ** argv) {
   std::string interface_name;
   bool error_code = kFailure;
 
-if (argc == 1) {
-  interface_name = "vcan0";
-} else if (argc == 2) {
-  interface_name = argv[0];
-}
+  if (argc == 1) {
+    interface_name = "vcan0";
+  } else if (argc == 2) {
+    interface_name = argv[0];
+  }
 
+  std::atomic<bool> exit_flag(false);
   Emulator emulator(interface_name);
 
-  std::thread thread1(&Emulator::ReadAndSetPindle, &emulator);
-  std::thread thread2(&Emulator::Emulate, &emulator);
+  std::thread thread1(&Emulator::ReadAndSetPindle, &emulator, &exit_flag);
+  std::thread thread2(&Emulator::Emulate, &emulator, &exit_flag);
 
   thread1.join();
   thread2.join();
