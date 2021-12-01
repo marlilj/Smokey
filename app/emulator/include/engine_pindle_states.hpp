@@ -18,14 +18,11 @@
 
 #include "emulator.hpp"
 
-class PindleModes {
- public:
-  static int16_t OffMode(Values_t &emulator_data_);  // NOLINT
-  static int16_t PindleParking(Values_t &emulator_data_);  // NOLINT
-  static int16_t PindleNeutral(Values_t &emulator_data_);  // NOLINT
-  static int16_t PindleDrive(Values_t &emulator_data_);  // NOLINT
-  static int16_t PindleReverse(Values_t &emulator_data_);  // NOLINT
+enum class PindleModes {
+  P,
+  N,
+  R,
+  D
 };
-
 
 #endif // ENGINEPINDLESTATES_HPP  // NOLINT

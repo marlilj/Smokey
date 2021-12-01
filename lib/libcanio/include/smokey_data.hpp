@@ -31,7 +31,8 @@ typedef struct __attribute__ ((__packed__)) EmulatorOutput {
   uint8_t gear;
   uint16_t rpm;
   uint8_t breaking;
-  uint16_t shutdown;
+  uint8_t shutdown;
+  uint8_t pindle;
 } EmulatorOutput_t;
 
 const bool kSuccess = false;

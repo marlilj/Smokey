@@ -47,7 +47,7 @@ CanFrame GetNewValues::convertCANMessageFromStruct(
                                           const EmulatorOutput_t &input_data) {
   CanFrame input_can_frame;
   input_can_frame.id = 2;
-  input_can_frame.len = 6;
+  input_can_frame.len = sizeof(EmulatorOutput_t);
   // Copying in little endian format
   memcpy(input_can_frame.data, &input_data, sizeof(input_data));
   return input_can_frame;

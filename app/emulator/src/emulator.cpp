@@ -52,7 +52,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
   while (!exit_flag->load()) {
     Values_t values = emulator_data_.GetAll();
     if (values.activate_engine) {
-      if (values.pindle_drive
+      if (values.pindle == PindleModes::D
           && (values.throttle > 0 || values.speed > 0)
           && values.gear != 0) {
         this->calculateEngineTorque(&values);
@@ -65,7 +65,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
       error_code = emulator_data_.SetAll(values);
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
   }
   Values_t values = emulator_data_.GetAll();
   values.speed = 0.0;
@@ -75,7 +75,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
 
   for (size_t i = 0 ; i < 10 ; i++) {
     this->sendCAN(values);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
   }
 
   return error_code;
@@ -116,35 +116,28 @@ bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
       }
 
       if (set_pindle == PINDLE_PARKING && started) {
-          PindleModes::PindleParking(values);  // P
-      } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
-          PindleModes::PindleDrive(values);  // D from P
+          values.pindle = PindleModes::P;
+          values.activate_engine = true;
+      } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::N) &&  // NOLINT Due to line break making it less readable.
+                  set_pindle == PINDLE_DRIVE && started) {
+          values.pindle = PindleModes::D;
           started = true;
-      } else if (values.pindle_neutral && set_pindle == PINDLE_DRIVE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleDrive(values);  // D from N
+          values.gear = 1;
+      } else if (values.pindle == PindleModes::P && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
+          values.pindle = PindleModes::N;
           started = true;
-      } else if (values.pindle_reverse && set_pindle == PINDLE_DRIVE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleReverse(values);  // No D from R
-          started = true;
-      } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleNeutral(values);  // N from P
-          started = true;
-      } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleReverse(values);  // R from P
-          started = true;
-      } else if (values.pindle_neutral && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleReverse(values);  // R from N
-          started = true;
-      } else if (values.pindle_drive && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleDrive(values);  // No R from D
+      } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::N) &&  // NOLINT Due to line break making it less readable.
+                  set_pindle == PINDLE_REVERSE && started) {
+          values.pindle = PindleModes::R;
           started = true;
       } else if (set_pindle == PINDLE_PARKING && !started) {
-          PindleModes::PindleParking(values);  // P
+          values.pindle = PindleModes::P;
+          values.activate_engine = false;
           started = false;
       }
     }
     error_code = emulator_data_.SetAll(values);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
   }
   return error_code;
 }
@@ -282,6 +275,7 @@ bool Emulator::sendCAN(const Values_t &data) {
   data_to_send.speed = static_cast<uint8_t>(data.speed*3.6);
   data_to_send.gear = static_cast<uint8_t>(data.gear);
   data_to_send.rpm = static_cast<uint16_t>(data.rpm);
+  data_to_send.pindle = static_cast<uint8_t>(data.pindle);
 
   // Construct obejct from libcanencoder
   GetNewValues gnv;

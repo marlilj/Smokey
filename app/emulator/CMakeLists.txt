@@ -16,7 +16,6 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME}
     main.cpp
     src/emulator.cpp
-    src/engine_pindle_states.cpp
     src/emulator_data.cpp
 )
 
