@@ -293,7 +293,7 @@ ApplicationWindow {
             width: parent.width * 0.9
             height: width
 
-            maximumValue: 250
+            maximumValue: 200
             value: valueSource.kph
 
             style: DashboardGaugeStyle {}
@@ -313,7 +313,7 @@ ApplicationWindow {
             width: parent.width * 0.9
             height: width
 
-            maximumValue: 9
+            maximumValue: 6
             value: valueSource.rpm
 
             style: TachometerStyle {

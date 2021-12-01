@@ -15,8 +15,9 @@
 #include "engine_pindle_states.hpp"
 #include "smokey_data.hpp"
 
-
 int16_t PindleModes::OffMode(Values_t &data) {
+  data.rpm = 0;
+  data.speed = 0;
   data.activate_engine = false;
   data.pindle_neutral = false;
   data.pindle_drive = false;
@@ -27,6 +28,7 @@ int16_t PindleModes::OffMode(Values_t &data) {
 }
 
 int16_t PindleModes::PindleParking(Values_t &data) {
+  data.rpm = EMULATOR_IDLE_RPM;
   data.activate_engine = true;
   data.pindle_neutral = false;
   data.pindle_drive = false;
@@ -46,7 +48,10 @@ int16_t PindleModes::PindleNeutral(Values_t &data) {
 
   return 0;
 }
+
 int16_t PindleModes::PindleDrive(Values_t &data) {
+  data.gear = 1;
+  data.rpm = EMULATOR_IDLE_RPM;
   data.activate_engine = true;
   data.pindle_neutral = false;
   data.pindle_drive = true;
