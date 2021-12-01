@@ -1,7 +1,7 @@
 
 /*
  * Copyright (C) 2021 - Volvo Car Corporation
-
+ *
  *
  * All Rights Reserved
  *
@@ -11,15 +11,14 @@
  * applications. This information is protected by trade secret or copyright law. Dissemination of
  * this information or reproduction of this material is strictly forbidden unless prior written
  * permission is obtained from Volvo Car Corporation.
-
+ *
  */
-#ifndef INPUT_HANDLER_HPP_ // NOLINT
-#define INPUT_HANDLER_HPP_
 
-// #include "smokey_data.hpp"
-#include "../../../lib/libcanio/include/smokey_data.hpp"
-// #include "interface_from_input_handler.hpp"
-#include "../../../lib/libcanencoder/include/interface_from_input_handler.hpp"
+#ifndef INPUT_HANDLER_HPP // NOLINT
+#define INPUT_HANDLER_HPP
+
+#include "smokey_data.hpp"
+#include "interface_from_input_handler.hpp"
 
 class InputHandler {
  private:
@@ -31,4 +30,4 @@ class InputHandler {
     bool GracefulShutdown();
 };
 
-#endif  // INPUT_HANDLER_HPP_  // NOLINT
+#endif  // INPUT_HANDLER_HPP  // NOLINT

@@ -23,10 +23,17 @@
 
 
 
-int main() {
+int main(int argc, char ** argv) {
+  std::string interface_name;
   bool error_code = kFailure;
 
-  Emulator emulator("vcan0");
+if (argc == 1) {
+  interface_name = "vcan0";
+} else if (argc == 2) {
+  interface_name = argv[0];
+}
+
+  Emulator emulator(interface_name);
 
   std::thread thread1(&Emulator::ReadAndSetPindle, &emulator);
   std::thread thread2(&Emulator::Emulate, &emulator);

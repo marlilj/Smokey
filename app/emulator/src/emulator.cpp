@@ -26,7 +26,7 @@
 InputHandler smokeyInputData;
 
 bool Emulator::ReadData(Values_t &data) {
-  SocketCan socket_("vcan0");
+  SocketCan socket_(interface_name_);
   bool retval = false;
   CanFrame fr;
   if (socket_.read(fr) == STATUS_OK) {
@@ -41,9 +41,7 @@ bool Emulator::ReadData(Values_t &data) {
 }
 
 Emulator::Emulator(const std::string& interface_name) {
-/* : socket_(interface_name)  {} */
-  // Emulator::ReadAndSetPindle();
-  // Emulator::ReadData();
+  interface_name_ = interface_name;
 }
 
 bool Emulator::Emulate() {
@@ -71,6 +69,7 @@ bool Emulator::ReadAndSetPindle() {
   int error_code = kFailure;
   int8_t set_pindle = PINDLE_PARKING;
   bool started = false;
+  bool shutdown = false;
 
   // Read CAN message
   while (true) {
@@ -79,6 +78,8 @@ bool Emulator::ReadAndSetPindle() {
     started = values.start_set_value;
     set_pindle = values.pindle_set_value;
     values.throttle = values.throttle_set_value;
+    values.breaking_flag = values.break_set_value;
+    values.shutdown_flag = values.shutdown_set_value;
 
     if (set_pindle == PINDLE_PARKING && started) {
         PindleModes::PindleParking(values);  // P
