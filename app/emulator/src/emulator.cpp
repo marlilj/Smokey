@@ -118,13 +118,25 @@ bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
       if (set_pindle == PINDLE_PARKING && started) {
           PindleModes::PindleParking(values);  // P
       } else if (values.parking_flag && set_pindle == PINDLE_DRIVE && started) {
-          PindleModes::PindleDrive(values);  // D
+          PindleModes::PindleDrive(values);  // D from P
+          started = true;
+      } else if (values.pindle_neutral && set_pindle == PINDLE_DRIVE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleDrive(values);  // D from N
+          started = true;
+      } else if (values.pindle_reverse && set_pindle == PINDLE_DRIVE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleReverse(values);  // No D from R
           started = true;
       } else if (values.parking_flag && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleNeutral(values);  // N
+          PindleModes::PindleNeutral(values);  // N from P
           started = true;
       } else if (values.parking_flag && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
-          PindleModes::PindleReverse(values);  // R
+          PindleModes::PindleReverse(values);  // R from P
+          started = true;
+      } else if (values.pindle_neutral && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleReverse(values);  // R from N
+          started = true;
+      } else if (values.pindle_drive && set_pindle == PINDLE_REVERSE && started) {  // NOLINT Due to line break making it less readable.
+          PindleModes::PindleDrive(values);  // No R from D
           started = true;
       } else if (set_pindle == PINDLE_PARKING && !started) {
           PindleModes::PindleParking(values);  // P
