@@ -34,6 +34,8 @@ bool Emulator::ReadData(Values_t &data) {
       data.throttle_set_value = fr.data[0];
       data.pindle_set_value = fr.data[1];
       data.start_set_value = fr.data[2];
+      data.break_set_value = fr.data[2];
+      data.shutdown_set_value = fr.data[2];
       retval = true;
     }
   }
@@ -117,6 +119,7 @@ bool Emulator::ReadAndSetPindle() {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
   return error_code;
+  }
 }
 
 bool Emulator::CalculateForce(Values_t *data) {

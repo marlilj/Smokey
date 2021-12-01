@@ -48,6 +48,18 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     } else if ( ch == 115 && SmokeyInputData.start ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.start = 0;
+    } else if ( ch == 98 && !SmokeyInputData.breaking ) {
+        mvaddch(1, 26, ch);
+        SmokeyInputData.breaking = 1;
+    } else if ( ch == 98 && SmokeyInputData.breaking ) {
+        mvaddch(1, 26, ch);
+        SmokeyInputData.breaking = 0;
+    } else if ( ch == 113 && !SmokeyInputData.shutdown ) {
+        mvaddch(1, 26, ch);
+        SmokeyInputData.shutdown = 1;
+    } else if ( ch == 113 && SmokeyInputData.shutdown ) {
+        mvaddch(1, 26, ch);
+        SmokeyInputData.shutdown = 0;
     }
     get_new_values.getNewValues(SmokeyInputData);
     usleep(5);
