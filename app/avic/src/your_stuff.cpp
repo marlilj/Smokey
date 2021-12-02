@@ -6,14 +6,15 @@ uint8_t fuel = 0;
 uint8_t temp = 0;
 uint8_t oil = 0;
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
-    /* const unsigned short *rpm = reinterpret_cast<const unsigned short*>(_frame->data);
-    this->InstrumentCluster.setRPM(*rpm);
-    std::cout << "Recieved frame with " << *rpm << std::endl; */
-
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
-
-
+       _icons icons {};
+       if (ui->breaking) {
+       icons.abs = 1;
+       } else {
+           icons.abs = 0;
+       }
+       this->InstrumentCluster.setIcon(&icons);
 
     } else if (_frame->can_id == k_FrameIdEmulator) {
         const EmulatorOutput_t *em = reinterpret_cast<const EmulatorOutput_t*>(_frame->data);  // NOLINT Due to line break decreasing readability.
@@ -23,13 +24,10 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         this->InstrumentCluster.setGearPindle_int(em->pindle);
         this->InstrumentCluster.ignite(em->start);
 
-
         if (em->start) {
             fuel = (fuel >= 255 - 10) ? 255 : fuel += 10;
-             temp = (temp >= 128 - 5) ? 128 : temp += 5;
+            temp = (temp >= 128 - 5) ? 128 : temp += 5;
             oil = (oil >= 128 - 5) ? 128 : oil += 5;
-
-
             this->InstrumentCluster.setTXT("SMOKEY");
             this->InstrumentCluster.setFuelGauges(fuel);
             this->InstrumentCluster.setTemperatureGauges(temp);
