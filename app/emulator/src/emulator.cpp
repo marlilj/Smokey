@@ -61,8 +61,13 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
           if (brake_toggle) {
             // Brake has been released
             brake_toggle = false;
-            values.gear = emulator_gear_limits[values.throttle].first;
-            values.rpm = throttle_to_RPM_one_gear[values.throttle];
+            if (values.speed > 0) {
+              values.gear = emulator_gear_limits[values.throttle/10].first;
+              values.rpm = throttle_to_RPM_one_gear[values.throttle/10];
+            } else {
+              values.gear = EMULATOR_GEAR_1;
+              values.rpm = 0;
+            }
           }
           this->calculateEngineTorque(&values);
           this->CalculateForce(&values);
