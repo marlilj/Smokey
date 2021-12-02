@@ -53,9 +53,9 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
   while (!exit_flag->load()) {
     Values_t values = emulator_data_.GetAll();
     if (values.activate_engine) {
-      if (values.pindle == PindleModes::D
+      if ( (values.pindle == PindleModes::D
           && (values.throttle > 0 || values.speed > 0)
-          && values.gear != 0) {
+          && values.gear != 0) || (values.pindle == PindleModes::N) ) {
         if (!values.breaking_flag) {
           // Break is inactive
           if (brake_toggle) {
@@ -69,7 +69,11 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
               values.rpm = 0;
             }
           }
-          this->calculateEngineTorque(&values);
+          if (values.pindle_neutral) {
+            values.engine_torque = 0.0;
+          } else {
+            this->calculateEngineTorque(&values);
+          }
           this->CalculateForce(&values);
           this->CalculateSpeed(&values);
         } else if (values.speed > 1) {

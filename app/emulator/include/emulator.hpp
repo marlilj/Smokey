@@ -136,7 +136,7 @@ const std::pair<double, double> RPM_Torque[RPM_TORQUE_DATA_LENGTH] = {
   std::make_pair(4770, 188)};
 
 const std::pair<int, int> emulator_gear_limits[10] = {
-  std::make_pair(0, 1),
+  std::make_pair(1, 1),
   std::make_pair(1, 2),
   std::make_pair(1, 2),
   std::make_pair(1, 3),
