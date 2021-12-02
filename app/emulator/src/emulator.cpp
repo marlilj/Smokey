@@ -171,7 +171,6 @@ bool Emulator::InReverse(Values_t *values) {
   return error_code;
 }
 
-
 bool Emulator::InDrive(Values_t *values) {
   int error_code = kFailure;
 
@@ -199,100 +198,6 @@ bool Emulator::InDrive(Values_t *values) {
 
   return error_code;
 }
-
-
-
-//------------------------------------------------------------------------
-//       if ( (values.pindle == PindleModes::D
-//           && (values.throttle > 0 || values.speed >= 0)
-//           && values.gear != 0) || ( (values.pindle == PindleModes::N) && (values.speed >= 0) )) {
-//           // Calculate engine torque
-//           if (values.pindle == PindleModes::N) {
-//             values.engine_torque = 0.0;
-//           } else {
-//             this->calculateEngineTorque(&values);
-//           }
-//           this->CalculateForce(&values);
-//           this->CalculateSpeed(&values);
-//         } else if (values.speed > 1) {
-//           // Braking
-//           brake_toggle = true;
-//           values.speed = values.speed - BRAKE_POWER;
-//           if (values.speed < 0) {
-//             values.speed = 0;
-//           }
-//         } else if (values.speed < 1) {
-//           // Braking at very low speed
-//           brake_toggle = true;
-//           values.speed = 0;
-//         }
-//         // Calculate RPM
-//         if (values.pindle == PindleModes::N) {
-//           // In Neutral
-//           values.rpm = (values.throttle * EMULATOR_MAX_RPM / 100) + std::rand()%100;
-//           if (values.rpm <= EMULATOR_IDLE_RPM) {
-//             values.rpm = EMULATOR_IDLE_RPM - std::rand()%100;
-//           } else if (values.rpm >= EMULATOR_MAX_RPM) {
-//             values.rpm = EMULATOR_MAX_RPM + std::rand()%100;
-//           }
-//         } else {
-//           this->CalculateRPM(&values);
-//         }
-//         // Update gear
-//         this->UpdateGearAutomatic(&values);
-//       } else if (values.pindle == PindleModes::R) {
-//         values.gear = 1;
-//         // In Reverse
-//         if (!values.breaking_flag) {
-//           // Break is inactive
-//           if (brake_toggle) {
-//             // Brake has been released
-//             brake_toggle = false;
-//             if (values.speed > 0) {
-//               values.rpm = throttle_to_RPM_one_gear[values.throttle/10];
-//             } else {
-//               values.rpm = 0;
-//             }
-//           }
-// //          this->calculateEngineTorque(&values);
-//           values.engine_torque = (116 * values.throttle * 0.01);  // Torque = 116
-//           this->CalculateForceReverse(&values);
-//           this->CalculateSpeedReverse(&values);
-//           this->CalculateRPM(&values);
-//         } else if (values.speed > 1) {
-//           // Braking
-//           brake_toggle = true;
-//           values.speed = values.speed - BRAKE_POWER;
-//           if (values.speed < 0) {
-//             values.speed = 0;
-//           }
-//         } else if (values.speed < 1) {
-//           // Braking at very low speed
-//           brake_toggle = true;
-//           values.speed = 0;
-//         }
-//       }
-//       this->sendCAN(values);
-//       error_code = emulator_data_.SetAll(values);
-//     } else {
-//       this->sendCAN(values);
-//     }
-
-//     std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
-//   }
-//   Values_t values = emulator_data_.GetAll();
-//   values.speed = 0.0;
-//   values.rpm = 0;
-//   values.activate_engine = 0;
-//   values.gear = 0;
-
-//   for (size_t i = 0 ; i < 10 ; i++) {
-//     this->sendCAN(values);
-//     std::this_thread::sleep_for(std::chrono::milliseconds(DT/100));
-//   }
-
-//   return error_code;
-// }
 
 bool Emulator::CalculateSpeed(Values_t *data) {
   bool error_code = kFailure;
