@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.5.1)
 
 project(canencoder LANGUAGES CXX)
 
-add_library(${PROJECT_NAME} SHARED src/can_encoder.cpp
+add_library(${PROJECT_NAME} SHARED
     src/interface_from_input_handler.cpp
 )
 

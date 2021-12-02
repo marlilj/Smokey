@@ -31,13 +31,17 @@
 
 class GetNewValues {
  private:
+  std::string interface_name;
  public:
+  GetNewValues(): interface_name("vcan0") {}
+  explicit GetNewValues(std::string _interface_name):
+      interface_name(_interface_name) {}
+
   int16_t getNewValues(Payload_t &payload); // NOLINT
 
   CanFrame convertCANMessageFromStruct(const Payload_t &input_data);
   CanFrame convertCANMessageFromStruct(const EmulatorOutput_t &input_data);
 
-  void printCANFrame(const CanFrame &frame);
   bool sendMessageOnCAN(const CanFrame &frame_to_send);
 };
 

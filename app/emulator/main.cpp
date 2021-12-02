@@ -32,7 +32,7 @@ int main(int argc, char ** argv) {
   if (argc == 1) {
     interface_name = "vcan0";
   } else if (argc == 2) {
-    interface_name = argv[0];
+    interface_name = argv[1];
   }
 
   std::atomic<bool> exit_flag(false);

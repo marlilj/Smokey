@@ -23,7 +23,6 @@ int16_t GetNewValues::getNewValues(Payload_t &payload) {
   CanFrame input_can_frame;
 
   input_can_frame = GetNewValues::convertCANMessageFromStruct(payload);
-  // GetNewValues::printCANFrame(input_can_frame);
 
   bool message_sent = GetNewValues::sendMessageOnCAN(input_can_frame);
   error_code = kSuccess; // NOLINT
@@ -55,7 +54,7 @@ CanFrame GetNewValues::convertCANMessageFromStruct(
 
 bool GetNewValues::sendMessageOnCAN(const CanFrame &frame_to_send) {
   bool return_val = false;
-  SocketCan socket_can("vcan0");
+  SocketCan socket_can(this->interface_name);
   if (socket_can.getStatus() == STATUS_OK) {
     auto write_status = socket_can.write(frame_to_send);
     if (write_status == STATUS_OK) {
@@ -63,22 +62,4 @@ bool GetNewValues::sendMessageOnCAN(const CanFrame &frame_to_send) {
     }
   }
   return return_val;
-}
-
-void GetNewValues::printCANFrame(const CanFrame &frame) {
-  /* prints message using ncurses */
-
-  move(2, 0);  // move cursor
-  insdelln(2);
-  insdelln(3);
-  insdelln(4);
-  insdelln(5);
-  insdelln(6);
-  insdelln(7);
-
-  printw("\nSENDING MESSAGE\n");
-  printw("len %d byte, id: %d \ndata: ", frame.id, frame.len);
-  for ( int i = 0 ; i < frame.len ; i++ ) {
-    printw("%02x ", frame.data[i]);
-  }
 }
