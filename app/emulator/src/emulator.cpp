@@ -48,6 +48,7 @@ Emulator::Emulator(const std::string& interface_name) {
 
 bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
   int error_code = kFailure;
+  bool brake_toggle = false;
 
   while (!exit_flag->load()) {
     Values_t values = emulator_data_.GetAll();
@@ -55,9 +56,29 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
       if (values.pindle == PindleModes::D
           && (values.throttle > 0 || values.speed > 0)
           && values.gear != 0) {
-        this->calculateEngineTorque(&values);
-        this->CalculateForce(&values);
-        this->CalculateSpeed(&values);
+        if (!values.breaking_flag) {
+          // Break is inactive
+          if (brake_toggle) {
+            // Brake has been released
+            brake_toggle = false;
+            if (values.speed > 0) {
+              values.gear = emulator_gear_limits[values.throttle/10].first;
+              values.rpm = throttle_to_RPM_one_gear[values.throttle/10];
+            } else {
+              values.gear = EMULATOR_GEAR_1;
+              values.rpm = 0;
+            }
+          }
+          this->calculateEngineTorque(&values);
+          this->CalculateForce(&values);
+          this->CalculateSpeed(&values);
+        } else if (values.speed > 1) {
+          brake_toggle = true;
+          values.speed = values.speed - BRAKE_POWER;
+        } else if (values.speed < 1) {
+          brake_toggle = true;
+          values.speed = 0;
+        }
       }
       this->CalculateRPM(&values);
       this->UpdateGearAutomatic(&values);

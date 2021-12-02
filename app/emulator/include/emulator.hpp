@@ -41,7 +41,7 @@
 #define EMULATOR_GEAR_RATIO_2 2.0  // 2:1
 #define EMULATOR_GEAR_RATIO_3 1.5  // 1.5:1
 #define EMULATOR_GEAR_RATIO_4 1.0  // 1:1
-#define EMULATOR_GEAR_RATIO_5 1.0   // 0.5:1
+#define EMULATOR_GEAR_RATIO_5 0.7   // 0.5:1
 #define DRIVE_TRAIN_RATIO 3.460   // 3.460
 #define DRIVE_TRAIN_EFFICIENY 0.97
 #define PINDLE_PARKING 112  // Pindle parking, dec 112
@@ -84,7 +84,7 @@ const float VEHICLE_MASS = 1700.0;     // kg
 const float ROAD_COEFF = 0.011;
 const float ROAD_RESISTANCE_FORCE = (VEHICLE_MASS * ROAD_COEFF * 9.82);
 const int DT = 100;  // dt delay for calculating speed in mikro seconds
-
+const float BRAKE_POWER = 0.02;
 #define AIR_DENSITY 1.202       // kg/m3
 #define VEHICLE_FRONTAL_AREA 3.0  // m2
 #define VEHICLE_DRAG_COEFF 0.5
