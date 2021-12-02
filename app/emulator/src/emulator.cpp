@@ -69,6 +69,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
               values.rpm = 0;
             }
           }
+          // Calculate engine torque
           if (values.pindle == PindleModes::N) {
             values.engine_torque = 0.0;
           } else {
@@ -77,24 +78,57 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
           this->CalculateForce(&values);
           this->CalculateSpeed(&values);
         } else if (values.speed > 1) {
+          // Braking
           brake_toggle = true;
           values.speed = values.speed - BRAKE_POWER;
         } else if (values.speed < 1) {
+          // Braking at very low speed
+          brake_toggle = true;
+          values.speed = 0;
+        }
+        // Calculate RPM
+        if (values.pindle == PindleModes::N) {
+          // In Neutral
+          values.rpm = (values.throttle * EMULATOR_MAX_RPM / 100) + std::rand()%100;
+          if (values.rpm <= EMULATOR_IDLE_RPM) {
+            values.rpm = EMULATOR_IDLE_RPM - std::rand()%100;
+          } else if (values.rpm >= EMULATOR_MAX_RPM) {
+            values.rpm = EMULATOR_MAX_RPM + std::rand()%100;
+          }
+        } else {
+          this->CalculateRPM(&values);
+        }
+        // Update gear
+        this->UpdateGearAutomatic(&values);
+      } else if (values.pindle == PindleModes::R) {
+        values.gear = 1;
+        // In Reverse
+        if (!values.breaking_flag) {
+          // Break is inactive
+          if (brake_toggle) {
+            // Brake has been released
+            brake_toggle = false;
+            if (values.speed > 0) {
+              values.rpm = throttle_to_RPM_one_gear[values.throttle/10];
+            } else {
+              values.rpm = 0;
+            }
+          }
+//          this->calculateEngineTorque(&values);
+          values.engine_torque = (116 * values.throttle * 0.01);  // Torque = 116
+          this->CalculateForceReverse(&values);
+          this->CalculateSpeedReverse(&values);
+          this->CalculateRPM(&values);
+        } else if (values.speed > 1) {
+          // Braking
+          brake_toggle = true;
+          values.speed = values.speed - BRAKE_POWER;
+        } else if (values.speed < 1) {
+          // Braking at very low speed
           brake_toggle = true;
           values.speed = 0;
         }
       }
-      if (values.pindle == PindleModes::N) {
-        values.rpm = (values.throttle * EMULATOR_MAX_RPM / 100) + std::rand()%100;
-        if (values.rpm <= EMULATOR_IDLE_RPM) {
-          values.rpm = EMULATOR_IDLE_RPM - std::rand()%100;
-        } else if (values.rpm >= EMULATOR_MAX_RPM) {
-          values.rpm = EMULATOR_MAX_RPM + std::rand()%100;
-        }
-      } else {
-        this->CalculateRPM(&values);
-      }
-      this->UpdateGearAutomatic(&values);
       this->sendCAN(values);
       error_code = emulator_data_.SetAll(values);
     } else {
@@ -129,6 +163,23 @@ bool Emulator::CalculateSpeed(Values_t *data) {
   return error_code;
 }
 
+bool Emulator::CalculateSpeedReverse(Values_t *data) {
+  bool error_code = kFailure;
+
+  if (data->speed < MAX_SPEED_REVERSE) {
+    data->speed = data->speed
+      + ( (data->forward_force / VEHICLE_MASS) * (DT/1000.0));
+    error_code = kSuccess;
+  } else {
+    data->speed = MAX_SPEED_REVERSE;
+  }
+  if (data->speed < 0) {
+    data->speed = 0;
+  }
+
+
+  return error_code;
+}
 
 bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
   int error_code = kFailure;
@@ -192,6 +243,26 @@ bool Emulator::CalculateForce(Values_t *data) {
 
   float f_a = 0.5 * (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
         * ((data->speed)*(data->speed)) );
+
+  data->forward_force = f_t - f_a - ROAD_RESISTANCE_FORCE;
+
+  error_code = kSuccess;
+
+  return error_code;
+}
+
+
+bool Emulator::CalculateForceReverse(Values_t *data) {
+  bool error_code = kFailure;
+
+  float f_t = (data->engine_torque
+    * emulator_gear_ratio[data->gear-1]
+    * DRIVE_TRAIN_RATIO
+    * DRIVE_TRAIN_EFFICIENY )
+    / WHEEL_RADIUS;
+
+  float f_a = 0.5 * (AIR_DENSITY * VEHICLE_FRONTAL_AREA * VEHICLE_DRAG_COEFF
+         * ((data->speed)*(data->speed)) );
 
   data->forward_force = f_t - f_a - ROAD_RESISTANCE_FORCE;
 
