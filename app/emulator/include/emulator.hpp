@@ -30,6 +30,8 @@
 #include "input_handler.hpp"
 #include "engine_pindle_states.hpp"
 
+const int CAN_FRAME_ID_1 = 1;
+
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 5000
@@ -179,7 +181,10 @@ class Emulator {
   bool CalculateForce(Values_t *data);
   bool CalculateForceReverse(Values_t *data);
   bool calculateEngineTorque(Values_t *data);
-
+  bool InDrive(Values_t *data);
+  bool InNeutral(Values_t *data);
+  bool InParking(Values_t *data);
+  bool InReverse(Values_t *data);
   // ...
   bool ReadAndSetPindle(std::atomic<bool> *exit_flag);
   bool GracefulShutdown();
