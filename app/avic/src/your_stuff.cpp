@@ -73,7 +73,7 @@ bool yourStuff::run() {
 }
 
 void yourStuff::timerEvent(QTimerEvent*) {
-    if(this->run()); { // NOLINT Due to we don't care!
+    if(this->run()) { // NOLINT Due to we don't care!
     } else {
         exit(-1);
     }
