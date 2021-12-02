@@ -314,6 +314,7 @@ bool Emulator::sendCAN(const Values_t &data) {
   data_to_send.gear = static_cast<uint8_t>(data.gear);
   data_to_send.rpm = static_cast<uint16_t>(data.rpm);
   data_to_send.pindle = static_cast<uint8_t>(data.pindle);
+  data_to_send.start = static_cast<uint8_t>(data.activate_engine);
 
   // Construct obejct from libcanencoder
   GetNewValues gnv;

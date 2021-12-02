@@ -4,39 +4,17 @@
 #include "your_stuff.h"
 #include "smokey_data.hpp"
 //#include "canio/can_common.h"
-
+uint8_t fuel = 0;
+uint8_t temp = 0;
+uint8_t oil = 0;
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
     /* const unsigned short *rpm = reinterpret_cast<const unsigned short*>(_frame->data);
     this->InstrumentCluster.setRPM(*rpm);
     std::cout << "Recieved frame with " << *rpm << std::endl; */
-
+    
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
-       this->InstrumentCluster.ignite(ui->start);
-        if (ui->start) {
-            this->InstrumentCluster.setTXT("SMOKEY");
-        }
-
-       int pindle = 0;
-       switch (ui->gear) {
-        case 'p':
-           pindle = 0;
-           break;
-        case 'n':
-           pindle = 1;
-           break;
-        case 'r':
-           pindle = 2;
-           break;
-        case 'd':
-           pindle = 3;
-           break;
-        default:
-           pindle = 0;
-       }
-       //this->InstrumentCluster.setGearPindle_int(pindle);
            
-       
        
         
     } else if (_frame->can_id == k_FrameIdEmulator) { 
@@ -45,6 +23,28 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         this->InstrumentCluster.setSpeed(em->speed);
         this->InstrumentCluster.setGear(em->gear);
         this->InstrumentCluster.setGearPindle_int(em->pindle);
+        this->InstrumentCluster.ignite(em->start);
+        
+
+        if (em->start) {
+            fuel = (fuel >= 255 - 10) ? 255 : fuel += 10;
+             temp = (temp >= 128 - 5) ? 128 : temp += 5;
+            oil = (oil >= 128 - 5) ? 128 : oil += 5;
+
+            
+            this->InstrumentCluster.setTXT("SMOKEY");
+            this->InstrumentCluster.setFuelGauges(fuel);
+            this->InstrumentCluster.setTemperatureGauges(temp);
+            this->InstrumentCluster.setOilTemperatureGauges(oil);
+        } else {
+            fuel = fuel <= 0 + 10 ? 0 : fuel -= 10;
+            temp = temp <= 0 + 5 ? 0 : temp -= 5;
+            oil = oil <= 0 + 5 ? 0 : oil -= 5;
+            this->InstrumentCluster.setTXT("");
+            this->InstrumentCluster.setFuelGauges(fuel);
+            this->InstrumentCluster.setTemperatureGauges(temp);
+            this->InstrumentCluster.setOilTemperatureGauges(oil);
+        }
     }
 
     /* const unsigned short rpm = _frame->data[0] * 100;

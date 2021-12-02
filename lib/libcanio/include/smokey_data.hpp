@@ -33,6 +33,7 @@ typedef struct __attribute__ ((__packed__)) EmulatorOutput {
   uint8_t breaking;
   uint8_t shutdown;
   uint8_t pindle;
+  uint8_t start;
 } EmulatorOutput_t;
 
 const bool kSuccess = false;
