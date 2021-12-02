@@ -41,7 +41,7 @@
 #define EMULATOR_GEAR_RATIO_2 2.0  // 2:1
 #define EMULATOR_GEAR_RATIO_3 1.5  // 1.5:1
 #define EMULATOR_GEAR_RATIO_4 1.0  // 1:1
-#define EMULATOR_GEAR_RATIO_5 0.7   // 0.5:1
+#define EMULATOR_GEAR_RATIO_5 1.0   // 0.5:1
 #define DRIVE_TRAIN_RATIO 3.460   // 3.460
 #define DRIVE_TRAIN_EFFICIENY 0.97
 #define PINDLE_PARKING 112  // Pindle parking, dec 112
@@ -136,7 +136,7 @@ const std::pair<double, double> RPM_Torque[RPM_TORQUE_DATA_LENGTH] = {
   std::make_pair(4770, 188)};
 
 const std::pair<int, int> emulator_gear_limits[10] = {
-  std::make_pair(0, 1),
+  std::make_pair(1, 1),
   std::make_pair(1, 2),
   std::make_pair(1, 2),
   std::make_pair(1, 3),
