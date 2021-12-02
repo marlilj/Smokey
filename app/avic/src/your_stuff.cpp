@@ -4,12 +4,14 @@
 #include "your_stuff.h"
 #include "smokey_data.hpp"
 //#include "canio/can_common.h"
-
+uint8_t fuel = 0;
+uint8_t temp = 0;
+uint8_t oil = 0;
 void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
     /* const unsigned short *rpm = reinterpret_cast<const unsigned short*>(_frame->data);
     this->InstrumentCluster.setRPM(*rpm);
     std::cout << "Recieved frame with " << *rpm << std::endl; */
-
+    
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
            
@@ -22,16 +24,26 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         this->InstrumentCluster.setGear(em->gear);
         this->InstrumentCluster.setGearPindle_int(em->pindle);
         this->InstrumentCluster.ignite(em->start);
+        
+
         if (em->start) {
+            fuel = (fuel >= 255 - 10) ? 255 : fuel += 10;
+             temp = (temp >= 128 - 5) ? 128 : temp += 5;
+            oil = (oil >= 128 - 5) ? 128 : oil += 5;
+
+            
             this->InstrumentCluster.setTXT("SMOKEY");
-            this->InstrumentCluster.setFuelGauges(255);
-            this->InstrumentCluster.setTemperatureGauges(127);
-            this->InstrumentCluster.setOilTemperatureGauges(127);
+            this->InstrumentCluster.setFuelGauges(fuel);
+            this->InstrumentCluster.setTemperatureGauges(temp);
+            this->InstrumentCluster.setOilTemperatureGauges(oil);
         } else {
+            fuel = fuel <= 0 + 10 ? 0 : fuel -= 10;
+            temp = temp <= 0 + 5 ? 0 : temp -= 5;
+            oil = oil <= 0 + 5 ? 0 : oil -= 5;
             this->InstrumentCluster.setTXT("");
-            this->InstrumentCluster.setFuelGauges(0);
-            this->InstrumentCluster.setTemperatureGauges(0);
-            this->InstrumentCluster.setOilTemperatureGauges(0);
+            this->InstrumentCluster.setFuelGauges(fuel);
+            this->InstrumentCluster.setTemperatureGauges(temp);
+            this->InstrumentCluster.setOilTemperatureGauges(oil);
         }
     }
 
