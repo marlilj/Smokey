@@ -89,8 +89,8 @@ bool Emulator::CalculateSpeed(Values_t *data) {
   if (data->speed < MAX_SPEED) {
     data->speed = data->speed
       + ( (data->forward_force / VEHICLE_MASS) * (DT/1000.0));
+    error_code = kSuccess;
   }
-  error_code = kSuccess;
 
   return error_code;
 }
