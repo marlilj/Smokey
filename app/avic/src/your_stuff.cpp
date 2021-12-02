@@ -28,7 +28,7 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
             fuel = (fuel >= 255 - 10) ? 255 : fuel += 10;
             temp = (temp >= 128 - 5) ? 128 : temp += 5;
             oil = (oil >= 128 - 5) ? 128 : oil += 5;
-            this->InstrumentCluster.setTXT("SMOKEY");
+            this->InstrumentCluster.setTXT("\t\t Team SMOKEY\n\t\t -----------------------\n\t\t Niklas Hultman\n\t                      David Andersson\n\t\t Marie Lijenroth\n\t\t    Daniel Muhr");
             this->InstrumentCluster.setFuelGauges(fuel);
             this->InstrumentCluster.setTemperatureGauges(temp);
             this->InstrumentCluster.setOilTemperatureGauges(oil);
