@@ -55,7 +55,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
     if (values.activate_engine) {
       if ( (values.pindle == PindleModes::D
           && (values.throttle > 0 || values.speed > 0)
-          && values.gear != 0) || (values.pindle == PindleModes::N) ) {
+          && values.gear != 0) || ( (values.pindle == PindleModes::N) && (values.speed > 0) )) {
         if (!values.breaking_flag) {
           // Break is inactive
           if (brake_toggle) {
@@ -69,7 +69,7 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
               values.rpm = 0;
             }
           }
-          if (values.pindle_neutral) {
+          if (values.pindle == PindleModes::N) {
             values.engine_torque = 0.0;
           } else {
             this->calculateEngineTorque(&values);
@@ -84,7 +84,16 @@ bool Emulator::Emulate(std::atomic<bool> *exit_flag) {
           values.speed = 0;
         }
       }
-      this->CalculateRPM(&values);
+      if (values.pindle == PindleModes::N) {
+        values.rpm = (values.throttle * EMULATOR_MAX_RPM / 100) + std::rand()%100;
+        if (values.rpm <= EMULATOR_IDLE_RPM) {
+          values.rpm = EMULATOR_IDLE_RPM - std::rand()%100;
+        } else if (values.rpm >= EMULATOR_MAX_RPM) {
+          values.rpm = EMULATOR_MAX_RPM + std::rand()%100;
+        }
+      } else {
+        this->CalculateRPM(&values);
+      }
       this->UpdateGearAutomatic(&values);
       this->sendCAN(values);
       error_code = emulator_data_.SetAll(values);

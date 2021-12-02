@@ -41,7 +41,7 @@
 #define EMULATOR_GEAR_RATIO_2 2.0  // 2:1
 #define EMULATOR_GEAR_RATIO_3 1.5  // 1.5:1
 #define EMULATOR_GEAR_RATIO_4 1.0  // 1:1
-#define EMULATOR_GEAR_RATIO_5 0.7   // 0.5:1
+#define EMULATOR_GEAR_RATIO_5 1.0   // 0.5:1
 #define DRIVE_TRAIN_RATIO 3.460   // 3.460
 #define DRIVE_TRAIN_EFFICIENY 0.97
 #define PINDLE_PARKING 112  // Pindle parking, dec 112
