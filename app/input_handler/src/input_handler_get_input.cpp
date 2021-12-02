@@ -51,6 +51,7 @@ bool InputHandler::ReadUserInput(GetNewValues &get_new_values) {
     } else if ( ch == 98 && !SmokeyInputData.breaking ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.breaking = 1;
+        SmokeyInputData.throttle = 0;
     } else if ( ch == 98 && SmokeyInputData.breaking ) {
         mvaddch(1, 26, ch);
         SmokeyInputData.breaking = 0;
