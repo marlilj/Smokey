@@ -12,31 +12,7 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
 
     if (_frame->can_id == k_FrameIdUserInput) {
        const Payload_t *ui = reinterpret_cast<const Payload_t*>(_frame->data);
-       this->InstrumentCluster.ignite(ui->start);
-        if (ui->start) {
-            this->InstrumentCluster.setTXT("SMOKEY");
-        }
-
-       int pindle = 0;
-       switch (ui->gear) {
-        case 'p':
-           pindle = 0;
-           break;
-        case 'n':
-           pindle = 1;
-           break;
-        case 'r':
-           pindle = 2;
-           break;
-        case 'd':
-           pindle = 3;
-           break;
-        default:
-           pindle = 0;
-       }
-       //this->InstrumentCluster.setGearPindle_int(pindle);
            
-       
        
         
     } else if (_frame->can_id == k_FrameIdEmulator) { 
@@ -45,6 +21,10 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         this->InstrumentCluster.setSpeed(em->speed);
         this->InstrumentCluster.setGear(em->gear);
         this->InstrumentCluster.setGearPindle_int(em->pindle);
+        this->InstrumentCluster.ignite(em->start);
+        if (em->start) {
+            this->InstrumentCluster.setTXT("SMOKEY");
+        }
     }
 
     /* const unsigned short rpm = _frame->data[0] * 100;
