@@ -146,7 +146,8 @@ bool Emulator::ReadAndSetPindle(std::atomic<bool> *exit_flag) {
           values.pindle = PindleModes::D;
           started = true;
           values.gear = 1;
-      } else if (values.pindle == PindleModes::P && set_pindle == PINDLE_NEUTRAL && started) {  // NOLINT Due to line break making it less readable.
+      } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::D || values.pindle == PindleModes::R) &&  // NOLINT Due to line break making it less readable.
+                set_pindle == PINDLE_NEUTRAL && started) {
           values.pindle = PindleModes::N;
           started = true;
       } else if ((values.pindle == PindleModes::P || values.pindle == PindleModes::N) &&  // NOLINT Due to line break making it less readable.
