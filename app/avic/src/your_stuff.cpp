@@ -24,6 +24,14 @@ void yourStuff::YouHaveJustRecievedACANFrame(const canfd_frame * const _frame) {
         this->InstrumentCluster.ignite(em->start);
         if (em->start) {
             this->InstrumentCluster.setTXT("SMOKEY");
+            this->InstrumentCluster.setFuelGauges(255);
+            this->InstrumentCluster.setTemperatureGauges(127);
+            this->InstrumentCluster.setOilTemperatureGauges(127);
+        } else {
+            this->InstrumentCluster.setTXT("");
+            this->InstrumentCluster.setFuelGauges(0);
+            this->InstrumentCluster.setTemperatureGauges(0);
+            this->InstrumentCluster.setOilTemperatureGauges(0);
         }
     }
 
