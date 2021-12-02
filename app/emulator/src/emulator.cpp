@@ -317,7 +317,7 @@ bool Emulator::sendCAN(const Values_t &data) {
   data_to_send.start = static_cast<uint8_t>(data.activate_engine);
 
   // Construct obejct from libcanencoder
-  GetNewValues gnv;
+  GetNewValues gnv(this->interface_name_);
   CanFrame frame_to_send = gnv.convertCANMessageFromStruct(data_to_send);
   bool return_value = gnv.sendMessageOnCAN(frame_to_send);
   return return_value;

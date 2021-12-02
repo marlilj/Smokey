@@ -16,11 +16,18 @@
 #include "input_handler.hpp"
 
 
-int main(void) {
+int main(int argc, char ** argv) {
   bool error_code = kFailure;
 
+  std::string interface_name;
+  if (argc == 1) {
+    interface_name = "vcan0";
+  } else if (argc == 2) {
+    interface_name = argv[1];
+  }
+
   InputHandler SmokeyInput;
-  GetNewValues get_new_values;
+  GetNewValues get_new_values(interface_name);
 
   error_code = SmokeyInput.InitInputHandler();
   if (error_code == kSuccess) {

@@ -11,7 +11,6 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 # Link runTests with what we want to test and the GTest and pthread library
 add_executable(${PROJECT_NAME}
-    ../src/can_encoder.cpp
     ../src/interface_from_input_handler.cpp
 )
 

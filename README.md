@@ -32,6 +32,7 @@ $ cd build
 $ cmake ..
 $ make
 ```
+
 this builds all three neccesary libraries and binaries in their respecitve
 subfolders.
 
@@ -43,7 +44,7 @@ them separately. Starting from location after build above.
 ### Window 1
 ``` bash
 $ cd app/input_handler/
-$ ./smokey_input_handler
+$ ./smokey_input_handler vcan0
 ```
 
 ### Window 2
