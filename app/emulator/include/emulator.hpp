@@ -30,6 +30,8 @@
 #include "input_handler.hpp"
 #include "engine_pindle_states.hpp"
 
+const int CAN_FRAME_ID_1 = 1;
+
 // Gear and engine data
 #define EMULATOR_IDLE_RPM 800
 #define EMULATOR_MAX_RPM 5000
@@ -78,13 +80,15 @@ const float emulator_gear_ratio[5] = {
 #define GEAR_LOW_RPM 1000
 #define MAX_SPEED 180.0/3.6
 
+const float MAX_SPEED_REVERSE = 40/3.6;
+
 // Emulator calculation data
 const float WHEEL_RADIUS = 0.34;  // 225/55R17
 const float VEHICLE_MASS = 1700.0;     // kg
 const float ROAD_COEFF = 0.011;
 const float ROAD_RESISTANCE_FORCE = (VEHICLE_MASS * ROAD_COEFF * 9.82);
 const int DT = 100;  // dt delay for calculating speed in mikro seconds
-const float BRAKE_POWER = 0.02;
+const float BRAKE_POWER = 0.015;
 #define AIR_DENSITY 1.202       // kg/m3
 #define VEHICLE_FRONTAL_AREA 3.0  // m2
 #define VEHICLE_DRAG_COEFF 0.5
@@ -173,9 +177,14 @@ class Emulator {
   bool UpdateGearAutomatic(Values_t *data);
   bool CalculateRPM(Values_t *data);
   bool CalculateSpeed(Values_t *data);
+  bool CalculateSpeedReverse(Values_t *data);  
   bool CalculateForce(Values_t *data);
+  bool CalculateForceReverse(Values_t *data);
   bool calculateEngineTorque(Values_t *data);
-
+  bool InDrive(Values_t *data);
+  bool InNeutral(Values_t *data);
+  bool InParking(Values_t *data);
+  bool InReverse(Values_t *data);
   // ...
   bool ReadAndSetPindle(std::atomic<bool> *exit_flag);
   bool GracefulShutdown();
